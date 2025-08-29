@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\1.jpg" />
+    <Content Remove="wwwroot\img\cclems.jpg" />
+    <Content Remove="wwwroot\img\fondo.png" />
+    <Content Remove="wwwroot\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +27,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="wwwroot\1.jpg">
+    <Resource Include="wwwroot\img\1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="wwwroot\img\cclems.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="wwwroot\img\fondo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="wwwroot\img\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

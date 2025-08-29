@@ -1,22 +1,55 @@
-html {
-  font-size: 14px;
-}
-
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+*/
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    background-image: url("/img/fondo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100vw;
+}
+.logo{
+    height:50%;
+    width:50%;
+    margin:10px;
+}
+.alerta{
+    color:#aa2e2e;
+}
+input[type=text], input[type=password]{
+    font-family:Arial, Helvetica, sans-serif;
+border-radius:5px;
+font-size:17px;
+height:25px;
+background-color:lightgrey;
+border:none;
+}
+input[type=button] {
+    color:whitesmoke;
+    font-weight:bold;
+    border-radius:5px;
+    height:25px;
+    background-color: #2C2C2C;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+div {
+    background-color: #EDEDED;
+   border-radius:13px;
+   width:25%;
 }
