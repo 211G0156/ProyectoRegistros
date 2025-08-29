@@ -1,7 +1,16 @@
-@media (min-width: 768px) {
+@media (min-width: 650px) {
   html {
     font-size: 16px;
   }
+    div {
+        background-color: #EDEDED;
+        border-radius: 13px;
+        width: 85%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 /*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -20,30 +29,38 @@ html {
     font-family: Arial, Helvetica, sans-serif;
     width: 100vw;
 }
-.logo{
-    height:50%;
-    width:50%;
-    margin:10px;
+h3{
+    font-weight:500;
+}
+.logo {
+    height: 18%;
+    width: 34%;
+    margin-top: 10%;
+    margin-bottom: 10%;
 }
 .alerta{
     color:#aa2e2e;
     margin:0;
 }
+
 input[type=text], input[type=password]{
     font-family:Arial, Helvetica, sans-serif;
 border-radius:5px;
 font-size:17px;
-height:25px;
+height:7%;
+width:85%;
 background-color:lightgrey;
 border:none;
 }
+
 input[type=button] {
     color:whitesmoke;
     font-weight:bold;
     border-radius:5px;
-    height:25px;
+    height:9%;
     background-color: #2C2C2C;
-    margin:20px;
+/*    margin:20px;*/
+margin-top:30px;
 }
 
 body {
@@ -58,9 +75,11 @@ body {
 div {
     background-color: #EDEDED;
     border-radius: 13px;
-    width: 25%;
+    width: 28%;
+    height: 75%;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+
 }
