@@ -27,6 +27,7 @@ html {
 }
 .alerta{
     color:#aa2e2e;
+    margin:0;
 }
 input[type=text], input[type=password]{
     font-family:Arial, Helvetica, sans-serif;
@@ -42,14 +43,24 @@ input[type=button] {
     border-radius:5px;
     height:25px;
     background-color: #2C2C2C;
+    margin:20px;
 }
 
 body {
     margin-bottom: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
 div {
     background-color: #EDEDED;
-   border-radius:13px;
-   width:25%;
+    border-radius: 13px;
+    width: 25%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
