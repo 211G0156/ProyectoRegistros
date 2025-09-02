@@ -42,6 +42,9 @@ table th {
     height: 40px;
 }
 
+table tr {
+    height: 50px;
+}
 table td {
     border: 1px solid gray;
     padding: 8px;
