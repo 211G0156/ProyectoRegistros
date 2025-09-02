@@ -29,6 +29,7 @@ html {
     font-family: Arial, Helvetica, sans-serif;
     width: 100vw;
 }
+
 h3{
     font-weight:500;
 }
@@ -82,4 +83,9 @@ div {
     flex-direction: column;
     align-items: center;
 
+}
+a {
+    padding:10px;
+    color: #258cfb;
+    font-style: italic;
 }

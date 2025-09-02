@@ -1,0 +1,45 @@
+﻿html {
+    background-color: #EDEDED;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#ig1 {
+    width: 25px;
+    height: 22px;
+}
+#ig2 {
+    width: 70px;
+    height: 50px;
+}
+header {
+    background-color: #D9D9D9;
+    border-bottom: 1px solid #dee2e6;
+}
+table th {
+    background-color: ghostwhite;
+    border-bottom: 1px solid gray;
+}
+table td{
+    border: 1px solid gray;
+    padding: 8px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid gray;
+}
+.buscador{
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: flex;
+    gap: 10px;
+}
+input[type=search]{
+    border-radius: 5px;
+    font-size: 17px;
+    height: 35px;
+    width: 250px;
+    border:1px solid black;
+    border-radius:20px;
+    padding-left: 10px;
+}
