@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\1.jpg" />
     <Content Remove="wwwroot\Archivos\ejemplo.xlsx" />
     <Content Remove="wwwroot\img\arrow_back.png" />
@@ -28,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Views\Administrador\ExportarDatos\" />
     <Folder Include="Views\Administrador\Recibo\" />
@@ -38,6 +44,8 @@
     <Folder Include="Views\Profesor\ExportarDatos\" />
     <Folder Include="Views\Profesor\Recibo\" />
     <Folder Include="Views\Profesor\Registros\" />
+    <Folder Include="wwwroot\Profesores\" />
+    <Folder Include="wwwroot\Visitantes\" />
   </ItemGroup>
 
   <ItemGroup>
