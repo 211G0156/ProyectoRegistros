@@ -1,11 +1,10 @@
-@media (min-width: 650px) {
+@media (min-width: 250px) {
   html {
     font-size: 16px;
   }
     div {
         background-color: #EDEDED;
         border-radius: 13px;
-        width: 85%;
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -34,10 +33,10 @@ h3{
     font-weight:500;
 }
 .logo {
-    height: 18%;
-    width: 34%;
+    height: 22%;
+    width: 40%;
     margin-top: 10%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
 }
 .alerta{
     color:#aa2e2e;
@@ -52,16 +51,19 @@ height:7%;
 width:85%;
 background-color:lightgrey;
 border:none;
+
 }
 
 input[type=button] {
-    color:whitesmoke;
-    font-weight:bold;
-    border-radius:5px;
-    height:9%;
+    color: whitesmoke;
+    font-weight: bold;
+    border-radius: 5px;
+    height: 8%;
     background-color: #2C2C2C;
-/*    margin:20px;*/
-margin-top:30px;
+    /*    margin:20px;*/
+    margin-top: 30px;
+    border:none;
+    cursor:pointer;
 }
 
 body {
@@ -85,6 +87,7 @@ div {
 
 }
 a {
+    margin:10px;
     padding:10px;
     color: #258cfb;
     font-style: italic;

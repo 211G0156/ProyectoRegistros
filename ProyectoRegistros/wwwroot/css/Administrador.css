@@ -1,2 +1,93 @@
-﻿body {
+﻿html {
+    background-color: #EDEDED;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+/*
+
+    TABLAS
+
+
+*/
+
+#ig1 {
+    width: 35px;
+    height: 32px;
+}
+
+#ig2 {
+    width: 70px;
+    height: 50px;
+}
+
+header {
+    background-color: #D9D9D9;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    margin: 0;
+    height: 60px;
+    justify-content: space-between;
+}
+
+.principal h2 {
+    font-weight: 500;
+}
+
+table th {
+    background-color: ghostwhite;
+    border-bottom: 1px solid gray;
+    height: 40px;
+}
+
+table td {
+    border: 1px solid gray;
+    padding: 8px;
+}
+
+.tablita {
+    height: 400px;
+    overflow-y: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid gray;
+}
+
+.buscador {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: flex;
+    gap: 10px;
+}
+
+    .buscador img {
+        height: 25px;
+        width: 25px;
+    }
+
+input[type=search] {
+    border-radius: 5px;
+    font-size: 17px;
+    height: 35px;
+    width: 18%;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding-left: 10px;
+}
+
+
+/*
+
+    EXPORTAR DATOS
+
+
+*/
+
+iframe {
+    width: fit-content;
+    height: fit-content;
 }
