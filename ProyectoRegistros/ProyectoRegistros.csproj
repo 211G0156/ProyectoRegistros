@@ -18,15 +18,20 @@
     <Content Remove="wwwroot\Archivos\ejemplo.xlsx" />
     <Content Remove="wwwroot\img\arrow_back.png" />
     <Content Remove="wwwroot\img\cclems.jpg" />
+    <Content Remove="wwwroot\img\edit.png" />
     <Content Remove="wwwroot\img\fondo.png" />
     <Content Remove="wwwroot\img\Historial.png" />
     <Content Remove="wwwroot\img\lupa1.png" />
     <Content Remove="wwwroot\img\Menu.png" />
+    <Content Remove="wwwroot\img\X.png" />
     <Content Remove="wwwroot\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="wwwroot\Archivos\ejemplo.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="wwwroot\img\edit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="wwwroot\img\Historial.png">
@@ -44,7 +49,6 @@
     <Folder Include="Views\Profesor\ExportarDatos\" />
     <Folder Include="Views\Profesor\Recibo\" />
     <Folder Include="Views\Profesor\Registros\" />
-    <Folder Include="wwwroot\Profesores\" />
     <Folder Include="wwwroot\Visitantes\" />
   </ItemGroup>
 
@@ -68,6 +72,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="wwwroot\img\Menu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="wwwroot\img\X.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
