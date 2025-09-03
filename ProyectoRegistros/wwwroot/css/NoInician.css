@@ -5,6 +5,7 @@
 }
 
 #ig1 {
+    margin-left:15px;
     width: 35px;
     height: 32px;
 }
@@ -12,6 +13,7 @@
 #ig2 {
     width: 70px;
     height: 50px;
+    margin-right:25px;
 }
 
 header {
@@ -20,33 +22,45 @@ header {
     display: flex;
     margin: 0;
     height:60px;
+    align-items:center;
     justify-content: space-between;
 }
+.izq {
+    display: flex;
+    align-items:center;
+}
 .principal h2 {
+    margin-left:20px;
     font-weight: 500;
 }
+
+.tablita {
+    height: 450px !important;
+    overflow-y: auto;
+/*    border-radius: 20px;  */
+}
+
 table th {
     background-color: ghostwhite;
     border-bottom: 1px solid gray;
     height: 40px;
+
 }
 
 table td{
     border: 1px solid gray;
     padding: 8px;
 }
-
-.tablita{
-    height: 400px;
-    overflow-y: auto;
+table tr {
+    height: 50px;
 }
+
 
 table {
     border-collapse: collapse;
     width: 100%;
-    border: 1px solid gray;
-
-}
+/*    border: 1px solid gray;
+*/}
 
 .buscador{
     margin-top: 1%;
