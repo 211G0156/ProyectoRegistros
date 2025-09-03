@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="../css/Administrador.css" />
+
+</head>
+<body>
+
+    <header class="principal">
+        <div class="izq">
+            <img id="ig1" src="../img/Menu.png" />
+            <h2>Exportar datos a Excel</h2>
+        </div>
+        <img id="ig2" src="../img/Historial.png" />
+    </header>
+
+    <div class="todo">
+        <div class="filtrar">
+            <h2>Filtrar por:</h2>
+            <hr />
+            <div class="datos">
+                <h3>Profesor:</h3>
+                <select>
+                    <option>Todos</option>
+                    <option>Selena</option>
+                </select>
+
+                <h3>Cantidad de alumnos:</h3>
+                <input type="number" max="100" min="0" />
+
+                <h3>Taller o talleres:</h3>
+                <select>
+
+                    <option>
+                    </option>
+                    <option>AcuarelaKids</option>
+                </select>
+
+                <h3>Días:</h3>
+                <select>
+                    <option>Todos</option>
+                    <option>Lunes</option>
+                </select>
+
+                <h3>Horas:</h3>
+                <select>
+                    <option>Todos</option>
+                    <option>2:00 - 3:00 p.m.</option>
+                    <option>3:00 - 4:00 p.m.</option>
+                    <option>4:00 - 5:00 p.m.</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <input class="verArchivo" type="button" value="Ver archivo" />
+
+    </div>
+
+    <script src="../js/InicioSesion.js"></script>
+</body>
+</html>

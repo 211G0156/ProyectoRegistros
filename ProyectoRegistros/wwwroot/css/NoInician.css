@@ -7,13 +7,14 @@
 #ig1 {
     margin-left:15px;
     width: 35px;
+    cursor:pointer;
     height: 32px;
 }
 
 #ig2 {
     width: 70px;
     height: 50px;
-    margin-right:25px;
+    margin-right: 25px;
 }
 
 header {
@@ -73,12 +74,16 @@ table {
         width: 25px;
     }
 
-input[type=search]{
-    border-radius: 5px;
+input[type=number] {
     font-size: 17px;
     height: 35px;
-    width: 18%;
-    border:1px solid black;
-    border-radius:20px;
+    width: 12%;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-size: 30px;
     padding-left: 10px;
+}
+
+.filtros {
+    margin: 22.5px 0px 23px 5px;
 }
