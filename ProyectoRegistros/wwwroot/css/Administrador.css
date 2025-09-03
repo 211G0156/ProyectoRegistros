@@ -208,8 +208,10 @@ table {
 
 */
 
-.todo{
-    display:flex;
+.todo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
@@ -225,11 +227,11 @@ table {
     background-color: #EDEDED;
     padding: 10px;
     border-radius: 5px;
-    display: block;
 }
 .datos h3{
-    border-bottom:1px solid black;
-}
+/*    border-bottom:1px solid black;
+*/}
+
 .datos input, .datos select{
     height:20px;
     border-radius:5px;

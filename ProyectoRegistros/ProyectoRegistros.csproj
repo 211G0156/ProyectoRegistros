@@ -49,7 +49,6 @@
     <Folder Include="Views\Profesor\ExportarDatos\" />
     <Folder Include="Views\Profesor\Recibo\" />
     <Folder Include="Views\Profesor\Registros\" />
-    <Folder Include="wwwroot\Visitantes\" />
   </ItemGroup>
 
   <ItemGroup>
