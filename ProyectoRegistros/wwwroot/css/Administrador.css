@@ -1,11 +1,32 @@
-﻿@media (max-width:500px){
-/*    #aggTaller {
-        height: 40px;
-        border-radius: 10px;
-        border: none;
-        width: 20%;
+﻿@media (max-width:1200px){
+    #aggTaller {
+        width: 25% !important;
     }
-*/
+    .historial-activo {
+        display: block;
+        width: 35% !important;
+    }
+}
+@media(max-width:650px){
+
+    .checar {
+        display: flex;
+        align-items: center;
+        margin-left: 0px !important;
+    }
+
+        .checar label {
+            margin-left: 5px;
+            cursor: pointer;
+            color: dimgray;
+            font-size: 13px !important;
+        }
+
+        .checar input[type=checkbox] {
+            cursor: pointer;
+        }
+         #aggTaller {
+        margin-left:10px;    }
 }
 
 html {
@@ -15,6 +36,7 @@ html {
 body {
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 #ig1 {
@@ -69,22 +91,42 @@ input[type=search] {
     border: 1px solid black;
     border-radius: 20px;
     padding-left: 10px;
-    background:url("../img/lupa1.png");
-    background-repeat:no-repeat;
-    background-position-x:right;
-    background-size:30px;
+    background-color:white;
 }
 
-.historial{
-    width:25%;
-    background-color:lightgray;
-    height:100%;
-    border-radius:10px;
-    z-index:0;
+.historial {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    background-color: lightgray;
+    z-index: 1000;
+    overflow-y: auto;
+    transform: translateX(200%);
+    transition: transform 0.3s ease-in-out;
+    margin: 0;
+    padding: 0;
+}
+.datosHistorial {
+    overflow-y: auto;
+    padding:10px;
+}
+.datosHistorial p:nth-last-child(1){
+    margin-bottom:30px;
 }
 
+.historial-activo {
+    display: block;
+    width: 25%;
+}
 
-
+.historial h2 {
+        height:6%;
+        text-align:center;
+        background-color: #afafaf;
+        border-radius: 10px 10px 0px 0px;
+    }
 
 
 
@@ -101,7 +143,8 @@ input[type=search] {
 
 
 .tablita {
-    height: 451px !important;
+/*    height: 540px !important;
+*/    
     overflow-y: auto;
     padding:0px 10px;
 }

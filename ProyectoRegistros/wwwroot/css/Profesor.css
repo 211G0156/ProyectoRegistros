@@ -75,10 +75,7 @@ input[type=search] {
     border: 1px solid black;
     border-radius: 20px;
     padding-left: 10px;
-    background: url("../img/lupa1.png");
-    background-repeat: no-repeat;
-    background-position-x: right;
-    background-size: 30px;
+    background-color:white;
 }
 
 .historial {
@@ -107,7 +104,9 @@ input[type=search] {
 
 
 .tablita {
-    height: 451px !important;
+    /*    height: 451px !important;
+*/
+    padding: 0px 10px;
     overflow-y: auto;
 }
 
