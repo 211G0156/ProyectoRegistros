@@ -237,7 +237,7 @@ table {
 /*    border-bottom:1px solid black;
 */}
 
-.datos input, .datos select{
+.datos input[type=number], .datos select{
     height:20px;
     border-radius:5px;
     width:40%;
