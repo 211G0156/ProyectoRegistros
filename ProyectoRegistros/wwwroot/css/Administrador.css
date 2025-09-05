@@ -8,6 +8,34 @@
     }
 }
 @media(max-width:650px){
+
+    .tablita {
+        overflow-y: auto;
+        padding: 0px 0px !important;
+    }
+
+    .filtros {
+        display: flex;
+        align-items: center;
+        margin: 10px 0px 10px 0px !important;
+        justify-content: space-between;
+    }
+    table td:nth-last-child(1) img {
+        align-items: center;
+        cursor: pointer;
+        height: 22px !important;
+        width: 22px !important;
+        margin-right: 5px;
+        margin-left: 5px;
+        padding: 5px;
+        border-radius: 100px;
+    }
+    table td {
+        text-align: center;
+        padding: 8px;
+        font-size: 14px !important;
+    }
+
     .historial h2 {
 font-size:18px !important;
     }
@@ -96,7 +124,8 @@ input[type=search] {
     border: 1px solid black;
     border-radius: 20px;
     padding-left: 10px;
-    background-color:white;
+    background-color: white;
+    width: 70%;
 }
 .historial {
     position: fixed;
@@ -113,9 +142,9 @@ input[type=search] {
     box-shadow: -10px 0px 10px rgba(0, 0, 0, 0.2);
 }
 #aggTaller:hover {
-    background-color: #645544; /* Cambia el color de fondo */
-    color: white; /* Cambia el color del texto */
-    transition: background-color 0.2s ease-in-out; /* Agrega una transición suave */
+    background-color: #645544;
+    color: white; 
+    transition: background-color 0.2s ease-in-out;
 }
 
 .historial-activo {
@@ -144,6 +173,7 @@ input[type=search] {
 
 
 
+
 /*
 
     TABLAS
@@ -153,15 +183,13 @@ input[type=search] {
 
 
 
+
 .tablita {
-/*    height: 540px !important;
-*/    
     overflow-y: auto;
-    padding:0px 10px;
+    padding:0px 50px;
 }
 table th {
     background-color: ghostwhite;
-    border-bottom: 1px solid gray;
     height: 40px;
 }
 
@@ -169,8 +197,11 @@ table tr {
     height: 50px;
 }
 table td {
-    border: 1px solid gray;
+    text-align: center;
     padding: 8px;
+}
+table tr:nth-child(2n+1){
+    background-color:#d0d0d0;
 }
 
 table td:nth-last-child(1){
@@ -218,6 +249,10 @@ table {
 
 */
 
+
+
+
+
 .botones{
     display:flex;
     justify-content:center;
@@ -233,7 +268,7 @@ table {
 .filtros {
     display: flex;
     align-items: center;
-     margin:10px 20px 10px 10px;
+     margin:10px 50px 10px 50px;
     justify-content: space-between;
 }
 
@@ -244,10 +279,11 @@ table {
     cursor:pointer;
 }
 
-.checar{
-    display:flex;
-    align-items:center;
-    margin-left:20px;
+.checar {
+    display: flex;
+    width: 35%;
+    align-items: center;
+    margin-left: 20px;
 }
     .checar label {
         margin-left: 5px;
