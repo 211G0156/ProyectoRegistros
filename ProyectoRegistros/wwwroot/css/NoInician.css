@@ -1,13 +1,77 @@
 ﻿@media(max-width:1250px){
-    input[type=number]{
-        width:20% !important;
+    input[type=number] {
+        width: 20% !important;
+        font-size: 15px !important;
+    }
+    .historial-activo {
+        display: block;
+        width: 35% !important;
     }
 }
-@media(max-width:695px) {
+@media(max-width:800px) {
+    .historial h2 {
+        font-size: 20px !important;
+    }
+}
+
+@media(max-width:650px) {
     input[type=number] {
         width: 29% !important;
+        font-size:15px !important;
+    }
+    .historial h2 {
+        font-size: 18px !important;
+    }
+
+    .buscador {
+        margin-top: 1%;
+        margin-bottom: 1%;
+        display: flex;
+        gap: 10px;
+        margin: 10px 0px 10px 5px !important;
+    }
+
+    .tablita {
+        overflow-y: auto;
+        padding: 0px 20px !important;
     }
 }
+
+@media(max-width:560px) {
+    .historial {
+        position: fixed;
+        width: 45% !important;
+    }
+
+        .historial h2 {
+            font-size: 12px;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     html {
         background-color: #EDEDED;
@@ -37,6 +101,7 @@
         border-bottom: 1px solid #dee2e6;
         display: flex;
         margin: 0;
+        padding:0;
         height: 60px;
         align-items: center;
         justify-content: space-between;
@@ -53,42 +118,50 @@
     }
 
 .tablita {
-    /*        height: 450px !important;
-*/
-    padding: 0px 10px;
     overflow-y: auto;
-    /*    border-radius: 20px;  */
+    padding: 0px 50px;
+    height: calc(100vh - 200px);
 }
 
-    table th {
-        background-color: ghostwhite;
-        border-bottom: 1px solid gray;
-        height: 40px;
-    }
+table th {
+    background-color: ghostwhite;
+    height: 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
-    table td {
-        border: 1px solid gray;
-        padding: 8px;
-    }
+table tr {
+    height: 50px;
+}
 
-    table tr {
-        height: 50px;
-    }
+table td {
+    text-align: center;
+    padding: 8px;
+}
+
+table tr:nth-child(2n+1) {
+    background-color: #d0d0d0;
+}
+
+table td:nth-last-child(1) {
+    width: 5%;
+}
 
 
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        /*    border: 1px solid gray;
-*/
-    }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    /*    border: 1px solid gray;   */
+}
 
-    .buscador {
-        margin-top: 1%;
-        margin-bottom: 1%;
-        display: flex;
-        gap: 10px;
-    }
+.buscador {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: flex;
+    gap: 10px;
+    margin: 10px 0px 10px 35px;
+}
 
         .buscador img {
             height: 25px;
