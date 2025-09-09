@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talleres</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <i class="menu material-symbols-outlined">menu</i>
+        <h2>Lista de talleres</h2>
+    </header>
+    <aside id="menu-abierto">
+        <img src="img/logo.png">
+        <h3>Administrador</h2>
+        <h3>Isaac</h3>
+        <div>
+            <span class="material-symbols-outlined">edit_square</span>
+            <a href="Talleres.html">Talleres</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">library_books</span>
+            <a href="RegistroForm.html">Registros</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">person</span>
+            <a>Usuarios</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">vertical_align_bottom</span>
+            <a>Exportar datos</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">logout</span>
+            <a>Cerrar sesión</a>
+        </div>
+    </aside>
+    <main>
+        <button type="button" value="Crear usuario"></button>
+
+
+
+
+
+
+        <div class="modal" id="modal-AddTaller" style="display: block;">
+            <form>
+                <button type="button">X</button>
+                <i class="material-symbols-outlined">person</i>
+                <h2>Agregar Taller</h2>
+
+                <label>Nombre:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Dias:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Horario:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Edad:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Profesor:</label><br>
+                <select>
+                    <option>Pablo</option>
+                    <option>Sele</option>
+                    <option>Cesár</option>
+                    <option>Pablo</option>
+                </select><br>
+                <label>Costo:</label><br>
+                <input type="number" placeholder="Escribir..."><br>
+                <p class="error">El nombre del taller ya existe!</p>
+                <div style="display: inline-flex; justify-content: space-between; width: 100%;">
+                    
+                    <button type="submit" class="botones">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+</body>
+</html>
+<script src="code.js"></script>
