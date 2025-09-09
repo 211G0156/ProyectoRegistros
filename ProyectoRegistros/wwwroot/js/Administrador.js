@@ -10,3 +10,5 @@ document.addEventListener('click', function (event) {
         historial.classList.remove('historial-activo');
     }
 });
+
+
