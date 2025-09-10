@@ -351,7 +351,7 @@ table td:nth-last-child(1){
 .filtros2 {
     display: flex;
     align-items: center;
-    margin: 10px 63px 10px 50px;
+    margin: 10px 50px 10px 50px;
     justify-content: space-between;
 }
 .filtros2 input[type=search]{
@@ -434,6 +434,7 @@ table td:nth-last-child(1){
     border-radius:10px;
     background-color:cadetblue;
     font-size:20px;
+    cursor:pointer;
 }
 
 
@@ -459,21 +460,22 @@ table td:nth-last-child(1){
 }
 
 .select-content {
-    display: none;
     position: absolute;
     top: 100%;
     left: 0;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     padding: 5px;
-    width: 100%;
-    z-index:1000;
+    height:410%;
+    width: 98%;
+    z-index:500;
+    overflow-y:auto;
+    display: none;
 }
 
-.custom-select:hover .select-content {
+.show .select-content {
     display: block;
 }
-
 .select-content label {
     display: block;
     padding: 5px;
@@ -493,16 +495,18 @@ table td:nth-last-child(1){
 
 .datos {
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 190px 1fr;
     gap: 10px;
     width: 80%;
     margin: 0 auto;
     align-items: center;
     justify-items: center;
-}    .datos h3 {
+}
+    .datos h3 {
         grid-column: 1;
         margin: 0;
         text-align: right;
+        justify-self: end;
     }
     .datos hr {
         grid-column: 1 / 3;
@@ -518,9 +522,10 @@ table td:nth-last-child(1){
     .datos input[type="number"] {
         padding: 4px;
     }
-        .datos select {
-            height: 30px;
-        }
+    .datos select {
+        width: 72%;
+        height: 30px;
+    }
         .datos hr{
             width:90%;
         }

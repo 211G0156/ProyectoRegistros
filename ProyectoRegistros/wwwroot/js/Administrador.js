@@ -12,3 +12,33 @@ document.addEventListener('click', function (event) {
 });
 
 
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    var customSelects = document.querySelectorAll('.custom-select');
+
+    customSelects.forEach(function (customSelect) {
+        var selectHeader = customSelect.querySelector('.select-header');
+
+        selectHeader.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            customSelects.forEach(function (otherSelect) {
+                if (otherSelect !== customSelect) {
+                    otherSelect.classList.remove('show');
+                }
+            });
+
+            customSelect.classList.toggle('show');
+        });
+
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.custom-select')) {
+            customSelects.forEach(function (customSelect) {
+                customSelect.classList.remove('show');
+            });
+        }
+    });
+});
