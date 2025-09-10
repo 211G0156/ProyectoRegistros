@@ -181,9 +181,15 @@ input[type=search] {
 
 
 .tablita {
+    /*    overflow-y: auto;
+*/ padding: 0 50px;
+    /*    height: calc(100vh - 200px);
+*/
+}
+
+.tabla-scroll {
     overflow-y: auto;
-    padding: 0px 50px;
-    height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
 }
 
 table th {
