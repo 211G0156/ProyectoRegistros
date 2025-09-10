@@ -43,13 +43,12 @@
     .tablita {
         overflow-y: auto;
         padding: 0px 0px !important;
+        z-index: 0;
     }
 
     .filtros {
-        display: flex;
         align-items: center;
         margin: 10px 0px 10px 0px !important;
-        justify-content: space-between;
     }
     .filtros2 {
         display: flex;
@@ -266,9 +265,7 @@ input[type=search] {
     overflow-y: auto;
     padding: 0px 50px;
     height: calc(100vh - 200px);
-
 }
-
 table th {
     background-color: ghostwhite;
     height: 40px;
@@ -308,11 +305,11 @@ table td:nth-last-child(1){
             border-radius: 100px;
             background-color:lightgrey;
         }
-table {
-    border-collapse: collapse;
-    width: 100%;
+    table {
+        border-collapse: collapse;
+        width: 100%;
 /*    border: 1px solid gray;   */
-}
+    }
 
 
 
@@ -343,16 +340,16 @@ table {
 }
 
 #aggTaller{
-    height:40px;
-    border-radius:10px;
     border:none;
     width:10%;
+    height:40px;
+    border-radius:10px;
 }
 
 .filtros {
     display: flex;
     align-items: center;
-    margin: 10px 63px 10px 50px;
+    padding: 80px 60px 10px; 
     justify-content: space-between;
 }
 
