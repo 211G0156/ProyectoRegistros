@@ -20,15 +20,15 @@
 
     <aside id="menu-abierto">
         <img src="../img/logo.png">
-        <h3>Administrador</h2>
+        <h3>Administrador</h3>
         <h3>Isaac</h3>
         <div>
             <span class="material-symbols-outlined">edit_square</span>
-            <a href="Index.html">Talleres</a>
+            <a href="../Administrador/Index.html">Talleres</a>
         </div>
         <div>
             <span class="material-symbols-outlined">library_books</span>
-            <a href="/ProyectoRegistros/wwwroot/RegistroForm.html">Registros</a>
+            <a href="../Administrador/RegistroForm.html">Registros</a>
         </div>
         <div>
             <span class="material-symbols-outlined">person</span>
@@ -78,12 +78,14 @@
 
     <!--MODAL PARA AGREGAR-->
     
-        <div class="modal" id="modal-AddTaller" style="display: block;">
+        <div class="modal" id="modal-AddTaller">
             <form>
-                <button type="button">X</button>
-                <i class="material-symbols-outlined">person</i>
-                <h2>Agregar Taller</h2>
-
+                <button id="cerrar" type="button">X</button><br>
+                <div id="acomodar">
+                    <i class="material-symbols-outlined">person</i>
+                    <h2>Agregar Taller</h2>
+                </div><br>
+               
                 <label>Nombre:</label><br>
                 <input type="text" placeholder="Escribir..."><br>
                 <label>Dias:</label><br>
@@ -93,7 +95,7 @@
                 <label>Edad:</label><br>
                 <input type="text" placeholder="Escribir..."><br>
                 <label>Profesor:</label><br>
-                <select>
+                <select style="height: 3.5vh;">
                     <option>Pablo</option>
                     <option>Sele</option>
                     <option>Cesár</option>
@@ -101,14 +103,19 @@
                 </select><br>
                 <label>Costo:</label><br>
                 <input type="number" placeholder="Escribir..."><br>
-                <p class="error">El nombre del taller ya existe!</p>
-                <div style="display: inline-flex; justify-content: space-between; width: 100%;">
-                    
-                    <button type="submit" class="buttons">Guardar</button>
+                <div class="error">
+                    <p>El nombre del taller ya existe!</p>
+                    <p>El nombre del taller ya existe!</p>
+                    <p>El nombre del taller ya existe!</p>
+                    <p>El nombre del taller ya existe!</p>
+                    <p>El nombre del taller ya existe!</p>
+                </div>
+                <div style="margin: 0 0 0 15vw;">
+                    <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
                 </div>
             </form>
         </div>
-
+        <!--fin del modal-->
     <div class="tablita">
         <table>
             <thead>
@@ -121,7 +128,6 @@
                     <th>Costo</th>
                     <th>Opciones</th>
                 </tr>
-
             </thead>
 
             <tbody>

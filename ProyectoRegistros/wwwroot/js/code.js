@@ -1,3 +1,4 @@
+// en general
 let aside = document.getElementById("menu-abierto");
 
     document.addEventListener("click", function(e){
@@ -8,3 +9,14 @@ let aside = document.getElementById("menu-abierto");
             aside.classList.remove("visible");
         }
     })
+
+
+// en vista index
+let modal = document.querySelector(".modal");
+    document.querySelector("#cerrar").addEventListener("click", function(){
+        modal.style.display="none";
+    });
+
+let crear = document.querySelector("#aggTaller").addEventListener("click", function(){
+        modal.style.display="block";
+    });
