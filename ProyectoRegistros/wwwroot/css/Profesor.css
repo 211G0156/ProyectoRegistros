@@ -1,5 +1,4 @@
 ﻿@media (max-width:1200px) {
-S
 
     .historial-activo {
         display: block;
@@ -7,10 +6,20 @@ S
     }
 }
 
+@media(max-width:900px) {
+
+    .buscador2 {
+        width: 40% !important;
+    }
+}
 @media(max-width:800px) {
     .historial h2 {
         font-size: 20px !important;
     }
+    input[type=search] {
+        width: 79% !important;
+    }
+
 }
 
 
@@ -18,7 +27,9 @@ S
     .filtros {
         margin: 25px 20px !important;
     }
-
+    input[type=search] {
+        width: 79% !important;
+    }
     .tablita {
         overflow-y: auto;
         padding: 0px 20px !important;
@@ -33,7 +44,12 @@ S
         position: fixed;
         width: 45% !important;
     }
-
+    input[type=search] {
+        border-radius: 5px;
+        font-size: 17px;
+        height: 35px;
+        width: 100% !important;
+    }
         .historial h2 {
             font-size: 12px;
         }
@@ -177,10 +193,17 @@ input[type=search] {
 
 
 .tablita {
-    overflow-y: auto;
-    padding: 0px 50px;
-    height: calc(100vh - 200px);
+    /*    overflow-y: auto;
+*/ padding: 0 50px;
+    /*    height: calc(100vh - 200px);
+*/
 }
+
+.tabla-scroll {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
 
 table th {
     background-color: ghostwhite;
