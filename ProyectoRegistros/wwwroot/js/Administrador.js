@@ -1,13 +1,25 @@
-﻿let aside = document.getElementById("menu-abierto");
+﻿/*MENU PRINCIPAL*/
 
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("menu")) { // busca por clase
+let aside = document.getElementById("menu-abierto");
+
+document.addEventListener("click", function (event) {
+    if (event.target.tagName === "I" && event.target.classList.contains("menu")) {
         aside.classList.toggle("visible");
-    }
-    else {
+    } else if (aside.classList.contains("visible") && !aside.contains(event.target) && event.target !== document.querySelector(".menu")) {
         aside.classList.remove("visible");
     }
-})
+});
+
+document.getElementById("ig2").addEventListener("click", function (event) {
+    event.stopPropagation();
+    aside.classList.remove("visible");
+});
+
+
+
+
+/*MENU DE HISTORIAL*/
+
 
 document.getElementById('ig2').addEventListener('click', function (event) {
     event.stopPropagation();
@@ -23,6 +35,7 @@ document.addEventListener('click', function (event) {
 });
 
 
+/*SELECCION CON SPAN Y CHECKBOX*/
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -52,4 +65,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+});
+
+// en vista index
+let modal = document.querySelector(".modal");
+document.querySelector("#cerrar").addEventListener("click", function () {
+    modal.style.display = "none";
+});
+
+let crear = document.querySelector("#aggTaller").addEventListener("click", function () {
+    modal.style.display = "block";
 });
