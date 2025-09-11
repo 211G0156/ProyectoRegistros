@@ -15,10 +15,19 @@ document.getElementById("ig2").addEventListener("click", function (event) {
     aside.classList.remove("visible");
 });
 
+/*BOTONES AGG Y ELIMINAR */
+document.querySelectorAll(".botones a").forEach((boton, indice) => {
+    boton.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (indice === document.querySelectorAll(".botones a").length - 1) {
+            document.querySelector("#modal-DeleteTaller").style.display = "block";
+        } else {
+            document.querySelector("#modal-EditTaller").style.display = "block";
+        }
+    });
+});
 
-
-
-/*MENU DE HISTORIAL*/
+//MENU DE HISTORIAL
 
 
 document.getElementById('ig2').addEventListener('click', function (event) {
@@ -67,7 +76,55 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
+
+
+
+//// crear taller
+//// en vista index
+//const modal = document.querySelector(".modal");
+//const modAgregar = document.querySelector("#modal-AddTaller");
+//const modEditar = document.querySelector("#modal-EditTaller");
+//const modEliminar = document.querySelector("#modal-DeleteTaller");
+
+
+
+
+//document.querySelectorAll(".cerrar").forEach(btnCerrar => {
+//    btnCerrar.addEventListener("click", function () {
+//        // this isssss para encontrar el modal mas cercano
+//        const modal = btnCerrar.closest(".modal");
+//        if (modal) {
+//            modal.style.display = "none";
+//        }
+//    });
+//});
+
+//// modal de crear taller
+//document.querySelector("#aggTaller").addEventListener("click", function () {
+//    modAgregar.style.display = "block";
+//});
+
+//// modal de editar
+//document.querySelectorAll(".btneditar").forEach(boton => {
+//    boton.addEventListener("click", function () {
+//        modEditar.style.display = "block";
+//    });
+
+//    // modal de eliminar
+//    document.querySelectorAll(".btneliminar").forEach(boton => {
+//        boton.addEventListener("click", function () {
+//            modEliminar.style.display = "block";
+//        });
+//    });
+
+//});
+
+
+
+
 // en vista index
+
 let modal = document.querySelector(".modal");
 document.querySelector("#cerrar").addEventListener("click", function () {
     modal.style.display = "none";

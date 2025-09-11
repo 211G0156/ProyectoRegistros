@@ -798,3 +798,46 @@ aside {
 #acomodar i, #acomodar h2{
     cursor:default;
 }
+
+
+/*modales de taller*/
+#modal-AddTaller {
+    display: none;
+}
+
+#modal-EditTaller {
+    display: none;
+}
+
+#modal-DeleteTaller {
+    display: block;
+    text-align: center;
+}
+
+#modal-AddTaller label {
+    font-weight: bold;
+}
+
+#modal-DeleteTaller form {
+    height: 25%;
+    margin: 15% auto;
+}
+
+#modal-DeleteTaller fieldset {
+    height: 15vh;
+    margin: -3vh 0 2vh 0;
+}
+/*es para ajustar los inputs y selects de los forms :D*/
+.inputForms {
+    width: 100%;
+    height: 2.5vh;
+    margin: 1.5vh 0;
+}
+.cerrar {
+    margin: 0 95%;
+    height: 3vh;
+    width: 3vh;
+    color: white;
+    cursor: pointer;
+    background-color: #BC4C4C;
+}
