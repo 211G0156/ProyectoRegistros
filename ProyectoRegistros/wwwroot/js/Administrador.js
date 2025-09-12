@@ -1,21 +1,40 @@
-﻿/*MENU PRINCIPAL*/
+﻿
+//const { Alert } = require("../lib/bootstrap/dist/js/bootstrap.esm");
+
+// Boton de para ir a lista alumnos
+const verListaButton = document.querySelector(".verLista");
+if (verListaButton) {
+    verListaButton.addEventListener("click", function () {
+        window.location.href = "Alumnos.html";
+    });
+}
+
+// Boton de volver en alumnos
+const regButton = document.querySelector(".reg");
+if (regButton) {
+    regButton.addEventListener("click", function () {
+        window.location.href = "Index.html";
+    });
+}
+
+
+/*MENU PRINCIPAL*/
 
 let aside = document.getElementById("menu-abierto");
+if (aside) {
+    document.addEventListener("click", function (event) {
+        if (event.target.tagName === "I" && event.target.classList.contains("menu")) {
+            aside.classList.toggle("visible");
+        } else if (aside.classList.contains("visible") && !aside.contains(event.target) && event.target !== document.querySelector(".menu")) {
+            aside.classList.remove("visible");
+        }
+    });
 
-document.addEventListener("click", function (event) {
-    if (event.target.tagName === "I" && event.target.classList.contains("menu")) {
-        aside.classList.toggle("visible");
-    } else if (aside.classList.contains("visible") && !aside.contains(event.target) && event.target !== document.querySelector(".menu")) {
+    document.getElementById("ig2").addEventListener("click", function (event) {
+        event.stopPropagation();
         aside.classList.remove("visible");
-    }
-});
-
-document.getElementById("ig2").addEventListener("click", function (event) {
-    event.stopPropagation();
-    aside.classList.remove("visible");
-});
-
-
+    });
+}
 /*MENU HISTORIAL*/
 
 
@@ -123,3 +142,5 @@ document.querySelector(".cerrar").addEventListener("click", function () {
 let crear = document.querySelector("#aggTaller").addEventListener("click", function () {
     modal.style.display = "block";
 });
+
+

@@ -55,6 +55,7 @@
             background-color: #D9D9D9;
         }
          .menu{
+             cursor:pointer;
             padding: 15px;
             font-size: 36px;
             display: inline-block;

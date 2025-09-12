@@ -419,7 +419,10 @@ table td:nth-last-child(1){
     font-size:17px;
     cursor:pointer;
 }
-
+#verAlumno{
+    cursor:pointer;
+    background-color:pink;
+}
 .checar {
     display: flex;
     width: 35%;
@@ -650,6 +653,7 @@ aside {
 
 
 .menu {
+    cursor:pointer;
     padding: 15px;
     font-size: 36px;
     display: inline-block;
