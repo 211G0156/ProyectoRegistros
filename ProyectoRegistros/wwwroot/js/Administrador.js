@@ -10,10 +10,26 @@ document.addEventListener("click", function (event) {
     }
 });
 
-document.getElementById("ig2").addEventListener("click", function (event) {
-    event.stopPropagation();
-    aside.classList.remove("visible");
+//document.getElementById("ig2").addEventListener("click", function (event) {
+//    event.stopPropagation();
+//    aside.classList.remove("visible");
+//});
+
+
+/*Cerrar modals*/
+
+let modal = document.querySelector(".modal");
+let me = document.querySelector("#modal-DeleteTaller");
+let med = document.querySelector("#modal-EditTaller");
+let e = document.getElementsByClassName("cerrar");
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("cerrar")) {
+        modal.style.display = "none";
+        med.style.display = "none";
+        me.style.display = "none";
+    }
 });
+
 
 /*BOTONES AGG Y ELIMINAR */
 document.querySelectorAll(".botones a").forEach((boton, indice) => {
@@ -78,8 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
-
 //// crear taller
 //// en vista index
 //const modal = document.querySelector(".modal");
@@ -125,10 +139,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // en vista index
 
-let modal = document.querySelector(".modal");
-document.querySelector("#cerrar").addEventListener("click", function () {
-    modal.style.display = "none";
-});
+
+//document.querySelector("#cerrar").addEventListener("click", function () {
+//    modal.style.display = "none";
+
+//});
+
+
 
 let crear = document.querySelector("#aggTaller").addEventListener("click", function () {
     modal.style.display = "block";

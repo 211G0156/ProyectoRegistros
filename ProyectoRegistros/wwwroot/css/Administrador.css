@@ -66,10 +66,11 @@
 }
 
 @media(max-width:650px){
+    .verArchivo{
+        align-content:start !important;
+    }
     .buscador2 {
-
         width: 45% !important;
-
     }
 
     .tablita {
@@ -736,11 +737,11 @@ aside {
     height: 7vh;
 }
 
-#cerrar {
+.cerrar {
     margin: 0 95%;
     color: white;
     cursor: pointer;
-    background-color: red;
+    background-color: pink;
 }
 
 #acomodar {
@@ -757,7 +758,7 @@ aside {
     width: 40%;
     height: 5vh;
     border: none;
-    margin: 20px;
+    margin: 0px;
     padding: 20px;
     font-weight:bold;
     font-size: 90%;
