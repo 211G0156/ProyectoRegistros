@@ -133,7 +133,10 @@ header {
     align-items: center;
     justify-content: space-between;
 }
-
+.menu i{
+    z-index:1000;
+    cursor:pointer;
+}
 .izq {
     display: flex;
     align-items: center;

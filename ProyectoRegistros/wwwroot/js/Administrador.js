@@ -10,40 +10,13 @@ document.addEventListener("click", function (event) {
     }
 });
 
-//document.getElementById("ig2").addEventListener("click", function (event) {
-//    event.stopPropagation();
-//    aside.classList.remove("visible");
-//});
-
-
-/*Cerrar modals*/
-
-let modal = document.querySelector(".modal");
-let me = document.querySelector("#modal-DeleteTaller");
-let med = document.querySelector("#modal-EditTaller");
-let e = document.getElementsByClassName("cerrar");
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("cerrar")) {
-        modal.style.display = "none";
-        med.style.display = "none";
-        me.style.display = "none";
-    }
+document.getElementById("ig2").addEventListener("click", function (event) {
+    event.stopPropagation();
+    aside.classList.remove("visible");
 });
 
 
-/*BOTONES AGG Y ELIMINAR */
-document.querySelectorAll(".botones a").forEach((boton, indice) => {
-    boton.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (indice === document.querySelectorAll(".botones a").length - 1) {
-            document.querySelector("#modal-DeleteTaller").style.display = "block";
-        } else {
-            document.querySelector("#modal-EditTaller").style.display = "block";
-        }
-    });
-});
-
-//MENU DE HISTORIAL
+/*MENU HISTORIAL*/
 
 
 document.getElementById('ig2').addEventListener('click', function (event) {
@@ -57,7 +30,7 @@ document.addEventListener('click', function (event) {
     if (historial.classList.contains('historial-activo') && !historial.contains(event.target) && event.target.id !== 'ig2') {
         historial.classList.remove('historial-activo');
     }
-});
+}); 
 
 
 /*SELECCION CON SPAN Y CHECKBOX*/
@@ -94,56 +67,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-//// crear taller
-//// en vista index
-//const modal = document.querySelector(".modal");
-//const modAgregar = document.querySelector("#modal-AddTaller");
-//const modEditar = document.querySelector("#modal-EditTaller");
-//const modEliminar = document.querySelector("#modal-DeleteTaller");
-
-
-
-
-//document.querySelectorAll(".cerrar").forEach(btnCerrar => {
-//    btnCerrar.addEventListener("click", function () {
-//        // this isssss para encontrar el modal mas cercano
-//        const modal = btnCerrar.closest(".modal");
-//        if (modal) {
-//            modal.style.display = "none";
-//        }
-//    });
-//});
-
-//// modal de crear taller
-//document.querySelector("#aggTaller").addEventListener("click", function () {
-//    modAgregar.style.display = "block";
-//});
-
-//// modal de editar
-//document.querySelectorAll(".btneditar").forEach(boton => {
-//    boton.addEventListener("click", function () {
-//        modEditar.style.display = "block";
-//    });
-
-//    // modal de eliminar
-//    document.querySelectorAll(".btneliminar").forEach(boton => {
-//        boton.addEventListener("click", function () {
-//            modEliminar.style.display = "block";
-//        });
-//    });
-
-//});
-
-
-
-
+// crear taller
 // en vista index
+const modal = document.querySelector(".modal");
+const modAgregar = document.querySelector("#modal-AddTaller");
+const modEditar = document.querySelector("#modal-EditTaller");
+const modEliminar = document.querySelector("#modal-DeleteTaller");
 
 
-//document.querySelector("#cerrar").addEventListener("click", function () {
-//    modal.style.display = "none";
 
-//});
+
+document.querySelectorAll(".cerrar").forEach(btnCerrar => {
+    btnCerrar.addEventListener("click", function () {
+        // this isssss para encontrar el modal mas cercano
+        const modal = btnCerrar.closest(".modal");
+        if (modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
+// modal de crear taller
+document.querySelector("#aggTaller").addEventListener("click", function () {
+    modAgregar.style.display = "block";
+});
+
+// modal de editar
+document.querySelectorAll(".btneditar").forEach(boton => {
+    boton.addEventListener("click", function () {
+        modEditar.style.display = "block";
+    });
+
+    // modal de eliminar
+    document.querySelectorAll(".btneliminar").forEach(boton => {
+        boton.addEventListener("click", function () {
+            modEliminar.style.display = "block";
+        });
+    });
+
+});
+
+
+
+
+ //en vista index
+
+
+document.querySelector(".cerrar").addEventListener("click", function () {
+    modal.style.display = "none";
+
+});
 
 
 

@@ -19,12 +19,12 @@
     .modal form {
         width: 50% !important;
     }
-    .modal select {
+/*    .modal select {
         width: 100% !important;
     }
     .modal select {
         width: 103.5% !important;
-    }
+    }*/
 
 }
 
@@ -39,9 +39,11 @@
     .modal form {
         width: 60% !important;
     }
-    .modal select {
-        width: 103.5% !important;
-    }
+    /*.modal select {*/
+        /*        width: 103.5% !important;
+*/
+        /*width: 102% !important;
+    }*/
 
 }
 
@@ -107,7 +109,7 @@
     }
 
     .historial h2 {
-font-size:18px !important;
+    font-size:18px !important;
     }
 
     .checar {
@@ -148,9 +150,9 @@ font-size:18px !important;
     .modal form {
         width: 80% !important;
     }
-    .modal select {
+/*    .modal select {
         width: 103% !important;
-    }
+    }*/
 }
 
 
@@ -624,7 +626,13 @@ aside {
 #menu-abierto h3 {
     text-align: center;
 }
-
+.izq i{
+    cursor:pointer;
+}
+.menu i {
+    z-index: 1000;
+    cursor: pointer;
+}
 #menu-abierto div:hover {
     width: 100%;
     color: white;
@@ -647,21 +655,7 @@ aside {
     display: inline-block;
 }
 
-.material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    cursor:pointer;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-smoothing: antialiased;
-}
+
 
 /*modaal recibo*/
 .modal {
@@ -713,7 +707,7 @@ aside {
     }
 
 /*modales de taller*/
-#modal-AddTaller {
+/*#modal-AddTaller {
     display: none;
 }
 
@@ -725,7 +719,7 @@ aside {
         width: 100%;
         height: 2.5vh;
         margin: 1.5vh 0;
-    }
+    }*/
 
 .error {
     color: red;
@@ -774,8 +768,7 @@ aside {
         color: white;
         background-color: #00000077;
     }
-.modal input[type=text], .modal input[type=number]{
-    width: 60%;
+/*.modal input[type=text], .modal input[type=number]{
     height: 3vh;
     padding: 5px;
     border: none;
@@ -784,14 +777,15 @@ aside {
     box-shadow: 1px 1px 20px 0px rgba(128, 128, 128, 0.555);
 }
 .modal select {
-    width: 102%;
+    width: 104%;
     height: 3vh;
     padding: 5px;
     border: none;
     margin: 5px 0;
     border-radius: 5px;
     box-shadow: 1px 1px 20px 0px rgba(128, 128, 128, 0.555);
-}
+}*/
+
 .guardado {
     display: flex;
     justify-content: center;
@@ -811,7 +805,7 @@ aside {
 }
 
 #modal-DeleteTaller {
-    display: block;
+    display: none;
     text-align: center;
 }
 
