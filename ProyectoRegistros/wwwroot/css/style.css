@@ -1,8 +1,34 @@
+@media (max-width: 1200px) {
+    aside {
+        width: 23% !important;
+    }
+}
+
+@media (max-width: 900px) {
+    aside {
+        width: 18%;
+    }
+}
+
+@media (max-width: 800px) {
+    aside {
+        width: 30% !important;
+    }
+}
+
+@media (max-width: 560px) {
+    aside {
+        width: 45% !important;
+    }
+}
+
+
         body{
             padding: 0;
             margin: 0;
             font-family: Calibri;
         }
+
         aside{
             width: 18%;
             z-index: 1000;

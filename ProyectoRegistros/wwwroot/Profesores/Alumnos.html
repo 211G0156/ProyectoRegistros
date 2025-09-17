@@ -24,31 +24,29 @@
             <button class="cerrar" type="button">X</button><br>
             <div id="acomodar">
                 <i class="material-symbols-outlined">person</i>
-                <h2>Agregar Taller</h2>
+                <h2>Editar alumno</h2>
             </div><br>
 
             <label>Nombre:</label><br>
+            <input class="inputForms" type="text" placeholder="Mariana...."><br>
+            <label>Tutor:</label><br>
             <input class="inputForms" type="text" placeholder="Escribir..."><br>
-            <label>Dias:</label><br>
+            <label>Teléfono:</label><br>
             <input class="inputForms" type="text" placeholder="Escribir..."><br>
-            <label>Horario:</label><br>
+            <label>Teléfono 2:</label><br>
             <input class="inputForms" type="text" placeholder="Escribir..."><br>
-            <label>Edad:</label><br>
+
+            <label>Padecimientos:</label><br>
             <input class="inputForms" type="text" placeholder="Escribir..."><br>
-            <label>Profesor:</label><br>
+            <label>Talleres??:</label><br>
             <select class="inputForms" style="height: 3.5vh;">
                 <option>Pablo</option>
                 <option>Sele</option>
                 <option>Cesár</option>
                 <option>Pablo</option>
             </select><br>
-            <label>Costo:</label><br>
-            <input class="inputForms" type="number" placeholder="Escribir..."><br>
             <div class="error">
-                <p>El nombre del taller ya existe!</p>
-                <p>El nombre del taller ya existe!</p>
-                <p>El nombre del taller ya existe!</p>
-                <p>El nombre del taller ya existe!</p>
+                <p>El nombre ya existe!</p>
                 <p>El nombre del taller ya existe!</p>
             </div>
             <div style="margin: 0 0 0 15vw;">
@@ -63,8 +61,11 @@
             <button class="cerrar" type="button">X</button><br>
             <fieldset>
                 <legend>
-                    <h2>¿Desea eliminar este alumno?</h2>
+                    <h2>¿Desea eliminar al alumno en alguno de estos talleres?</h2>
                     <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+                    <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+                    <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+
                 </legend>
             </fieldset>
             <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
@@ -90,7 +91,7 @@
 
     <div class="filtros">
         <div class="buscador">
-            <input type="search" placeholder="Nombre..." />
+            <input type="search" id="fil" placeholder="Nombre..." />
 
         </div>
 
@@ -107,6 +108,7 @@
                         <th>Nombre</th>
                         <th>Tutor</th>
                         <th>Teléfono</th>
+                        <th>Teléfono 2</th>
                         <th>Padecimientos</th>
                         <th>Talleres</th>
                         <th>Opciones</th>
@@ -119,6 +121,8 @@
                         <td>Mariana Fernandez</td>
                         <td>Martina Lopez</td>
                         <td>8612904829</td>
+                        <td>8612904829</td>
+
                         <td>Alergía al maní</td>
                         <td>Pintura, Piano, Violin</td>
                         <td>
@@ -137,6 +141,8 @@
                         <td>Mariana Fernandez</td>
                         <td>Martina Lopez</td>
                         <td>8612904829</td>
+                        <td>8612904829</td>
+
                         <td>Alergía al maní</td>
                         <td>Pintura, Piano, Violin</td>
                         <td>
@@ -155,6 +161,8 @@
                         <td>Mariana Fernandez</td>
                         <td>Martina Lopez</td>
                         <td>8612904829</td>
+                        <td>8612904829</td>
+
                         <td>Alergía al maní</td>
                         <td>Pintura, Piano, Violin</td>
                         <td>
@@ -173,6 +181,8 @@
                         <td>Mariana Fernandez</td>
                         <td>Martina Lopez</td>
                         <td>8612904829</td>
+                        <td>8612904829</td>
+
                         <td>Alergía al maní</td>
                         <td>Pintura, Piano, Violin</td>
                         <td>
@@ -193,7 +203,7 @@
         </div>
 
     </div>
-    <script src="../js/Profesor.js"></script>
+    <script src="../js/Administrador.js"></script>
 
 </body>
 </html>

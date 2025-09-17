@@ -12,23 +12,29 @@
         align-items: center;
     }
 }
+@media (max-width: 1400px) {
 
-/*@media (max-width: 150px) {
-    html {
-        font-size: 16px;
-    }
 
     div {
-        background-color: #EDEDED;
-        border-radius: 13px;
-        text-align: center;
-        display: flex;
-        width: 20% !important;
-        flex-direction: column;
-        align-items: center;
+        width: 36% !important;
     }
 }
-*/
+
+@media (max-width: 1000px) {
+
+
+    div {
+        width: 50% !important;
+    }
+}
+@media (max-width: 670px) {
+
+
+    div {
+        width: 70% !important;
+    }
+}
+
 
 /*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;

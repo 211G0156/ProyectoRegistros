@@ -1,8 +1,8 @@
 ﻿@media (max-width:1200px){
-    #aggTaller {
+/*    #aggTaller {
         width: 25% !important;
     }
-    #aggUsuario {
+*/    #aggUsuario {
         width: 25% !important;
     }
     .historial-activo {
@@ -11,7 +11,7 @@
     }
 
     .buscador2 {
-        width: 45% !important;
+        width: 27% !important;
     }
     aside {
         width: 23% !important;
@@ -391,7 +391,6 @@ table td:nth-last-child(1){
 
 #aggTaller{
     border:none;
-    width:10%;
     height:40px;
     border-radius:10px;
 }
@@ -412,16 +411,29 @@ table td:nth-last-child(1){
 .filtros2 input[type=search]{
     width:100%;
 }
+    #fil {
+        width: 100%;
+    }
+.BotonesTaller {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: flex;
+    gap: 10px;
+}
 
 #aggTaller {
     background-color: #86775E;
     color: white;
-    font-size:17px;
-    cursor:pointer;
+    font-size: 17px;
+    cursor: pointer;
 }
-#verAlumno{
-    cursor:pointer;
-    background-color:pink;
+#verAlumno {
+    cursor: pointer;
+    background-color: #86775E;
+    border-radius:10px;
+    border:none;
+    color:white;
+font-size:17px;
 }
 .checar {
     display: flex;

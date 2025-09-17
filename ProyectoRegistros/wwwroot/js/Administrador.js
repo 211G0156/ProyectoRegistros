@@ -35,8 +35,9 @@ if (aside) {
         aside.classList.remove("visible");
     });
 }
-/*MENU HISTORIAL*/
 
+
+/*MENU HISTORIAL*/
 
 document.getElementById('ig2').addEventListener('click', function (event) {
     event.stopPropagation();
@@ -53,7 +54,6 @@ document.addEventListener('click', function (event) {
 
 
 /*SELECCION CON SPAN Y CHECKBOX*/
-
 
 document.addEventListener('DOMContentLoaded', function () {
     var customSelects = document.querySelectorAll('.custom-select');
@@ -106,10 +106,7 @@ document.querySelectorAll(".cerrar").forEach(btnCerrar => {
     });
 });
 
-// modal de crear taller
-document.querySelector("#aggTaller").addEventListener("click", function () {
-    modAgregar.style.display = "block";
-});
+
 
 // modal de editar
 document.querySelectorAll(".btneditar").forEach(boton => {
@@ -126,21 +123,28 @@ document.querySelectorAll(".btneditar").forEach(boton => {
 
 });
 
+//// modal de crear taller
+//document.querySelector("#aggTaller").addEventListener("click", function () {
+//    modAgregar.style.display = "block";
+//});
 
 
 
  //en vista index
 
-
-document.querySelector(".cerrar").addEventListener("click", function () {
-    modal.style.display = "none";
-
+document.querySelectorAll(".cerrar").forEach(btnCerrar => {
+    btnCerrar.addEventListener("click", function () {
+        const modal = btnCerrar.closest(".modal");
+        if (modal) {
+            modal.style.display = "none";
+        }
+    });
 });
 
-
-
-let crear = document.querySelector("#aggTaller").addEventListener("click", function () {
-    modal.style.display = "block";
-});
-
-
+const aggButton = document.querySelector("#aggUsuario, #aggTaller");
+if (aggButton) {
+    aggButton.addEventListener("click", function () {
+        const modAgregar = document.querySelector("#modal-AddTaller");
+        modAgregar.style.display = "block";
+    });
+}
