@@ -86,7 +86,9 @@
     .buscador3 {
         width: 50% !important;
     }
-
+    .select-header {
+        font-size: 14px;
+    }
 
     .tablita {
         overflow-y: auto;
@@ -154,7 +156,9 @@
         width: 45% !important;
     }
 
-
+    .select-header {
+font-size:11px;
+    }
     .buscador3 {
         width: 50% !important;
     }

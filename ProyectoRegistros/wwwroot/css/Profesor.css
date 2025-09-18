@@ -48,6 +48,9 @@
         padding: 0 !important;
     }
 
+    .select-header {
+        font-size: 14px;
+    }
     input[type=search] {
         width: 100% !important;
     }
@@ -77,7 +80,9 @@
     .historial h2 {
         font-size: 12px;
     }
-
+    .select-header {
+        font-size: 11px;
+    }
     .modal form {
         width: 80% !important;
     }
@@ -235,6 +240,68 @@ input[type=search] {
 
 
 
+
+
+/*
+
+    EXPORTAR DATOS A EXCEL
+
+
+*/
+
+.todo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.datos .custom-select, .datos input[type="number"], .datos select {
+    grid-column: 2;
+    width: 70%;
+}
+
+.filtrar {
+    width: 90%;
+    background-color: #D9D9D9;
+    padding: 10px;
+    margin: 30px;
+    border-radius: 5px;
+}
+
+.datos {
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 10px;
+    margin: 0 auto;
+    align-items: center;
+    justify-items: center;
+}
+
+.datos {
+    background-color: #EDEDED;
+    padding: 10px;
+    border-radius: 5px;
+}
+    .datos h3 {
+        /*    border-bottom:1px solid black;
+*/
+    }
+
+    .datos input[type=number], .datos select {
+        height: 20px;
+        border-radius: 5px;
+        width: 40%;
+    }
+
+.verArchivo {
+    display: flex;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background-color: cadetblue;
+    font-size: 20px;
+    cursor: pointer;
+}
 
 
 
