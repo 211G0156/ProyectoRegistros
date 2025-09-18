@@ -38,18 +38,22 @@
 
             <label>Padecimientos:</label><br>
             <input class="inputForms" type="text" placeholder="Escribir..."><br>
-            <label>Talleres??:</label><br>
-            <select class="inputForms" style="height: 3.5vh;">
-                <option>Pablo</option>
-                <option>Sele</option>
-                <option>Cesár</option>
-                <option>Pablo</option>
-            </select><br>
-            <div class="error">
-                <p>El nombre ya existe!</p>
-                <p>El nombre del taller ya existe!</p>
-            </div>
-            <div style="margin: 0 0 0 15vw;">
+            <label>Talleres:</label><br>
+                                      <div class="custom-select">
+                                          <div class="select-header">
+                                              <span>Selecciona opciones</span>
+                                              <i class="fa fa-caret-down"></i>
+                                          </div>
+                                          <div class="select-content">
+                                              <label><input type="checkbox"> Opción 1</label>
+                                              <label><input type="checkbox"> Opción 2</label>
+                                              <label><input type="checkbox"> Opción 3</label>
+                                          </div>
+                                      </div>           
+                                      <div class="error" style=" margin-top: 5px; margin-bottom:5px; ">
+                                          <p>El nombre ya existe!</p>
+                                          <p>El nombre del taller ya existe!</p>
+                                      </div>            <div style="display: flex; justify-content: center;">
                 <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
             </div>
         </form>
@@ -57,15 +61,56 @@
 
     <!--MODAL PARA ELIMINAR-->
     <div class="modal" id="modal-DeleteTaller">
-        <form>
+        <form style="margin-top:140px;">
             <button class="cerrar" type="button">X</button><br>
-            <fieldset>
+            <fieldset style="border:none;">
                 <legend>
                     <h2>¿Desea eliminar al alumno en alguno de estos talleres?</h2>
-                    <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
-                    <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
-                    <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+                    <div class="scroll-eliminar">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Taller</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>AcuarelaKids</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Pintura</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Violin</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Violin</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
 
+                                <tr>
+                                    <td>Violin</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Violin</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Violin</td>
+                                    <td><button class="eliminar-taller">x</button></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
                 </legend>
             </fieldset>
             <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">

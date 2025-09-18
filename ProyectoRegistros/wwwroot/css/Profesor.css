@@ -166,7 +166,7 @@ input[type=search] {
     border-radius: 5px;
     font-size: 17px;
     height: 35px;
-    width: 59%;
+    width: 52%;
     border: 1px solid black;
     border-radius: 20px;
     padding-left: 10px;
@@ -228,6 +228,74 @@ input[type=search] {
 }
 
 
+.clases{
+    display:flex;
+}
+
+
+
+
+
+
+
+
+/*SPAN*/
+
+.custom-select {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    padding: 10px 0px 10px 10px;
+    height: 15px;
+}
+
+.select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.select-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 5px;
+    height: 150px;
+    width: 98%;
+    z-index: 500;
+    overflow-y: auto;
+    display: none;
+}
+
+.show .select-content {
+    display: block;
+}
+
+.select-content label {
+    display: block;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+    .select-content label:hover {
+        background-color: #f2f2f2;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -238,7 +306,40 @@ input[type=search] {
 
 */
 
+#modal-DeleteTaller table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
+#modal-DeleteTaller td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#modal-DeleteTaller th {
+    padding: 11px;
+    text-align: left;
+}
+
+#modal-DeleteTaller td:nth-last-child(1) {
+    text-align: center !important;
+}
+
+#modal-DeleteTaller th {
+    background-color: #f0f0f0;
+}
+.eliminar-taller {
+    background-color: darkred;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.scroll-eliminar {
+    overflow-y: auto;
+    height: 200px;
+}
 
 .tablita {
     /*    overflow-y: auto;
@@ -408,8 +509,8 @@ aside {
         padding: 3vw;
         margin: 8vh auto;
         border-radius: 20px;
-        height: calc(100vh - 25vh);
-        background-color: #D9D9D9;
+/*        height: calc(100vh - 25vh);
+*/        background-color: #D9D9D9;
     }
 
 #modal-recibo {
@@ -550,6 +651,6 @@ aside {
     margin: -3vh 0 2vh 0;
 }
 #modal-DeleteTaller form {
-    height: 25%;
-    margin: 15% auto;
+/*    height: 25%;
+*/    margin: 15% auto;
 }

@@ -7,11 +7,16 @@
     aside {
         width: 23% !important;
     }
+    .buscador {
+        width: 60% !important;
+    }
 }
 
 
 @media(max-width:900px) {
-
+    .buscador {
+        width: 60% !important;
+    }
     aside {
         width: 18%;
     }
@@ -27,7 +32,6 @@
         width: 30% !important;
     }
 
-
     .modal form {
         width: 60% !important;
     }
@@ -41,6 +45,10 @@
         width: 20%;
     }
 */
+    .buscador {
+        width: 60% !important;
+    }
+
 
     .tablita {
         overflow-y: auto;
@@ -60,6 +68,10 @@
 }
 
 @media(max-width:560px) {
+    .buscador {
+        width: 50% !important;
+    }
+
     .historial {
         position: fixed;
         width: 45% !important;
