@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="../css/Administrador.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+    <div class="historial">
+        <h2>Historial de registro</h2>
+
+        <div class="datosHistorial">
+            <label><b>03/09/2025       02:08 P.M.</b></label>
+            <hr />
+            <p> <b>Pepito J.</b> añadió al alumno/a <b>Juanito S.</b> a los talleres de: <b>AcuarelaKids</b></p>
+        </div>
+    </div>
+
+
+
+
+    <!--MODAL PARA AGREGAR-->
+
+    <div class="modal" id="modal-AddTaller">
+        <form style=" margin: 18vh auto; ">
+            <button class="cerrar" type="button">X</button><br>
+            <div id="acomodar">
+                <i class="material-symbols-outlined">person</i>
+                <h2>Agregar Usuario</h2>
+            </div><br>
+
+            <label>Nombre:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Correo Electrónico:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Número Telefónico:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Rol:</label><br>
+            <select class="inputForms" style="height: 3.5vh;">
+                <option>Profesor/a</option>
+            </select>
+
+            <div class="error">
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!--MODAL PARA EDITAR-->
+
+    <div class="modal" id="modal-EditTaller" >
+        <form style=" margin: 18vh auto; ">
+            <button class="cerrar" type="button">X</button><br>
+            <div id="acomodar">
+                <i class="material-symbols-outlined">person</i>
+                <h2>Editar Usuario</h2>
+            </div><br>
+
+            <label>Nombre:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Correo Electrónico:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Número Telefónico:</label><br>
+            <input class="inputForms" type="text" placeholder="Escribir..."><br>
+            <label>Rol:</label><br>
+            <select class="inputForms" style="height: 3.5vh;">
+                <option>Profesor/a</option>
+            </select>
+            <div class="error">
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+                <p>El nombre del taller ya existe!</p>
+            </div>
+            <div style="display:flex; justify-content:center;">
+                <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <!--MODAL PARA ELIMINAR-->
+    <div class="modal" id="modal-DeleteTaller">
+        <form style=" margin: 33vh auto; ">
+            <button class="cerrar" type="button">X</button><br>
+            <fieldset>
+                <legend>
+                    <h2>¿Desea eliminar este usuario?</h2>
+                    <label style="color: red; font-size: 3vh;">Selena García</label>
+                </legend>
+            </fieldset>
+            <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
+                <button type="submit" class="buttons">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+    <header class="principal">
+        <div class="izq">
+            <i class="menu material-symbols-outlined">menu</i>
+            <h2>Registro de usuarios</h2>
+        </div>
+        <img id="ig2" src="../img/Historial.png" />
+    </header>
+
+
+    <aside id="menu-abierto">
+        <img src="../img/logo.png">
+        <h3>Administrador</h3>
+        <h3>Isaac</h3>
+        <div>
+            <span class="material-symbols-outlined">edit_square</span>
+            <a href="Index.html">Talleres</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">library_books</span>
+            <a href="RegistroForm.html">Registros</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">person</span>
+            <a href="Usuarios.html">Usuarios</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">vertical_align_bottom</span>
+            <a href="ExportarDatos.html">Exportar datos</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">logout</span>
+            <a href="../InicioSesion.html">Cerrar sesión</a>
+        </div>
+    </aside>
+
+    <div class="filtros2">
+        <div class="buscador2">
+            <!--<img src="../img/lupa1.png" />-->
+            <input id="" type="search" placeholder="Buscar..." />
+
+        </div>
+
+
+
+        <input id="aggUsuario" type="button" value="Crear usuario" />
+    </div>
+
+    <div class="tablita">
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo Electrónico</th>
+                        <th>Número Telefónico</th>
+                        <th>Opciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Selena García</td>
+                        <td>SelenaG@hotmail.com</td>
+                        <td>8611020202</td>
+                        <td>
+                            <div class="botones">
+                                <a>
+                                    <img class="btneditar" src="../img/edit.png" />
+                                </a>
+                                <a class="btneliminar">
+                                    <img class="btneliminar" src="../img/X.png" />
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="../js/Administrador.js"></script>
+</body>
+</html>

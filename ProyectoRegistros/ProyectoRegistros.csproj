@@ -28,6 +28,41 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Areas\Profe\Views\Alumnos.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Profe\Views\ExportarDatos.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Profe\Views\Index.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Profe\Views\RegistroForm.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Visitante\Views\Index.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Visitante\Views\RegistroForm.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Views\Home\Index.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Views\Home\InicioSesion.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="wwwroot\Archivos\ejemplo.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -40,17 +75,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Admin\Views\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Profe\Controllers\" />
+    <Folder Include="Areas\Visitante\Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Views\Administrador\ExportarDatos\" />
-    <Folder Include="Views\Administrador\Recibo\" />
-    <Folder Include="Views\Administrador\Usuarios\" />
-    <Folder Include="Views\Administrador\Registros\" />
-    <Folder Include="Views\Administrador\Talleres\" />
-    <Folder Include="Views\Profesor\ExportarDatos\" />
-    <Folder Include="Views\Profesor\Recibo\" />
-    <Folder Include="Views\Profesor\Registros\" />
-    <Folder Include="Areas\" />
   </ItemGroup>
 
   <ItemGroup>

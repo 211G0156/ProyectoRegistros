@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/ProyectoRegistros/wwwroot/css/style.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="../js/code.js" defer></script>
+</head>
+<body>
+    <header>
+        <i class="menu material-symbols-outlined">menu</i>
+        <h2>Registro</h2>
+    </header>
+
+    <aside id="menu-abierto">
+        <img src="../img/logo.png">
+        <h3>Visitante 1</h3>
+        <h3>Valeria</h3>
+        <div>
+            <span class="material-symbols-outlined">edit_square</span>
+            <a href="Index.html">Talleres</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">library_books</span>
+            <a href="RegistroForm.html">Registros</a>
+        </div>
+        <div>
+            <span class="material-symbols-outlined">logout</span>
+            <a href="../InicioSesion.html">Cerrar sesión</a>
+        </div>
+    </aside>
+
+    <main>
+        <form id="datos-alumno">
+            <h3>Datos del alumno</h3><br>
+            <section>
+                <label>Nombre:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Fecha de cumpleaños:</label><br>
+                <input type="date"><br>
+                <label>Dirección:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+            </section>
+            <section>
+                <label>Edad:</label><br>
+                <input type="number" placeholder="Escribir..."><br>
+                <label>Número de contacto:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+            </section>
+
+            <section id="datAlum-padeci">
+                <span><label>Padecimientos</label><input style="width: 10vw; " type="checkbox"></span><br>
+                <textarea placeholder="Escribir..." disabled></textarea><br>
+            </section><br>
+
+
+            <section>
+                <label>Tutor:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+                <label>Email:</label><br>
+                <input type="email" placeholder="Escribir..."><br>
+            </section>
+            <section>
+                <label>Teléfono:</label><br>
+                <input type="text" placeholder="Escribir..."><br>
+            </section>
+
+
+            <hr size="2" width="167%"><br>
+            <!---->
+            <h3>Oferta de talleres</h3><br>
+            <div id="contenedor-talleres">
+                <div class="op-taller">
+                    <input type="checkbox">
+                    <label>AcuarelaKids</label>
+                    <b>|</b>
+                    <label>Lunes Viernes</label>
+                    <b>|</b>
+                    <label>5:00 - 6:00 pm</label>
+                    <b>|</b>
+                    <label>5 espacios</label>
+                </div><br>
+
+                <div class="op-taller">
+                    <input type="checkbox">
+                    <label>AcuarelaKids</label>
+                    <b>|</b>
+                    <label>Lunes Viernes</label>
+                    <b>|</b>
+                    <label>5:00 - 6:00 pm</label>
+                    <b>|</b>
+                    <label>4 espacios</label>
+                </div><br>
+
+                <div class="op-taller">
+                    <input type="checkbox">
+                    <label>AcuarelaKids</label>
+                    <b>|</b>
+                    <label>Lunes Viernes</label>
+                    <b>|</b>
+                    <label>5:00 - 6:00 pm</label>
+                    <b>|</b>
+                    <label>8 espacios</label>
+                </div><br>
+
+                <div class="op-taller">
+                    <input type="checkbox">
+                    <label>AcuarelaKids</label>
+                    <b>|</b>
+                    <label>Lunes Viernes</label>
+                    <b>|</b>
+                    <label>5:00 - 6:00 pm</label>
+                    <b>|</b>
+                    <label>2 espacios</label>
+                </div><br>
+            </div><br>
+            <div id="contenedor-abajo">
+                <div class="tamaño">
+                    <div>
+                        <label>Atención psicopedagogica</label>
+                        <input type="checkbox">
+                    </div>
+                    <input type="text" placeholder="Escribir...">
+                </div><br>
+
+                <div class="tamaño">
+                    <label>Lista de espera</label>
+                    <select>
+                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
+                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
+                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
+                    </select>
+                </div><br>
+            </div><br>
+
+            <div style="display: inline-flex; justify-content: space-between; width: 170%;">
+                <button type="button" class="buttons">Limpiar</button>
+                <button type="submit" class="buttons">Finalizar</button>
+            </div>
+        </form>
+
+
+        <div class="modal" id="modal-recibo">
+            <form>
+                <h2>Confirmación de datos</h2>
+                <section id="donativo">
+                    <label>Pagado</label>
+                    <input type="checkbox">
+                    <label>$300</label>
+                </section>
+
+                <hr size="2" width="99%" style="margin-top: -25px;"><br>
+                <section>
+                    <label>Nombre: </label><br>
+                    <label>Cumpleaños: </label><br>
+                    <label>Dirección: </label><br>
+                    <label>Número de contacto: </label><br>
+                    <label>Padecimientos: </label><br>
+                    <label>Tutor: </label><br>
+                    <label>Email: </label><br>
+                    <label>Telefono: </label><br>
+                    <label>Talleres registrados: </label><br>
+                </section>
+                <section>
+                    <label>Myriam Ramirez Carreño</label><br>
+                    <label>31/07/03</label><br>
+                    <label>Madero</label><br>
+                    <label>862125555</label><br>
+                    <label>No</label><br>
+                    <label>Selena Garcia</label><br>
+                    <label>Selena@gmail.com</label><br>
+                    <label>862125555</label><br>
+                    <label> AcuarelaKids, Teatro, Fotografía.</label><br>
+                </section>
+
+                <div style="display: inline-flex; justify-content: space-between; width: 100%;">
+                    <button type="button" class="buttons">Cancelar</button>
+                    <button type="submit" class="buttons">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
