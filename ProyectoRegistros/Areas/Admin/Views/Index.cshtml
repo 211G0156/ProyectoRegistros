@@ -1,0 +1,320 @@
+﻿@{
+    Layout = "LayoutAdmin";
+}
+
+<!--MODAL PARA AGREGAR-->
+
+<div class="modal" id="modal-AddTaller">
+    <form>
+        <button class="cerrar" type="button">X</button><br>
+        <div id="acomodar">
+            <i class="material-symbols-outlined">person</i>
+            <h2>Agregar Taller</h2>
+        </div><br>
+
+        <label>Nombre:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Dias:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Horario:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Edad:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Profesor:</label><br>
+        <select class="inputForms" style="height: 3.5vh;">
+            <option>Pablo</option>
+            <option>Sele</option>
+            <option>Cesár</option>
+            <option>Pablo</option>
+        </select><br>
+        <label>Costo:</label><br>
+        <input class="inputForms" type="number" placeholder="Escribir..."><br>
+        <div class="error">
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <button style="" class="buttons">Guardar</button>
+        </div>
+    </form>
+</div>
+
+
+<!--MODAL PARA EDITAR-->
+
+<div class="modal" id="modal-EditTaller">
+    <form>
+        <button class="cerrar" type="button">X</button><br>
+        <div id="acomodar">
+            <i class="material-symbols-outlined">person</i>
+            <h2>Editar Taller</h2>
+        </div><br>
+
+        <label>Nombre:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Dias:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Horario:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Edad:</label><br>
+        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <label>Profesor:</label><br>
+        <select class="inputForms" style="height: 3.5vh;">
+            <option>Pablo</option>
+            <option>Sele</option>
+            <option>Cesár</option>
+            <option>Pablo</option>
+        </select><br>
+        <label>Costo:</label><br>
+        <input class="inputForms" type="number" placeholder="Escribir..."><br>
+        <div class="error">
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+            <p>El nombre del taller ya existe!</p>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <button style="display: flex; justify-content: center;" class="buttons">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<!--MODAL PARA ELIMINAR-->
+<div class="modal" id="modal-DeleteTaller">
+    <form style=" margin: 33vh auto; ">
+        <button class="cerrar" type="button">X</button><br>
+        <fieldset>
+            <legend>
+                <h2>¿Desea eliminar este taller?</h2>
+                <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+            </legend>
+        </fieldset>
+        <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
+            <button type="submit" class="buttons">Confirmar</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+<div class="filtros">
+    <div class="buscador">
+        <input type="search" placeholder="Nombre, edad, día..." />
+        <div class="checar">
+            <input type="checkbox" id="talleresActuales" />
+            <label for="talleresActuales">Ver solo talleres actuales</label>
+        </div>
+    </div>
+
+
+    <div class="BotonesTaller">
+        <input id="aggTaller" type="button" value="Crear taller" />
+        <input id="verAlumno" class="verLista" type="button" value="Lista de alumnos" />
+    </div>
+
+</div>
+
+
+<div class="tablita">
+    <div class="tabla-scroll">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Días</th>
+                    <th>Horario</th>
+                    <th>Edad</th>
+                    <th>Profesor</th>
+                    <th>Costo</th>
+                    <th>Opciones</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>AcuarelaKids</td>
+                    <td>Lunes y Miércoles</td>
+                    <td>16:00 - 17:00</td>
+                    <td>6 a 12 años</td>
+                    <td>María López</td>
+                    <td>$300</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pintura Kids</td>
+                    <td>Lunes y Miércoles</td>
+                    <td>16:00 - 17:00</td>
+                    <td>6 a 12 años</td>
+                    <td>María López</td>
+                    <td>$300</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Fotografía</td>
+                    <td>Martes y Jueves</td>
+                    <td>17:00 - 18:30</td>
+                    <td>12 a 16 años</td>
+                    <td>Carlos Reyes</td>
+                    <td>$400</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Baile</td>
+                    <td>Lunes y Miércoles</td>
+                    <td>15:00 - 16:30</td>
+                    <td>8 a 12 años</td>
+                    <td>Daniela García</td>
+                    <td>$380</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Robótica</td>
+                    <td>Martes y Viernes</td>
+                    <td>13:00 - 14:30</td>
+                    <td>10 a 14 años</td>
+                    <td>Eduardo Moreno</td>
+                    <td>$450</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Piano</td>
+                    <td>Lunes y Miércoles</td>
+                    <td>14:00 - 15:30</td>
+                    <td>6 a 12 años</td>
+                    <td>María José Hernández</td>
+                    <td>$420</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Guitarra</td>
+                    <td>Martes y Jueves</td>
+                    <td>16:00 - 17:30</td>
+                    <td>10 a 14 años</td>
+                    <td>Rosa María López</td>
+                    <td>$400</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Teatro</td>
+                    <td>Miércoles y Viernes</td>
+                    <td>15:30 - 17:00</td>
+                    <td>8 a 12 años</td>
+                    <td>Patricia Díaz</td>
+                    <td>$380</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Yoga</td>
+                    <td>Lunes y Miércoles</td>
+                    <td>13:00 - 14:30</td>
+                    <td>6 a 10 años</td>
+                    <td>Sofía Rodríguez</td>
+                    <td>$350</td>
+                    <td>
+                        <div class="botones">
+                            <a>
+                                <img class="btneditar" src="../img/edit.png" />
+                            </a>
+                            <a class="btneliminar">
+                                <img class="btneliminar" src="../img/X.png" />
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

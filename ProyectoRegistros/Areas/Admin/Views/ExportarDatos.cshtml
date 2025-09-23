@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "LayoutAdmin";
+}
+
+
+<div class="todo">
+    <div class="filtrar">
+        <h2>Filtrar por:</h2>
+        <hr />
+        <div class="datos">
+            <h3>Profesor o profesores:</h3>
+            <div class="custom-select">
+                <div class="select-header">
+                    <span>Selecciona opciones</span>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <div class="select-content">
+                    <label><input type="checkbox" /> Opción 1</label>
+                    <label><input type="checkbox" /> Opción 2</label>
+                    <label><input type="checkbox" /> Opción 3</label>
+                    <label><input type="checkbox" /> Opción 4</label>
+                    <label><input type="checkbox" /> Opción 5</label>
+                </div>
+            </div>
+
+            <hr>
+
+
+            <h3>Cantidad de alumnos:</h3>
+            <input type="number" max="100" min="0" />
+
+            <hr>
+
+
+            <h3>Taller o talleres:</h3>
+            <div class="custom-select">
+                <div class="select-header">
+                    <span>Selecciona opciones</span>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <div class="select-content">
+                    <label><input type="checkbox" /> Opción 1</label>
+                    <label><input type="checkbox" /> Opción 2</label>
+                    <label><input type="checkbox" /> Opción 3</label>
+                </div>
+            </div>
+            <hr>
+
+
+            <h3>Días:</h3>
+            <select>
+                <option>Todos</option>
+                <option>Lunes</option>
+            </select>
+
+            <hr>
+
+
+            <h3>Horas:</h3>
+            <select>
+                <option>Todos</option>
+                <option>2:00 - 3:00 p.m.</option>
+                <option>3:00 - 4:00 p.m.</option>
+                <option>4:00 - 5:00 p.m.</option>
+            </select>
+        </div>
+
+    </div>
+
+
+    <input class="verArchivo" type="button" value="Ver archivo" />
+
+</div>
+
