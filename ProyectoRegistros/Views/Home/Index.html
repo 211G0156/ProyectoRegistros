@@ -9,16 +9,16 @@
     <div>
         <img src="img/logo.png" class="logo" />
         <h3>Correo electrónico</h3>
-        <input type="text" placeholder="Ingresa tu correo" id="uno" />
+        <input type="text" placeholder="Ingresa tu correo" id="uno" required/>
         <h3>Contraseña</h3>
-        <input type="password" placeholder="Ingresa la contraseña" id="dos" />
+        <input type="password" placeholder="Ingresa la contraseña" id="dos" required/>
 
         <p class="alerta"></p>
-        <input id="btnInicio" type="button" value="Iniciar sesión" />
+        <input id="btnInicio" type="submit" value="Iniciar sesión" />
         <a href="NoInician/Index.html">Ver solo talleres disponibles</a>
     </div>
 
-    <script>const user = document.querySelector("#uno");
+    <!--<script>const user = document.querySelector("#uno");
     const btnInicio = document.querySelector("#btnInicio");
     btnInicio.addEventListener("click", function(){
         if(user.value == "administrador"){
@@ -30,6 +30,6 @@
         if (user.value == "visitante") {
             window.location.href = "Visitantes/Index.html";
         }
-    });</script>
+    });</script>-->
 </body>
 </html>

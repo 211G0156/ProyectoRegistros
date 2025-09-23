@@ -7,6 +7,9 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
     [Authorize(Roles ="Profesor")]
     public class ProfeController:Controller 
     {
+        [Route("/Profe/Profe/Index")]
+        [Route("/Profe/Profe")]
+        [Route("/Profe")]
 
         public IActionResult Index()
         {
@@ -16,7 +19,6 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         {
             return View();
         }
-
         public IActionResult ExportarDatos()
         {
             return View();

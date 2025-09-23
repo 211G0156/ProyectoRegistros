@@ -8,6 +8,10 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
     [Authorize(Roles ="Administrador")]
     public class HomeController:Controller
     {
+        [Route("/Admin/Admin/Index")]
+        [Route("/Admin/Admin")]
+        [Route("/Admin")]
+
         public IActionResult Index()
         {
             return View();
