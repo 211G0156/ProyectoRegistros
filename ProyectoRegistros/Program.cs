@@ -20,6 +20,28 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+app.MapAreaControllerRoute(
+    name: "Areas",
+    areaName: "Admin",
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}"
+    );
+
+app.MapAreaControllerRoute(
+    name: "Areas",
+    areaName: "Profe",
+    pattern: "{area:exists}/{controller=Profe}/{action=Index}/{id?}"
+    );
+
+app.MapAreaControllerRoute(
+    name: "Areas",
+    areaName: "Visitante",
+    pattern: "{area:exists}/{controller=Visitante}/{action=Index}/{id?}"
+);
+
+
+app.MapDefaultControllerRoute();
 app.MapRazorPages();
 
 app.Run();
+

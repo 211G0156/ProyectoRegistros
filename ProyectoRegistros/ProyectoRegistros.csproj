@@ -59,12 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
-    <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Profe\Controllers\" />
-    <Folder Include="Areas\Visitante\Controllers\" />
     <Folder Include="Models\" />
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
   <ItemGroup>
