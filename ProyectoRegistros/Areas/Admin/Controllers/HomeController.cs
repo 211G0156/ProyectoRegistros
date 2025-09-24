@@ -29,7 +29,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Alumnos()
         {
-            return View();
+            var alumnos = _context.Alumnos.ToList(); // trae los alumnos de la BD
+            return View(alumnos);
         }
 
         public IActionResult RegistroForm()
@@ -42,7 +43,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Usuarios()
         {
-            return View();
+            var usuarios = _context.Usuarios.ToList(); // trae los usuarios de la BD
+            return View(usuarios);
         }
 
     }
