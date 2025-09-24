@@ -7,7 +7,7 @@ namespace ProyectoRegistros.Areas.Visitante.Controllers
     [Area("Visitante")]
     [Authorize(Roles ="Visitante")]
 
-    public class VisitanteController:Controller
+    public class IndexController:Controller
     {
         [Route("/Visitante/Visitante/Index")]
         [Route("/Visitante/Visitante")]
