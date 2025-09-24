@@ -36,7 +36,7 @@
     const verListaButton = document.querySelector(".verLista");
     if (verListaButton) {
         verListaButton.addEventListener("click", function () {
-            window.location.href = "Alumnos.html";
+            window.location.href = "/Profe/Profe/Alumnos";
         });
     }
 

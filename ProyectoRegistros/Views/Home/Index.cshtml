@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/InicioSesion.css" />
 </head>
 <body>
-    <div>
+    <div class="login-container">
         <form method="post" action="/Home/Index">
             <img src="~/img/logo.png" class="logo" />
             <h3>Correo electrónico</h3>
@@ -19,19 +19,17 @@
             <p class="alerta"></p>
             <input id="btnInicio" type="submit" value="Iniciar sesión" />
 
-            <p class="">
+@*             <p class="">
                 @Html.ValidationSummary()
             </p>
-            *@
-
-            <a href="~/Views/Home/TalleresDisponibles.html">Ver solo talleres disponibles</a>
+ *@
+            <a href="~/Home/TalleresDisponibles">Ver solo talleres disponibles</a>
         </form>
 
     </div>
 
-    <!--<script>const user = document.querySelector("#uno");
-@* 
-    <script>
+@*     <!--<script>const user = document.querySelector("#uno");
+
             const user = document.querySelector("#uno");
     const btnInicio = document.querySelector("#btnInicio");
     btnInicio.addEventListener("click", function(){
@@ -44,8 +42,7 @@
         if (user.value == "visitante") {
                 window.location.href = "/Visitante/Visitante/Index";
         }
-        }); *@
-    </script>
+        });  *@
 </body>
 
 

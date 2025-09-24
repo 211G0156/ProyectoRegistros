@@ -5,17 +5,17 @@
 const verListaButton = document.querySelector(".verLista");
 if (verListaButton) {
     verListaButton.addEventListener("click", function () {
-        window.location.href = "Alumnos.html";
+        window.location.href = "/Admin/Home/Alumnos";
     });
 }
 
 // Boton de volver en alumnos
-const regButton = document.querySelector(".reg");
-if (regButton) {
-    regButton.addEventListener("click", function () {
-        window.location.href = "Index.html";
-    });
-}
+//const regButton = document.querySelector(".reg");
+//if (regButton) {
+//    regButton.addEventListener("click", function () {
+//        window.location.href = "Index.html";
+//    });
+//}
 
 
 /*MENU PRINCIPAL*/

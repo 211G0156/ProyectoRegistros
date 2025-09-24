@@ -14,13 +14,13 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Agregar(/* parámetros del alumno */)
+        public IActionResult Agregar(/* parámetros del usuario */)
         {
             return RedirectToAction("Usuarios");
         }
 
         [HttpPost]
-        public IActionResult Editar(/* parámetros del alumno */)
+        public IActionResult Editar(/* parámetros del usuario */)
         {
             return RedirectToAction("Usuarios");
         }

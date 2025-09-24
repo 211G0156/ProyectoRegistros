@@ -23,24 +23,26 @@ namespace ProyectoRegistros.Controllers
         {
             return View();
         }
+        public IActionResult TalleresDisponibles()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Index(string correo, string password)
         {
-            // Buscar al usuario en la base de datos por correo y contraseña
             var usuario = Context.Usuarios.SingleOrDefault(u => u.Correo == correo && u.Contraseña == password);
 
-            // Verificar si el usuario fue encontrado
             if (usuario != null)
             {
-                // Crear una lista de Claims (datos del usuario para la sesión)
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
                     new Claim("Id", usuario.Id.ToString())
                 };
 
-                // Asignar el rol según IdRol
+
                 string rol;
                 if (usuario.IdRol == 1)
                 {
@@ -50,7 +52,7 @@ namespace ProyectoRegistros.Controllers
                 {
                     rol = "Profesor";
                 }
-                else // IdRol 3
+                else
                 {
                     rol = "Visitante";
                 }
@@ -59,7 +61,6 @@ namespace ProyectoRegistros.Controllers
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Iniciar la sesión de autenticación
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
                 // Redirigir al usuario según su rol
@@ -80,7 +81,6 @@ namespace ProyectoRegistros.Controllers
                 }
             }
 
-            // Si el usuario no fue encontrado, mostrar un error
             ModelState.AddModelError("", "Correo o contraseña incorrectos.");
             return View();
         }

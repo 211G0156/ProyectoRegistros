@@ -422,7 +422,11 @@ table td:nth-last-child(1){
 
 
 
-
+.col {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+}
 
 
 
