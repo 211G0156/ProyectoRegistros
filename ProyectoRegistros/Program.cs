@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // **SOLUCIÓN: Agregar el contexto de la base de datos para MySQL**
 // El método correcto es UseMySQL
 builder.Services.AddDbContext<ProyectoregistroContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("NombreDeTuCadenaDeConexion")));
+    options.UseMySql("server=localhost;database=proyectoregistro;user=root;password=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql")));
 
 // Configuración de la autenticación por cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

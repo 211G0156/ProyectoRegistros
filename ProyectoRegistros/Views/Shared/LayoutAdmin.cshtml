@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Talleres</title>
-    <link rel="stylesheet" href="../css/Administrador.css" />
+    <link rel="stylesheet" href="~/css/Administrador.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 </head>
@@ -13,7 +13,7 @@
             <i class="menu material-symbols-outlined">menu</i>
             <h2>Talleres disponibles</h2>
         </div>
-        <img id="ig2" src="../img/Historial.png" />
+        <img id="ig2" src="~/img/Historial.png" />
     </header>
 
     <aside id="menu-abierto">
@@ -22,23 +22,23 @@
         <h3>Isaac</h3>
         <div>
             <span class="material-symbols-outlined">edit_square</span>
-            <a href="Index.html">Talleres</a>
+            <a href="/Admin/Home/Index">Talleres</a>
         </div>
         <div>
             <span class="material-symbols-outlined">library_books</span>
-            <a href="RegistroForm.html">Registros</a>
+            <a href="/Admin/Home/RegistroForm">Registros</a>
         </div>
         <div>
             <span class="material-symbols-outlined">person</span>
-            <a href="Usuarios.html">Usuarios</a>
+            <a href="/Admin/Home/Usuarios">Usuarios</a>
         </div>
         <div>
             <span class="material-symbols-outlined">vertical_align_bottom</span>
-            <a href="ExportarDatos.html">Exportar datos</a>
+            <a href="/Admin/Home/ExportarDatos">Exportar datos</a>
         </div>
         <div>
             <span class="material-symbols-outlined">logout</span>
-            <a href="../InicioSesion.html">Cerrar sesión</a>
+            <a href="~/Home/Index">Cerrar sesión</a>
         </div>
     </aside>
 
@@ -59,7 +59,7 @@
         @RenderBody()
     </main>
 
-    <script src="~/wwwroot/js/Administrador.js"></script>
+    <script src="~/js/Administrador.js"></script>
 
 
 </body>

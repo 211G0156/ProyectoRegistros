@@ -58,26 +58,25 @@ namespace ProyectoRegistros.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, rol));
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
 
                 // Iniciar la sesión de autenticación
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
                 // Redirigir al usuario según su rol
                 if (usuario.IdRol == 1)
                 {
                     // Redirigir al área de Administrador
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("Index", "Admin" , new {area = "Admin"});
                 }
                 else if (usuario.IdRol == 2)
                 {
                     // Redirigir al área de Profesor
-                    return RedirectToAction("Index", "Profesor");
+                    return RedirectToAction("Index", "Profe", new { area = "Profe" });
                 }
                 else // IdRol 3
                 {
                     // Redirigir al área de Visitante
-                    return RedirectToAction("Index", "Visitante");
+                    return RedirectToAction("Index", "Visitante", new { area = "Visitante" });
                 }
             }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Mis talleres</title>
-    <link rel="stylesheet" href="../css/Profesor.css" />
+    <link rel="stylesheet" href="~/css/Profesor.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 
@@ -21,25 +21,25 @@
     </div>
 
     <aside id="menu-abierto">
-        <img src="../img/logo.png">
+        <img src="/img/logo.png">
         <h3>Profesora</h3>
         <h3>Caro</h3>
         <div>
             <span class="material-symbols-outlined">edit_square</span>
-            <a href="Index.html">Mis talleres</a>
+            <a href="/Profe/Profe/Index">Mis talleres</a>
         </div>
         <div>
             <span class="material-symbols-outlined">library_books</span>
-            <a href="">Registros</a>
+            <a href="/Profe/Profe/RegistroForm">Registros</a>
         </div>
 
         <div>
             <span class="material-symbols-outlined">vertical_align_bottom</span>
-            <a href="ExportarDatos.html">Exportar datos</a>
+            <a href="/Profe/Profe/ExportarDatos">Exportar datos</a>
         </div>
         <div>
             <span class="material-symbols-outlined">logout</span>
-            <a href="../Views/Home/Index.html">Cerrar sesión</a>
+            <a href="~/Home/Index">Cerrar sesión</a>
         </div>
     </aside>
 
@@ -55,7 +55,7 @@
     <main>
         @RenderBody()
     </main>
-    <script src="../wwwroot/js/Profesor.js"></script>
+    <script src="~/js/Profesor.js"></script>
 
 </body>
 </html>
