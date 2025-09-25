@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Models;
-using System.Security.Claims;
+using ProyectoRegistros.Models.ViewModels;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ProyectoRegistros.Controllers
@@ -25,7 +27,23 @@ namespace ProyectoRegistros.Controllers
         }
         public IActionResult TalleresDisponibles()
         {
-            return View();
+            var talleres = Context.Tallers
+                .Include(t => t.IdUsuarioNavigation)
+                .Select(t => new TalleresViewModels
+                {
+                    Nombre = t.Nombre,
+                    Dias = t.Dias,
+                    Espacios = t.LugaresDisp,
+                    Horario = t.HoraInicio.ToString(@"hh\:mm tt") + " - " + t.HoraFinal.ToString(@"hh\:mm tt"),
+                    Edad = t.EdadMax.HasValue
+                           ? $"{t.EdadMin} a {t.EdadMax.Value} años"
+                           : $"{t.EdadMin} en adelante",
+                    Profesor = t.IdUsuarioNavigation.Nombre,
+                    Costo = t.Costo
+                })
+                .ToList();
+
+            return View(talleres);
         }
 
 
