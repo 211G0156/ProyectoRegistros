@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Alumno>
+﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.AlumnosViewModel>
 
 @{
     Layout = "LayoutAdmin";
@@ -156,7 +156,7 @@
                         <td>@alumno.NumContacto</td>
                         <td>@alumno.NumSecundario</td>
                         <td>@alumno.Padecimientos</td>
-                        <td>@alumno.Listatalleres</td>
+                        <td>@string.Join(", ", alumno.Talleres)</td>
                         <td>
                             <div class="botones">
                                 <a href="@Url.Action("Editar", "Home", new { id = alumno.Id, area = "Admin" })">

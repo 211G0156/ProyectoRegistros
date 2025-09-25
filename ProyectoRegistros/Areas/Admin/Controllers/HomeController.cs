@@ -46,7 +46,24 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
             public IActionResult Alumnos()
         {
-            var alumnos = _context.Alumnos.ToList(); // trae los alumnos de la BD
+            var alumnos = _context.Alumnos
+                .Include(a => a.Listatalleres)
+                    .ThenInclude(lt => lt.IdTallerNavigation)
+                        .ThenInclude(t => t.IdUsuarioNavigation)
+                .Select(a => new AlumnosViewModel
+                {
+                    Id = a.Id,
+                    Nombre = a.Nombre,
+                    Tutor = a.Tutor,
+                    NumContacto = a.NumContacto,
+                    NumSecundario = a.NumSecundario,
+                    Padecimientos = a.Padecimientos,
+                    Talleres = a.Listatalleres
+                        .Select(lt => lt.IdTallerNavigation.Nombre)
+                        .ToList()
+                })
+                .ToList();
+
             return View(alumnos);
         }
 
