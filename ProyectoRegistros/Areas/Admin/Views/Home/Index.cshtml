@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Taller>
+﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.TalleresViewModel>
 @{
     Layout = "LayoutAdmin";
 }
@@ -183,17 +183,17 @@
                     <tr>
                         <td>@taller.Nombre</td>
                         <td>@taller.Dias</td>
-                        <td>@taller.LugaresDisp</td>
-                        <td>@taller.HoraInicio</td>
-                        <td>@taller.EdadMax</td>
-                        <td>@taller.Costo</td>
+                        <td>@taller.Espacios</td>
+                        <td>@taller.Horario</td>
+                        <td>@taller.Edad</td>
+                        <td>@taller.Profesor</td>
                         <td>$@taller.Costo</td>
                         <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = taller.Id, area = "Admin" })">
+                                <a href="@Url.Action("Editar", "Home", new { id = taller, area = "Admin" })">
                                     <img class="btneditar" src="~/img/edit.png" />
                                 </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = taller.Id, area = "Admin" })" class="btneliminar">
+                                <a href="@Url.Action("Eliminar", "Home", new { id = taller, area = "Admin" })" class="btneliminar">
                                     <img class="btneliminar" src="~/img/X.png" />
                                 </a>
                             </div>

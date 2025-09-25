@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Taller>
+﻿@model IEnumerable<ProyectoRegistros.Areas.Profe.Models.ViewModels.MisTalleresViewModel>
 
 @{
     Layout = "LayoutProfe";
@@ -32,9 +32,9 @@
                     <tr>
                         <td>@taller.Nombre</td>
                         <td>@taller.Dias</td>
-                        <td>@taller.LugaresDisp</td>
-                        <td>@taller.HoraInicio</td>
-                        <td>@taller.EdadMax</td>
+                        <td>@taller.Espacios</td>
+                        <td>@taller.Horario</td>
+                        <td>@taller.Edad</td>
                         <td>$@taller.Costo</td>
                     </tr>
                 }

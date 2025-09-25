@@ -1,29 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoRegistros.Areas.Admin.Models.ViewModels;
+using ProyectoRegistros.Areas.Visitante.Models.ViewModels;
 using ProyectoRegistros.Models;
 using System.Linq;
 
-namespace ProyectoRegistros.Areas.Admin.Controllers
-{
 
-    [Area("Admin")]
-    [Authorize(Roles ="Administrador")]
-    public class HomeController:Controller
+
+namespace ProyectoRegistros.Areas.Visitante.Controllers
+{
+    [Area("Visitante")]
+    [Authorize(Roles ="Visitante")]
+
+    public class VisitanteController:Controller
     {
         private readonly ProyectoregistroContext _context;
 
-        public HomeController(ProyectoregistroContext context)
+        public VisitanteController(ProyectoregistroContext context)
         {
             _context = context;
         }
 
-        [Route("/Admin/Admin/Index")]
-        [Route("/Admin/Admin")]
-        [Route("/Admin")]
-
-
+        [Route("/Visitante/Visitante/Index")]
+        [Route("/Visitante/Visitante")]
+        [Route("/Visitante")]
         public IActionResult Index()
         {
             var talleres = _context.Tallers
@@ -44,24 +44,10 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(talleres);
         }
-            public IActionResult Alumnos()
-        {
-            var alumnos = _context.Alumnos.ToList(); // trae los alumnos de la BD
-            return View(alumnos);
-        }
 
         public IActionResult RegistroForm()
         {
             return View();
-        }
-        public IActionResult ExportarDatos()
-        {
-            return View();
-        }
-        public IActionResult Usuarios()
-        {
-            var usuarios = _context.Usuarios.ToList(); // trae los usuarios de la BD
-            return View(usuarios);
         }
 
     }

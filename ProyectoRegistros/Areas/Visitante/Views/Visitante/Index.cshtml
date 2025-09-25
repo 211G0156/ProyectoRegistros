@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<ProyectoRegistros.Areas.Visitante.Models.ViewModels.TalleresViewModel>
+
+@{
     Layout = "LayoutVisit";
 }
 
@@ -17,6 +19,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Días</th>
+                    <th>Espacios</th>
                     <th>Horario</th>
                     <th>Edad</th>
                     <th>Profesor</th>
@@ -31,9 +34,10 @@
                     <tr>
                         <td>@taller.Nombre</td>
                         <td>@taller.Dias</td>
-                        <td>@taller.LugaresDisp</td>
-                        <td>@taller.HoraInicio</td>
-                        <td>@taller.EdadMax</td>
+                        <td>@taller.Espacios</td>
+                        <td>@taller.Horario</td>
+                        <td>@taller.Edad</td>
+                        <td>@taller.Profesor</td>
                         <td>$@taller.Costo</td>
                     </tr>
                 }
