@@ -9,6 +9,13 @@ if (verListaButton) {
     });
 }
 
+//IG 1 regresar de la lista de alumnos
+const regresar = document.querySelector("#ig1");
+if (regresar) {
+    regresar.addEventListener("click", function () {
+        window.location.href = "/Admin";
+    });
+}
 // Boton de volver en alumnos
 //const regButton = document.querySelector(".reg");
 //if (regButton) {

@@ -81,7 +81,6 @@ namespace ProyectoRegistros.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-                // Redirigir al usuario según su rol
                 if (usuario.IdRol == 1)
                 {
                     // Redirigir al área de Administrador
@@ -92,7 +91,7 @@ namespace ProyectoRegistros.Controllers
                     // Redirigir al área de Profesor
                     return RedirectToAction("Index", "Profe", new { area = "Profe" });
                 }
-                else // IdRol 3
+                else
                 {
                     // Redirigir al área de Visitante
                     return RedirectToAction("Index", "Visitante", new { area = "Visitante" });

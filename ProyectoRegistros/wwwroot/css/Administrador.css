@@ -664,6 +664,7 @@ font-size:17px;
         padding: 4px;
     }
     .datos select {
+        margin: 1.5vh 0;
         width: 72%;
         height: 30px;
     }

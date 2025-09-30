@@ -15,7 +15,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Agregar(/* parámetros del alumno */)
+        public IActionResult Agregar(int id)
         {
             return RedirectToAction("Alumnos");
         }
