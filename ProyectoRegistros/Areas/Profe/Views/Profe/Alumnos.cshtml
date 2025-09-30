@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Alumno>
+﻿@model IEnumerable<ProyectoRegistros.Models.Listatallere>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     Layout = "LayoutProfe";
@@ -7,50 +8,47 @@
 
 <!--MODAL PARA EDITAR-->
 
-<div class="modal" id="modal-EditTaller">
-    <form>
+<div class="modal" id="modal-EditAlumno">
+    <form asp-action="EditarAlumno" asp-controller="Profe" method="post">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Editar alumno</h2>
         </div><br>
+        <!--tomar id-->
+        <input type="hidden" name="Id" id="deleteID" />
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Mariana...."><br>
+        <input name="Nombre" id="editNombre" class="inputForms" type="text" placeholder="Mariana...."><br>
         <label>Tutor:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input name="Tutor" id="editTutor" class="inputForms" type="text" placeholder="Escribir..."><br>
         <label>Teléfono:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input name="NumContacto" id="editTel" class="inputForms" type="text" placeholder="Escribir..."><br>
         <label>Teléfono 2:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input name="NumSecundario" id="editTel2" class="inputForms" type="text" placeholder="Escribir..."><br>
 
         <label>Padecimientos:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
-        <label>Talleres:</label><br>
-        <div class="custom-select">
-            <div class="select-header">
-                <span>Selecciona opciones</span>
-                <i class="fa fa-caret-down"></i>
-            </div>
-            <div class="select-content">
-                <label><input type="checkbox"> Opción 1</label>
-                <label><input type="checkbox"> Opción 2</label>
-                <label><input type="checkbox"> Opción 3</label>
-            </div>
-        </div>
-        <div class="error" style=" margin-top: 5px; margin-bottom:5px; ">
+        <input name="Padecimientos" id="editPadecim" class="inputForms" type="text" placeholder="Escribir..."><br>
+
+
+        @*  <div class="error" style=" margin-top: 5px; margin-bottom:5px; ">
             <p>El nombre ya existe!</p>
             <p>El nombre del taller ya existe!</p>
-        </div>            <div style="display: flex; justify-content: center;">
+        </div> 
+         *@
+
+        <div style="display: flex; justify-content: center;">
             <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
 
 <!--MODAL PARA ELIMINAR-->
-<div class="modal" id="modal-DeleteTaller">
-    <form style="margin-top:140px;">
+<div class="modal" id="modal-DeleteAlumno">
+    <form method="post" asp-action="EliminarAlumnoEnTaller" asp-controller="Profe" style="margin-top:140px;">
         <button class="cerrar" type="button">X</button><br>
+
+        <input type="hidden" name="Id" id="editID" />
         <fieldset style="border:none;">
             <legend>
                 <h2>¿Desea eliminar al alumno en alguno de estos talleres?</h2>
@@ -62,42 +60,22 @@
                                 <th>Eliminar</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>AcuarelaKids</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Pintura</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
+                        <tbody id="talleresAlumno">
+                            <!--No se pueden cargar los talleres desde aca, pq se cargan los de tooooodos, no los de 1-->
+                           @*  @if (Model != null)
+                            {
+                                foreach (var t in Model)
+                                {
+                                    <tr>
+                                        <td>@t.IdTallerNavigation.Nombre</td>
+                                        <td>
+                                            <input type="checkbox" name="TalleresEliminar" value="@t.IdTaller" />
+                                        </td>
+                                    </tr>
+                                }
+                            } *@
                         </tbody>
                     </table>
-
                 </div>
             </legend>
         </fieldset>
@@ -138,24 +116,37 @@
             </thead>
 
             <tbody>
-                @foreach (var alumno in Model)
+                @foreach (var a in Model)
                 {
                     <tr>
-                        <td>@alumno.Nombre</td>
-                        <td>@alumno.Tutor</td>
-                        <td>@alumno.NumContacto</td>
-                        <td>@alumno.NumSecundario</td>
-                        <td>@alumno.Padecimientos</td>
-                        <td>@alumno.Listatalleres</td>
-                        <td>
+                        <td>@a.IdAlumnoNavigation.Nombre</td>
+                        <td>@a.IdAlumnoNavigation.Tutor</td>
+                        <td>@a.IdAlumnoNavigation.NumContacto</td>
+                        <td>@a.IdAlumnoNavigation.NumSecundario</td>
+
+                        <td>@a.IdAlumnoNavigation.Padecimientos</td>
+                        <td>@a.IdTallerNavigation.Nombre</td>
+                        @* <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = alumno.Id, area = "Profe" })">
+                                <a href="@Url.Action("Editar", "Home", new { id = a.Id, area = "Profe" })">
                                     <img class="btneditar" src="~/img/edit.png" />
                                 </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = alumno.Id, area = "Profe" })" class="btneliminar">
+                                <a href="@Url.Action("Eliminar", "Home", new { id = a.Id, area = "Profe" })" class="btneliminar">
                                     <img class="btneliminar" src="~/img/X.png" />
                                 </a>
                             </div>
+                        </td> *@
+                        <td data-id="@a.IdAlumnoNavigation.Id"
+                            data-nombre="@a.IdAlumnoNavigation.Nombre"
+                            data-tutor="@a.IdAlumnoNavigation.Tutor"
+                            data-numcontacto="@a.IdAlumnoNavigation.NumContacto"
+                            data-numsecundario="@a.IdAlumnoNavigation.NumSecundario"
+                            data-padecimientos="@a.IdAlumnoNavigation.Padecimientos">
+                            <img class="btneditar" src="~/img/edit.png" />
+                        </td>
+                        <td data-id="@a.IdAlumnoNavigation.Id"
+                            data-nombre="@a.IdAlumnoNavigation.Nombre">
+                            <img class="btneliminar" src="~/img/X.png" />
                         </td>
                     </tr>
                 }
@@ -165,4 +156,4 @@
     </div>
 
 </div>
-<script src="../js/Administrador.js"></script>
+<script src="~/js/Administrador.js"></script>

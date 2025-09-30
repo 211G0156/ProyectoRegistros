@@ -721,3 +721,11 @@ aside {
 /*    height: 25%;
 */    margin: 15% auto;
 }
+
+/* editar alumno*/
+#modal-EditAlumno{
+    display:none;
+}
+#modal-DeleteAlumno{
+    display:none;
+}

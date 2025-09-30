@@ -47,7 +47,6 @@
             window.location.href = "Index.html";
         });
     }
-});
 
 
 
@@ -55,38 +54,67 @@
 
 
 
-// crear taller
-// en vista index
-const modal = document.querySelector(".modal");
-const modEditar = document.querySelector("#modal-EditTaller");
-const modEliminar = document.querySelector("#modal-DeleteTaller");
+
+    // crear taller
+    // en vista index
+    const modal = document.querySelector(".modal");
+    const modEditar = document.querySelector("#modal-EditAlumno");
+    const modEliminar = document.querySelector("#modal-DeleteAlumno");
 
 
 
 
-document.querySelectorAll(".cerrar").forEach(btnCerrar => {
-    btnCerrar.addEventListener("click", function () {
-        // this isssss para encontrar el modal mas cercano
-        const modal = btnCerrar.closest(".modal");
-        if (modal) {
-            modal.style.display = "none";
-        }
-    });
-});
-
-
-// modal de editar
-document.querySelectorAll(".btneditar").forEach(boton => {
-    boton.addEventListener("click", function () {
-        modEditar.style.display = "block";
-    });
-
-    // modal de eliminar
-    document.querySelectorAll(".btneliminar").forEach(boton => {
-        boton.addEventListener("click", function () {
-            modEliminar.style.display = "block";
+    document.querySelectorAll(".cerrar").forEach(btnCerrar => {
+        btnCerrar.addEventListener("click", function () {
+            // this isssss para encontrar el modal mas cercano
+            const modal = btnCerrar.closest(".modal");
+            if (modal) {
+                modal.style.display = "none";
+            }
         });
     });
 
-});
 
+//EDITAR
+
+    document.querySelectorAll('.btneditar').forEach(btn => {
+        btn.addEventListener('click', function () {
+            let td = this.parentElement;
+
+            document.getElementById("editID").value = td.dataset.id;
+            document.getElementById("editNombre").value = td.dataset.nombre;
+            document.getElementById("editTutor").value = td.dataset.tutor;
+            document.getElementById("editTel").value = td.dataset.numcontacto;
+            document.getElementById("editTel2").value = td.dataset.numsecundario;
+            document.getElementById("editPadecim").value = td.dataset.padecimientos;
+
+            modEditar.style.display = "block";
+        });
+    });
+
+    // modal de eliminar NO FUNCIONA :C
+
+   // document.querySelectorAll(".btneliminar").forEach(boton => {
+        //boton.addEventListener("click", function () {
+            
+        //    const alumnoId = this.dataset.id;
+
+        //    const inputId = document.getElementById("deleteID");
+        //    inputId.value = alumnoId;
+
+        //    const talleresDelAlumno = allTalleres.filter(t => t.IdAlumno == alumnoId);
+
+        //    let html = "";
+        //    talleresDelAlumno.forEach(t => {
+        //        html += `
+        //        <tr>
+        //            <td>${t.IdTallerNavigation.Nombre}</td>
+        //            <td><input type="checkbox" name="TalleresEliminar" value="${t.IdTaller}" /></td>
+        //        </tr>`;
+        //    });
+
+        //    document.getElementById("talleresAlumno").innerHTML = html;
+        //    modEliminar.style.display = "block";
+            
+       // });
+});
