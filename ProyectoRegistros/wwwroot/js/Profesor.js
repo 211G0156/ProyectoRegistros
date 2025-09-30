@@ -15,6 +15,39 @@
         }
     });
 
+    /*SELECCION CON SPAN Y CHECKBOX*/
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var customSelects = document.querySelectorAll('.custom-select');
+
+        customSelects.forEach(function (customSelect) {
+            var selectHeader = customSelect.querySelector('.select-header');
+
+            selectHeader.addEventListener('click', function (event) {
+                event.stopPropagation();
+
+                customSelects.forEach(function (otherSelect) {
+                    if (otherSelect !== customSelect) {
+                        otherSelect.classList.remove('show');
+                    }
+                });
+
+                customSelect.classList.toggle('show');
+            });
+
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.custom-select')) {
+                customSelects.forEach(function (customSelect) {
+                    customSelect.classList.remove('show');
+                });
+            }
+        });
+    });
+
+
+
     // Código para el menú principal
     let aside = document.getElementById("menu-abierto");
     if (aside) {
@@ -39,8 +72,6 @@
             window.location.href = "/Profe/Profe/Alumnos";
         });
     }
-
-    // Botón de volver en alumnos
 
     //IG 1 regresar de la lista de alumnos
     const regresar = document.querySelector("#ig1");

@@ -54,12 +54,6 @@ namespace ProyectoRegistros.Controllers
 
             if (usuario != null)
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim("Id", usuario.Id.ToString())
-                };
-
 
                 string rol;
                 if (usuario.IdRol == 1)
@@ -74,6 +68,14 @@ namespace ProyectoRegistros.Controllers
                 {
                     rol = "Visitante";
                 }
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, usuario.Nombre),
+                    new Claim("Id", usuario.Id.ToString()),
+                    new Claim("Rol", rol),
+                    new Claim("PrimerNombre", usuario.Nombre.Split(' ')[0])
+                };
+
 
                 claims.Add(new Claim(ClaimTypes.Role, rol));
 

@@ -19,8 +19,8 @@
 
     <aside id="menu-abierto">
         <img src="~/img/logo.png">
-        <h3></h3>
-        <h3>Isaac</h3>
+        <h3>@User.FindFirst("Rol")?.Value</h3>
+        <h3>@User.FindFirst("PrimerNombre")?.Value</h3>
         <div>
             <span class="material-symbols-outlined">edit_square</span>
             <a href="/Admin">Talleres</a>
