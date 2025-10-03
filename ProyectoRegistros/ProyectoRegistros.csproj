@@ -51,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Repositories\" />
     <Folder Include="wwwroot\NewFolder\" />
   </ItemGroup>
 

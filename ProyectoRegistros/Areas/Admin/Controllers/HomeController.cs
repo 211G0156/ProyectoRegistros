@@ -66,6 +66,56 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(alumnos);
         }
+        [HttpGet]
+        public IActionResult GetTaller(int id)
+        {
+            var taller = _context.Tallers
+                .Include(t => t.IdUsuarioNavigation)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (taller == null)
+                return NotFound();
+
+            return Json(new
+            {
+                id = taller.Id,
+                nombre = taller.Nombre,
+                dias = taller.Dias,
+                espacios = taller.LugaresDisp,
+                horaInicio = taller.HoraInicio.ToString(@"hh\\:mm"),
+                horaFinal = taller.HoraFinal.ToString(@"hh\\:mm"),
+                edadMin = taller.EdadMin,
+                edadMax = taller.EdadMax,
+                costo = taller.Costo,
+                idUsuario = taller.IdUsuario,
+                profesor = taller.IdUsuarioNavigation?.Nombre
+            });
+        }
+
+        [HttpPost]
+        public IActionResult EditarTaller([FromBody] Taller taller)
+        {
+            if (taller == null)
+                return BadRequest();
+
+            var dbTaller = _context.Tallers.FirstOrDefault(t => t.Id == taller.Id);
+            if (dbTaller == null)
+                return NotFound();
+
+            dbTaller.Nombre = taller.Nombre;
+            dbTaller.Dias = taller.Dias;
+            dbTaller.LugaresDisp = taller.LugaresDisp;
+            dbTaller.HoraInicio = taller.HoraInicio;
+            dbTaller.HoraFinal = taller.HoraFinal;
+            dbTaller.EdadMin = taller.EdadMin;
+            dbTaller.EdadMax = taller.EdadMax;
+            dbTaller.Costo = taller.Costo;
+            dbTaller.IdUsuario = taller.IdUsuario;
+
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
 
         public IActionResult RegistroForm()
         {

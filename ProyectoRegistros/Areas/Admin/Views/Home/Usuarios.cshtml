@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<ProyectoRegistros.Models.Usuario>
-
+@* @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+ *@
 @{
     Layout = "LayoutAdmin";
 }
@@ -8,7 +9,7 @@
 <!--MODAL PARA AGREGAR-->
 
 <div class="modal" id="modal-AddTaller">
-    <form method="post" style=" margin: 18vh auto; ">
+    <form method="post" style=" margin: 18vh auto; " enctype="multipart/form-data">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -16,13 +17,13 @@
         </div><br>
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" type="text" placeholder="Escribir..." asp-for="Usuarios.Nombre" required><br>
         <label>Correo Electrónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" type="text" placeholder="Escribir..." required><br>
         <label>Número Telefónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" type="text" placeholder="Escribir..." required><br>
         <label>Rol:</label><br>
-        <select class="inputForms" style="height: 3.5vh;">
+        <select class="inputForms" style="height: 3.5vh;" required>
             <option>Profesor/a</option>
         </select>
 

@@ -60,6 +60,7 @@ document.addEventListener('click', function (event) {
 }); 
 
 
+
 /*SELECCION CON SPAN Y CHECKBOX*/
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -155,3 +156,62 @@ if (aggButton) {
         modAgregar.style.display = "block";
     });
 }
+
+////Abrir modal de editar e ingresa datos
+//$(document).on("click", ".btneditar", function (e) {
+//    e.preventDefault();
+//    let id = $(this).data("id");
+
+//    $.get("/Admin/Home/GetTaller/" + id, function (data) {
+//        $("#edit-Id").val(data.id);
+//        $("#edit-Nombre").val(data.nombre);
+//        $("#edit-Dias").val(data.dias);
+//        $("#edit-Espacios").val(data.espacios);
+//        $("#edit-HoraInicio").val(data.horaInicio);
+//        $("#edit-HoraFinal").val(data.horaFinal);
+//        $("#edit-EdadMin").val(data.edadMin);
+//        $("#edit-EdadMax").val(data.edadMax);
+//        $("#edit-Costo").val(data.costo);
+//        $("#edit-Profesor").val(data.idUsuario); // profesor seleccionado
+
+//        $("#modal-EditTaller").fadeIn();
+//    });
+//});
+
+//// Guardar cambios
+//$("#formEditTaller").on("submit", function (e) {
+//    e.preventDefault();
+
+//    let taller = {
+//        Id: $("#edit-Id").val(),
+//        Nombre: $("#edit-Nombre").val(),
+//        Dias: $("#edit-Dias").val(),
+//        LugaresDisp: $("#edit-Espacios").val(),
+//        HoraInicio: $("#edit-HoraInicio").val(),
+//        HoraFinal: $("#edit-HoraFinal").val(),
+//        EdadMin: $("#edit-EdadMin").val(),
+//        EdadMax: $("#edit-EdadMax").val(),
+//        Costo: $("#edit-Costo").val(),
+//        IdUsuario: $("#edit-Profesor").val()
+//    };
+
+//    $.ajax({
+//        url: "/Admin/Home/EditarTaller",
+//        type: "POST",
+//        contentType: "application/json",
+//        data: JSON.stringify(taller),
+//        success: function (resp) {
+//            if (resp.success) {
+//                alert("Taller actualizado correctamente");
+//                location.reload();
+//            }
+//        }
+//    });
+//});
+
+
+
+    //// Botón cerrar
+    //$(document).on("click", "#modal-EditTaller .cerrar", function () {
+    //    $("#modal-EditTaller").fadeOut();
+    //});

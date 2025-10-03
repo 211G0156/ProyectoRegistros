@@ -65,47 +65,48 @@
 <!--MODAL PARA EDITAR-->
 
 <div class="modal" id="modal-EditTaller">
-    <form>
+    <form id="formEditTaller">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Editar Taller</h2>
         </div><br>
+        <input type="hidden" id="edit-Id" name="Id" />
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" id="edit-Nombre" type="text" placeholder="Escribir..."><br>
         <label>Dias:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" id="edit-Dias" type="text" placeholder="Escribir..."><br>
 
         <label>Espacios:</label><br>
-        <input class="inputForms" type="number" min="0" placeholder="Escribir..."><br>
+        <input class="inputForms" id="edit-Espacios" type="number" min="0" placeholder="Escribir..."><br>
 
         <div class="col">
             <label>Horario inicio:</label><br>
-            <input class="inputForms" type="time" style="width:25%;"><br>
+            <input class="inputForms" id="edit-HoraInicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
-            <input class="inputForms" type="time"  style="width:25%;"><br>
+            <input class="inputForms" id="edit-HoraFinal" type="time" style="width:25%;"><br>
 
 
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
-            <input class="inputForms" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" id="edit-EdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" id="edit-EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
 
 
         </div>
 
         <label>Profesor:</label><br>
-        <select class="inputForms" style="height: 3.5vh;">
+        <select id="edit-Profesor" name="IdUsuario" class="inputForms" style="height: 3.5vh;">
             <option>Pablo</option>
             <option>Sele</option>
             <option>Cesár</option>
             <option>Pablo</option>
         </select><br>
         <label>Costo:</label><br>
-        <input class="inputForms" type="number" min="0" placeholder="Escribir..."><br>
+        <input class="inputForms" id="edit-Costo" type="number" name="Costo" min="0" placeholder="Escribir..."><br>
         <div class="error">
             <p>El nombre del taller ya existe!</p>
             <p>El nombre del taller ya existe!</p>
@@ -114,7 +115,7 @@
             <p>El nombre del taller ya existe!</p>
         </div>
         <div style="display: flex; justify-content: center;">
-            <button style="display: flex; justify-content: center;" class="buttons">Guardar</button>
+            <button type="submit" style="display: flex; justify-content: center;" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
@@ -148,13 +149,15 @@
 </header>
 
 
-<div class="filtros">
+<div class="filtros2">
     <div class="buscador">
-        <input type="search" placeholder="Nombre, edad, día..." />
-        <div class="checar">
+        <form method="get" action="@Url.Action("MyAction", "MyController")">
+        <input type="search"id="search" placeholder="Nombre, edad, día..." />
+        </form>
+@*         <div class="checar">
             <input type="checkbox" id="talleresActuales" />
             <label for="talleresActuales">Ver solo talleres actuales</label>
-        </div>
+        </div> *@
     </div>
 
 
@@ -197,7 +200,7 @@
                         <td>$@taller.Costo</td>
                         <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = taller, area = "Admin" })">
+                                <a href="#" data-id="@taller.Id">
                                     <img class="btneditar" src="~/img/edit.png" />
                                 </a>
                                 <a href="@Url.Action("Eliminar", "Home", new { id = taller, area = "Admin" })" class="btneliminar">
@@ -213,3 +216,54 @@
     </div>
 
 </div>
+
+<script>
+    $(document).on("click", ".btneditar", function (e) {
+        e.preventDefault();
+        let id = $(this).data("id");
+
+        $.get("/Admin/Home/GetTaller/" + id, function (data) {
+            $("#edit-Id").val(data.id);
+            $("#edit-Nombre").val(data.nombre);
+            $("#edit-Dias").val(data.dias);
+            $("#edit-Espacios").val(data.espacios);
+            $("#edit-HoraInicio").val(data.horaInicio);
+            $("#edit-HoraFinal").val(data.horaFinal);
+            $("#edit-EdadMin").val(data.edadMin);
+            $("#edit-EdadMax").val(data.edadMax);
+
+            // Formatear costo sin símbolo de moneda para edición
+            $("#edit-Costo").val(data.costo.replace(/[^\d.-]/g, ''));
+
+            $("#edit-Profesor").val(data.idUsuario);
+            $("#modal-EditTaller").fadeIn();
+        });
+    });
+
+    $("#formEditTaller").on("submit", function (e) {
+        e.preventDefault();
+
+        let costo = $("#edit-Costo").val().replace(/[^\d.-]/g, '');
+
+        let taller = {
+            Id: $("#edit-Id").val(),
+            Nombre: $("#edit-Nombre").val(),
+            Dias: $("#edit-Dias").val(),
+            LugaresDisp: $("#edit-Espacios").val(),
+            HoraInicio: $("#edit-HoraInicio").val(),
+            HoraFinal: $("#edit-HoraFinal").val(),
+            EdadMin: $("#edit-EdadMin").val(),
+            EdadMax: $("#edit-EdadMax").val(),
+            Costo: parseFloat(costo),
+            IdUsuario: $("#edit-Profesor").val()
+        };
+
+        $.ajax({
+            url: "/Admin/Home/EditarTaller",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(taller),
+            success: function (resp) 
+        });
+    }
+            </script>
