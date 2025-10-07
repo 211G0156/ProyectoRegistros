@@ -7,7 +7,7 @@ namespace ProyectoRegistros.Models;
 
 public partial class ProyectoregistroContext : DbContext
 {
-    public ProyectoregistroContext()
+    public ProyectoregistroContext(string query)
     {
     }
 

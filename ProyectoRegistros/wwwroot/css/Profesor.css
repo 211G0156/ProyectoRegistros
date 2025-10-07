@@ -755,3 +755,7 @@ aside {
 #modal-DeleteAlumno{
     display:none;
 }
+
+#talleresAlumno input[type=checkbox] {
+    cursor: pointer;
+}

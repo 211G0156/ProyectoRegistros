@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoRegistros.Areas.Admin.Models;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Models;
 using System.Linq;
@@ -66,76 +67,33 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(alumnos);
         }
-        [HttpGet]
-        public IActionResult GetTaller(int id)
-        {
-            var taller = _context.Tallers
-                .Include(t => t.IdUsuarioNavigation)
-                .FirstOrDefault(t => t.Id == id);
-
-            if (taller == null)
-                return NotFound();
-
-            return Json(new
-            {
-                id = taller.Id,
-                nombre = taller.Nombre,
-                dias = taller.Dias,
-                espacios = taller.LugaresDisp,
-                horaInicio = taller.HoraInicio.ToString(@"hh\\:mm"),
-                horaFinal = taller.HoraFinal.ToString(@"hh\\:mm"),
-                edadMin = taller.EdadMin,
-                edadMax = taller.EdadMax,
-                costo = taller.Costo,
-                idUsuario = taller.IdUsuario,
-                profesor = taller.IdUsuarioNavigation?.Nombre
-            });
-        }
-        //[HttpPost]
-        //public IActionResult EditarAlumno(Alumno alumno)
-        //{
-        //    var existAlumno = _context.Alumnos.Find(alumno.Id);
-        //    if (existAlumno != null)
-        //    {
-        //        existAlumno.Nombre = alumno.Nombre;
-        //        existAlumno.Tutor = alumno.Tutor;
-        //        existAlumno.NumContacto = alumno.NumContacto;
-        //        existAlumno.NumSecundario = alumno.NumSecundario;
-        //        existAlumno.Padecimientos = alumno.Padecimientos;
-
-        //        _context.Update(existAlumno);
-        //        _context.SaveChanges();
-
-        //        return RedirectToAction("Alumnos");
-        //    }
-        //    return View(alumno);
-        //}
 
         [HttpPost]
-        public IActionResult EditarTaller([FromBody] Taller taller)
+        public IActionResult AgregarTaller(NuevoTallerVM vm)
         {
+            if (ModelState.IsValid)
+            {
+                var nuevoTaller = new Taller
+                {
+                    Nombre = vm.Nombre,
+                    LugaresDisp = vm.Lugares_Disp,
+                    Dias = vm.Dias,
+                    HoraInicio = vm.Hora_inicio,
+                    HoraFinal = vm.Hora_final,
+                    EdadMin = vm.Edad_min,
+                    EdadMax = vm.Edad_max,
+                    Estado = vm.Estado,
+                    Costo = vm.Costo,
+                    IdUsuario = vm.IdUsuario
+                };
 
-
-            var dbTaller = _context.Tallers.FirstOrDefault(t => t.Id == taller.Id);
-            if (dbTaller != null) { 
-            dbTaller.Nombre = taller.Nombre;
-            dbTaller.Dias = taller.Dias;
-            dbTaller.LugaresDisp = taller.LugaresDisp;
-            dbTaller.HoraInicio = taller.HoraInicio;
-            dbTaller.HoraFinal = taller.HoraFinal;
-            dbTaller.EdadMin = taller.EdadMin;
-            dbTaller.EdadMax = taller.EdadMax;
-            dbTaller.Costo = taller.Costo;
-            dbTaller.IdUsuario = taller.IdUsuario;
-
-                _context.Update(dbTaller);
-            _context.SaveChanges();
-
-                return RedirectToAction("Index");
+                _context.Tallers.Add(nuevoTaller);
+                _context.SaveChanges();
 
             }
-            return View(taller);
 
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult RegistroForm()

@@ -8,7 +8,7 @@
 <!--MODAL PARA AGREGAR-->
 
 <div class="modal" id="modal-AddTaller">
-    <form>
+    <form asp-area="Admin" asp-controller="Home" asp-action="AgregarTaller" method="post">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -16,26 +16,26 @@
         </div><br>
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Nombre" type="text" placeholder="Escribir..."><br>
         <label>Dias:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Dias" type="text" placeholder="Escribir..."><br>
 
         <label>Espacios:</label><br>
-        <input class="inputForms" type="number" min="0" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Lugares_Disp" type="number" min="0" placeholder="Escribir..."><br>
 
         <div class="col">
             <label>Horario inicio:</label><br>
-            <input class="inputForms" type="time" style="width:25%;"><br>
+            <input class="inputForms" name="Hora_inicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
-            <input class="inputForms" type="time" style="width:25%;"><br>
+            <input class="inputForms" name="Hora_final" type="time" style="width:25%;"><br>
 
 
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
-            <input class="inputForms" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" name="Edad_min" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" name="Edad_max" style="width:15%;" min="0" type="number" placeholder="..."><br>
 
 
         </div>
@@ -43,14 +43,14 @@
 
 
         <label>Profesor:</label><br>
-        <select class="inputForms" style="height: 3.5vh;">
+        <select class="inputForms" name="IdUsuario" style="height: 3.5vh;">
             <option>Pablo</option>
             <option>Sele</option>
             <option>Cesár</option>
             <option>Pablo</option>
         </select><br>
         <label>Costo:</label><br>
-        <input class="inputForms" type="number" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Costo" type="number" placeholder="Escribir..."><br>
         <div class="error">
             <p>El nombre del taller ya existe!</p>
             <p>El nombre del taller ya existe!</p>
@@ -59,7 +59,7 @@
             <p>El nombre del taller ya existe!</p>
         </div>
         <div style="display: flex; justify-content: center;">
-            <button style="" class="buttons">Guardar</button>
+            <button style="" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
