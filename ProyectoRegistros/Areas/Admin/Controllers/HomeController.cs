@@ -34,7 +34,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     Nombre = t.Nombre,
                     Dias = t.Dias,
                     Espacios = t.LugaresDisp,
-                    Horario = t.HoraInicio.ToString(@"hh\:mm tt") + " - " + t.HoraFinal.ToString(@"hh\:mm tt"),
+                    Horario = t.HoraInicio.ToString("HH:mm") + " - " + t.HoraFinal.ToString("HH:mm"),
                     Edad = t.EdadMax.HasValue
                            ? $"{t.EdadMin} a {t.EdadMax.Value} años"
                            : $"{t.EdadMin} en adelante",
@@ -42,6 +42,10 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     Costo = t.Costo
                 })
                 .ToList();
+
+            ViewBag.Profesores = _context.Usuarios
+    .Where(u => u.IdRol == 2)
+    .ToList();
 
             return View(talleres);
         }
@@ -82,20 +86,26 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     HoraFinal = vm.Hora_final,
                     EdadMin = vm.Edad_min,
                     EdadMax = vm.Edad_max,
-                    Estado = vm.Estado,
                     Costo = vm.Costo,
+                    Estado = vm.Estado,
                     IdUsuario = vm.IdUsuario
                 };
 
-                _context.Tallers.Add(nuevoTaller);
-                _context.SaveChanges();
-
+                try
+                {
+                    _context.Tallers.Add(nuevoTaller);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    ModelState.AddModelError("", "Error al guardar en la base de datos: " + ex.Message);
+                    return View("Index", _context.Tallers.ToList());
+                }
             }
-
 
             return RedirectToAction("Index");
         }
-
         public IActionResult RegistroForm()
         {
             return View();

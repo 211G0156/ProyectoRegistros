@@ -28,41 +28,42 @@
             <input class="inputForms" name="Hora_inicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
             <input class="inputForms" name="Hora_final" type="time" style="width:25%;"><br>
-
-
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
             <input class="inputForms" name="Edad_min" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
             <input class="inputForms" name="Edad_max" style="width:15%;" min="0" type="number" placeholder="..."><br>
-
-
         </div>
-
-
 
         <label>Profesor:</label><br>
         <select class="inputForms" name="IdUsuario" style="height: 3.5vh;">
-            <option>Pablo</option>
-            <option>Sele</option>
-            <option>Cesár</option>
-            <option>Pablo</option>
+            <option value="">Seleccione un profesor...</option>
+            @foreach (var profesor in ViewBag.Profesores)
+            {
+                <option value="@profesor.Id">@profesor.Nombre</option>
+            }
         </select><br>
+
         <label>Costo:</label><br>
         <input class="inputForms" name="Costo" type="number" placeholder="Escribir..."><br>
+
+        <input type="hidden" name="Estado" value="1" />
+
         <div class="error">
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
         </div>
         <div style="display: flex; justify-content: center;">
             <button style="" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
+
+
+
+
+
+
+
 
 <!--MODAL PARA EDITAR-->
 
@@ -219,53 +220,3 @@
 
 </div>
 
-<script>
-    $(document).on("click", ".btneditar", function (e) {
-        e.preventDefault();
-        let id = $(this).data("id");
-
-        $.get("/Admin/Home/GetTaller/" + id, function (data) {
-            $("#edit-Id").val(data.id);
-            $("#edit-Nombre").val(data.nombre);
-            $("#edit-Dias").val(data.dias);
-            $("#edit-Espacios").val(data.espacios);
-            $("#edit-HoraInicio").val(data.horaInicio);
-            $("#edit-HoraFinal").val(data.horaFinal);
-            $("#edit-EdadMin").val(data.edadMin);
-            $("#edit-EdadMax").val(data.edadMax);
-
-            // Formatear costo sin símbolo de moneda para edición
-            $("#edit-Costo").val(data.costo.replace(/[^\d.-]/g, ''));
-
-            $("#edit-Profesor").val(data.idUsuario);
-            $("#modal-EditTaller").fadeIn();
-        });
-    });
-
-    $("#formEditTaller").on("submit", function (e) {
-        e.preventDefault();
-
-        let costo = $("#edit-Costo").val().replace(/[^\d.-]/g, '');
-
-        let taller = {
-            Id: $("#edit-Id").val(),
-            Nombre: $("#edit-Nombre").val(),
-            Dias: $("#edit-Dias").val(),
-            LugaresDisp: $("#edit-Espacios").val(),
-            HoraInicio: $("#edit-HoraInicio").val(),
-            HoraFinal: $("#edit-HoraFinal").val(),
-            EdadMin: $("#edit-EdadMin").val(),
-            EdadMax: $("#edit-EdadMax").val(),
-            Costo: parseFloat(costo),
-            IdUsuario: $("#edit-Profesor").val()
-        };
-
-        $.ajax({
-            url: "/Admin/Home/EditarTaller",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(taller),
-            success: function (resp) 
-        });
-    }
-            </script>

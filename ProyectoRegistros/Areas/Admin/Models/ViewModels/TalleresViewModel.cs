@@ -1,4 +1,6 @@
-﻿namespace ProyectoRegistros.Areas.Admin.Models.ViewModels
+﻿using ProyectoRegistros.Models;
+
+namespace ProyectoRegistros.Areas.Admin.Models.ViewModels
 {
     public class TalleresViewModel
     {
@@ -11,4 +13,7 @@
         public string Profesor { get; set; }
         public decimal Costo { get; set; }
     }
+
+
+
 }
