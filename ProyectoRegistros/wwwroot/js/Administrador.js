@@ -90,6 +90,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+
+
+
 });
 
 
@@ -156,7 +159,6 @@ if (aggButton) {
         modAgregar.style.display = "block";
     });
 }
-
 ////Abrir modal de editar e ingresa datos
 //$(document).on("click", ".btneditar", function (e) {
 //    e.preventDefault();
@@ -215,3 +217,12 @@ if (aggButton) {
     //$(document).on("click", "#modal-EditTaller .cerrar", function () {
     //    $("#modal-EditTaller").fadeOut();
     //});
+
+
+
+// this is forrrrr el recibo q sale despues de registrar alumno
+let recibo = document.getElementById("modal-recibo")
+document.querySelector("#finalizar").addEventListener("click", function () {
+    recibo.style.display = "block";
+    console.log("pipippip");
+});

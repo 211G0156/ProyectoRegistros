@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoRegistros.Areas.Profe.Models;
 using ProyectoRegistros.Areas.Profe.Models.ViewModels;
 using ProyectoRegistros.Models;
 using System.Linq;
@@ -58,7 +59,15 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var alumno = _context.Listatalleres.Where(x => misTalleres.Contains(x.IdTaller)).Include(a => a.IdAlumnoNavigation)
             .Include(t => t.IdTallerNavigation)
             .OrderBy(x => x.IdAlumnoNavigation.Nombre).ToList();
-            return View(alumno);
+
+            // Agrupar los talleres por alumno
+            var alumnosConTalleres = alumno.GroupBy(a => a.IdAlumnoNavigation.Id).Select(g => new
+            {
+                Alumno = g.FirstOrDefault().IdAlumnoNavigation,
+                Talleres = g.Select(t => t.IdTallerNavigation).ToList()
+            }).ToList();
+
+            return View(alumnosConTalleres);
         }
         [HttpPost]
         public IActionResult EditarAlumno(Alumno alumno)
@@ -79,25 +88,34 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             }
             return View(alumno);
         }
-        [HttpPost]
-        public IActionResult EliminarAlumnoEnTaller(int Id, int[] TalleresEliminar)
+        // traerme los talleres en los que esta registrado el alumno
+        [HttpGet("Profe/FuncionTraerTalleres/{alumnoId}")]
+        public IActionResult FuncionTraerTalleres(int alumnoId)
         {
-            if (TalleresEliminar != null && TalleresEliminar.Length > 0)
+            var talleres = _context.Listatalleres.Where(x => x.IdAlumno == alumnoId).Select(t => new
             {
-                foreach (var tallerId in TalleresEliminar)
-                {
-                    var relacion = _context.Listatalleres.FirstOrDefault(x => x.IdAlumno == Id && x.IdTaller == tallerId);
+                id = t.IdTaller,
+                nombre = t.IdTallerNavigation.Nombre
+            }).ToList();
 
-                    if (relacion != null)
+            return Json(talleres);
+        }
+        [HttpPost]
+        public IActionResult eliminarTallerDelAlumno(TallerEliminarRequest request)
+        {
+            if (request.TalleresEliminar != null && request.TalleresEliminar.Length > 0)
+            {
+                foreach (var taller in request.TalleresEliminar)
+                {
+                    var buscar = _context.Listatalleres.FirstOrDefault(x => x.IdTaller == taller && x.IdAlumno == request.Id);
+                    if (buscar != null)
                     {
-                        _context.Listatalleres.Remove(relacion);
+                        _context.Listatalleres.Remove(buscar);
                     }
                 }
-
                 _context.SaveChanges();
             }
-
-            return RedirectToAction("Alumnos");
+            return Ok(new { success = true });
         }
         public IActionResult ExportarDatos()
         {

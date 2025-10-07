@@ -1,17 +1,12 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Listatallere>
+﻿@using ProyectoRegistros.Models
+
+@model IEnumerable<dynamic>
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     Layout = "LayoutProfe";
 }
 
-<header class="principal">
-    <div class="izq">
-        <img id="ig1" class="reg" src="~/img/arrow_back.png" />
-        <h2>Alumnos</h2>
-    </div>
-    <img id="ig2" src="~/img/Historial.png" />
-</header>
 
 <!--MODAL PARA EDITAR-->
 
@@ -23,7 +18,7 @@
             <h2>Editar alumno</h2>
         </div><br>
         <!--tomar id-->
-        <input type="hidden" name="Id" id="deleteID" />
+        <input type="hidden" name="Id" id="editID" />
 
         <label>Nombre:</label><br>
         <input name="Nombre" id="editNombre" class="inputForms" type="text" placeholder="Mariana...."><br>
@@ -52,10 +47,10 @@
 
 <!--MODAL PARA ELIMINAR-->
 <div class="modal" id="modal-DeleteAlumno">
-    <form method="post" asp-action="EliminarAlumnoEnTaller" asp-controller="Profe" style="margin-top:140px;">
+    <form method="post" asp-action="eliminarTallerDelAlumno" asp-controller="Profe" style="margin-top:140px;">
         <button class="cerrar" type="button">X</button><br>
 
-        <input type="hidden" name="Id" id="editID" />
+        <input type="hidden" name="Id" id="deleteID" />
         <fieldset style="border:none;">
             <legend>
                 <h2>¿Desea eliminar al alumno en alguno de estos talleres?</h2>
@@ -69,30 +64,17 @@
                         </thead>
                         <tbody id="talleresAlumno">
                             <!--No se pueden cargar los talleres desde aca, pq se cargan los de tooooodos, no los de 1-->
-                           @*  @if (Model != null)
-                            {
-                                foreach (var t in Model)
-                                {
-                                    <tr>
-                                        <td>@t.IdTallerNavigation.Nombre</td>
-                                        <td>
-                                            <input type="checkbox" name="TalleresEliminar" value="@t.IdTaller" />
-                                        </td>
-                                    </tr>
-                                }
-                            } *@
+                            <!--se cargan con un json-->
                         </tbody>
                     </table>
                 </div>
             </legend>
         </fieldset>
         <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
-            <button type="submit" class="buttons">Confirmar</button>
+            <button id="eliminarAlumno" type="submit" class="buttons">Confirmar</button>
         </div>
     </form>
 </div>
-
-
 
 
 <div class="filtros">
@@ -126,35 +108,33 @@
                 @foreach (var a in Model)
                 {
                     <tr>
-                        <td>@a.IdAlumnoNavigation.Nombre</td>
-                        <td>@a.IdAlumnoNavigation.Tutor</td>
-                        <td>@a.IdAlumnoNavigation.NumContacto</td>
-                        <td>@a.IdAlumnoNavigation.NumSecundario</td>
+                        <td>@a.Alumno.Nombre</td>
+                        <td>@a.Alumno.Tutor</td>
+                        <td>@a.Alumno.NumContacto</td>
+                        <td>@a.Alumno.NumSecundario</td>
 
-                        <td>@a.IdAlumnoNavigation.Padecimientos</td>
-                        <td>@a.IdTallerNavigation.Nombre</td>
-                        @* <td>
+                        <td>@a.Alumno.Padecimientos</td>
+                        <td>
+                            @foreach (var t in a.Talleres)
+                            {
+                                <p>@t.Nombre</p>
+                            }
+                        </td>
+
+                        <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = a.Id, area = "Profe" })">
-                                    <img class="btneditar" src="~/img/edit.png" />
-                                </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = a.Id, area = "Profe" })" class="btneliminar">
-                                    <img class="btneliminar" src="~/img/X.png" />
-                                </a>
+                                <img src="~/img/edit.png" class="btneditar" data-id="@a.Alumno.Id"
+                                     data-nombre="@a.Alumno.Nombre"
+                                     data-tutor="@a.Alumno.Tutor"
+                                     data-numcontacto="@a.Alumno.NumContacto"
+                                     data-numsecundario="@a.Alumno.NumSecundario"
+                                     data-padecimientos="@a.Alumno.Padecimientos" />
+
+                                <img class="btneliminar" src="~/img/X.png" data-id="@a.Alumno.Id"
+                                     data-nombre="@a.Alumno.Nombre" />
                             </div>
-                        </td> *@
-                        <td data-id="@a.IdAlumnoNavigation.Id"
-                            data-nombre="@a.IdAlumnoNavigation.Nombre"
-                            data-tutor="@a.IdAlumnoNavigation.Tutor"
-                            data-numcontacto="@a.IdAlumnoNavigation.NumContacto"
-                            data-numsecundario="@a.IdAlumnoNavigation.NumSecundario"
-                            data-padecimientos="@a.IdAlumnoNavigation.Padecimientos">
-                            <img class="btneditar" src="~/img/edit.png" />
                         </td>
-                        <td data-id="@a.IdAlumnoNavigation.Id"
-                            data-nombre="@a.IdAlumnoNavigation.Nombre">
-                            <img class="btneliminar" src="~/img/X.png" />
-                        </td>
+
                     </tr>
                 }
             </tbody>
@@ -163,4 +143,3 @@
     </div>
 
 </div>
-<script src="~/js/Administrador.js"></script>

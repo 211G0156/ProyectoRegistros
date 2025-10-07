@@ -109,44 +109,103 @@
 
 //EDITAR
 
-    document.querySelectorAll('.btneditar').forEach(btn => {
-        btn.addEventListener('click', function () {
-            let td = this.parentElement;
+    document.querySelectorAll('.btneditar').forEach(btnEditar => {
+        btnEditar.addEventListener('click', function () {
+            let img = this;
 
-            document.getElementById("editID").value = td.dataset.id;
-            document.getElementById("editNombre").value = td.dataset.nombre;
-            document.getElementById("editTutor").value = td.dataset.tutor;
-            document.getElementById("editTel").value = td.dataset.numcontacto;
-            document.getElementById("editTel2").value = td.dataset.numsecundario;
-            document.getElementById("editPadecim").value = td.dataset.padecimientos;
+            document.getElementById("editID").value = img.dataset.id;
+            document.getElementById("editNombre").value = img.dataset.nombre;
+            document.getElementById("editTutor").value = img.dataset.tutor;
+            document.getElementById("editTel").value = img.dataset.numcontacto;
+            document.getElementById("editTel2").value = img.dataset.numsecundario;
+            document.getElementById("editPadecim").value = img.dataset.padecimientos;
 
             modEditar.style.display = "block";
         });
     });
 
-    // modal de eliminar NO FUNCIONA :C
+    // modal de eliminar YA FUNCIONA :D
 
-   // document.querySelectorAll(".btneliminar").forEach(boton => {
-        //boton.addEventListener("click", function () {
-            
-        //    const alumnoId = this.dataset.id;
+    document.querySelectorAll(".btneliminar").forEach(boton => {
+        boton.addEventListener("click", async function () {
+            const tbody = document.querySelector("#talleresAlumno");
+            const alumnoId = this.dataset.id;
+            tbody.innerHTML = "";
 
-        //    const inputId = document.getElementById("deleteID");
-        //    inputId.value = alumnoId;
+            document.querySelector("#deleteID").value = alumnoId;
 
-        //    const talleresDelAlumno = allTalleres.filter(t => t.IdAlumno == alumnoId);
+            try {
+                //cargar los talleres por alumno
+                const talleres = await FuncionTraerTalleres(alumnoId);
+                if (talleres.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="2">Sin talleres</td></tr>`;
+                }
 
-        //    let html = "";
-        //    talleresDelAlumno.forEach(t => {
-        //        html += `
-        //        <tr>
-        //            <td>${t.IdTallerNavigation.Nombre}</td>
-        //            <td><input type="checkbox" name="TalleresEliminar" value="${t.IdTaller}" /></td>
-        //        </tr>`;
-        //    });
+                else {
+                    talleres.forEach(taller => {
+                        const row = document.createElement("tr");
+                        // en name va el parametro q pusimos en el controller sip
+                        row.innerHTML = `<td><input type="checkbox" name="TalleresEliminar" value="${taller.id}"/></td>
+                                    <td>${taller.nombre}</td>`;
+                        console.log(taller.nombre);
+                        tbody.appendChild(row);
+                    });
+                }
+                modEliminar.style.display = "block";
 
-        //    document.getElementById("talleresAlumno").innerHTML = html;
-        //    modEliminar.style.display = "block";
-            
-       // });
+
+                document.querySelector("#eliminarAlumno").onclick = async () => {
+                    const checkboxes = document.querySelectorAll('input[name="TalleresEliminar"]:checked');
+                    const talleresEliminar = Array.from(checkboxes).map(checkbox => parseInt(checkbox.value));
+
+                    if (talleres.length === 0) {
+                        alert("Selecciona al menos un taller para eliminar.");
+                        return;
+                    }
+
+                    const response = await fetch('/Profe/Profe/eliminarTallerDelAlumno', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            Id: parseInt(alumnoId),
+                            TalleresEliminar: talleresEliminar
+                        })
+                    });
+
+                    if (response.ok) {
+                        alert("Talleres eliminados correctamente");
+                        location.reload();
+                    } else {
+                        alert("Error al eliminar los talleres");
+                    }
+                };
+            }
+            catch (error) {
+                console.error("Error", error);
+            }
+        });
+
+    });
+
+
+    async function FuncionTraerTalleres(alumnoId) {
+        try {
+            const response = await fetch(`/Profe/FuncionTraerTalleres/${alumnoId}`);
+            if (!response.ok) {
+                throw new Error("No se puede");
+            }
+            return await response.json();
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+
+});
+
+// this is forrrrr el recibo q sale despues de registrar alumno
+let recibo = document.getElementById("modal-recibo")
+document.querySelector("#finalizar").addEventListener("click", function () {
+    recibo.style.display = "block";
+    console.log("pipippip");
 });
