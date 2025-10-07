@@ -1,4 +1,35 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿/*SELECCION CON SPAN Y CHECKBOX*/
+
+document.addEventListener('DOMContentLoaded', function () {
+    var customSelects = document.querySelectorAll('.custom-select');
+
+    customSelects.forEach(function (customSelect) {
+        var selectHeader = customSelect.querySelector('.select-header');
+
+        selectHeader.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            customSelects.forEach(function (otherSelect) {
+                if (otherSelect !== customSelect) {
+                    otherSelect.classList.remove('show');
+                }
+            });
+
+            customSelect.classList.toggle('show');
+        });
+
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.custom-select')) {
+            customSelects.forEach(function (customSelect) {
+                customSelect.classList.remove('show');
+            });
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     // Código para el historial
     document.getElementById('ig2').addEventListener('click', function (event) {
         event.stopPropagation();
@@ -15,36 +46,6 @@
         }
     });
 
-    /*SELECCION CON SPAN Y CHECKBOX*/
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var customSelects = document.querySelectorAll('.custom-select');
-
-        customSelects.forEach(function (customSelect) {
-            var selectHeader = customSelect.querySelector('.select-header');
-
-            selectHeader.addEventListener('click', function (event) {
-                event.stopPropagation();
-
-                customSelects.forEach(function (otherSelect) {
-                    if (otherSelect !== customSelect) {
-                        otherSelect.classList.remove('show');
-                    }
-                });
-
-                customSelect.classList.toggle('show');
-            });
-
-        });
-
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('.custom-select')) {
-                customSelects.forEach(function (customSelect) {
-                    customSelect.classList.remove('show');
-                });
-            }
-        });
-    });
 
 
 

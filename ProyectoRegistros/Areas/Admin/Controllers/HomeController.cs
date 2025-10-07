@@ -91,17 +91,33 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 profesor = taller.IdUsuarioNavigation?.Nombre
             });
         }
+        //[HttpPost]
+        //public IActionResult EditarAlumno(Alumno alumno)
+        //{
+        //    var existAlumno = _context.Alumnos.Find(alumno.Id);
+        //    if (existAlumno != null)
+        //    {
+        //        existAlumno.Nombre = alumno.Nombre;
+        //        existAlumno.Tutor = alumno.Tutor;
+        //        existAlumno.NumContacto = alumno.NumContacto;
+        //        existAlumno.NumSecundario = alumno.NumSecundario;
+        //        existAlumno.Padecimientos = alumno.Padecimientos;
+
+        //        _context.Update(existAlumno);
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction("Alumnos");
+        //    }
+        //    return View(alumno);
+        //}
 
         [HttpPost]
         public IActionResult EditarTaller([FromBody] Taller taller)
         {
-            if (taller == null)
-                return BadRequest();
+
 
             var dbTaller = _context.Tallers.FirstOrDefault(t => t.Id == taller.Id);
-            if (dbTaller == null)
-                return NotFound();
-
+            if (dbTaller != null) { 
             dbTaller.Nombre = taller.Nombre;
             dbTaller.Dias = taller.Dias;
             dbTaller.LugaresDisp = taller.LugaresDisp;
@@ -112,9 +128,14 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             dbTaller.Costo = taller.Costo;
             dbTaller.IdUsuario = taller.IdUsuario;
 
+                _context.Update(dbTaller);
             _context.SaveChanges();
 
-            return Json(new { success = true });
+                return RedirectToAction("Index");
+
+            }
+            return View(taller);
+
         }
 
         public IActionResult RegistroForm()

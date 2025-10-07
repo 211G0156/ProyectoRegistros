@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.TalleresViewModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     Layout = "LayoutAdmin";
 }
@@ -65,48 +67,48 @@
 <!--MODAL PARA EDITAR-->
 
 <div class="modal" id="modal-EditTaller">
-    <form id="formEditTaller">
+    <form asp-action="EditarTaller" asp-controller="Home" id="formEditTaller" method="post">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Editar Taller</h2>
         </div><br>
-        <input type="hidden" id="edit-Id" name="Id" />
+        <input type="hidden" id="EditId" name="Id" />
 
         <label>Nombre:</label><br>
-        <input class="inputForms" id="edit-Nombre" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Nombre" id="editNombre" type="text" placeholder="Escribir..."><br>
         <label>Dias:</label><br>
-        <input class="inputForms" id="edit-Dias" type="text" placeholder="Escribir..."><br>
+        <input name="Dias" class="inputForms" id="editDias" type="text" placeholder="Escribir..."><br>
 
         <label>Espacios:</label><br>
-        <input class="inputForms" id="edit-Espacios" type="number" min="0" placeholder="Escribir..."><br>
+        <input name="Espacios" class="inputForms" id="editEspacios" type="number" min="0" placeholder="Escribir..."><br>
 
         <div class="col">
             <label>Horario inicio:</label><br>
-            <input class="inputForms" id="edit-HoraInicio" type="time" style="width:25%;"><br>
+            <input name="Horariomax" class="inputForms" id="editHoraInicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
-            <input class="inputForms" id="edit-HoraFinal" type="time" style="width:25%;"><br>
+            <input name="Horariofin" class="inputForms" id="edit-HoraFinal" type="time" style="width:25%;"><br>
 
 
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
-            <input class="inputForms" id="edit-EdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="Edadmin" class="inputForms" id="editEdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" id="edit-EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="Edadmax" class="inputForms" id="editEdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
 
 
         </div>
 
         <label>Profesor:</label><br>
-        <select id="edit-Profesor" name="IdUsuario" class="inputForms" style="height: 3.5vh;">
+        <select name="Profesor" id="editProfesor"  class="inputForms" style="height: 3.5vh;">
             <option>Pablo</option>
             <option>Sele</option>
             <option>Cesár</option>
             <option>Pablo</option>
         </select><br>
         <label>Costo:</label><br>
-        <input class="inputForms" id="edit-Costo" type="number" name="Costo" min="0" placeholder="Escribir..."><br>
+        <input name="Costo" class="inputForms" id="editCosto" type="number" min="0" placeholder="Escribir..."><br>
         <div class="error">
             <p>El nombre del taller ya existe!</p>
             <p>El nombre del taller ya existe!</p>
@@ -149,15 +151,15 @@
 </header>
 
 
-<div class="filtros2">
+<div class="filtros">
     <div class="buscador">
         <form method="get" action="@Url.Action("MyAction", "MyController")">
         <input type="search"id="search" placeholder="Nombre, edad, día..." />
         </form>
-@*         <div class="checar">
+        <div class="checar">
             <input type="checkbox" id="talleresActuales" />
             <label for="talleresActuales">Ver solo talleres actuales</label>
-        </div> *@
+        </div>
     </div>
 
 
