@@ -1,153 +1,86 @@
-﻿@{
+﻿@using ProyectoRegistros.Models
+@model ProyectoRegistros.Areas.Profe.Models.ViewModels.MisTalleresViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     Layout = "LayoutProfe";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="~/css/style.css">
-
-</head>
-<body>
-    <header class="principal">
-        <div class="izq">
-            <i class="menu material-symbols-outlined">menu</i>
-            <h2>Registro</h2>
-        </div>
-    </header>
-
-
-    <aside id="menu-abierto">
-        <img src="/img/logo.png">
-        <h3>Profesora</h3>
-        <h3>Caro</h3>
-        <div>
-            <span class="material-symbols-outlined">edit_square</span>
-            <a href="/Profe/Profe/Index">Talleres</a>
-        </div>
-        <div>
-            <span class="material-symbols-outlined">library_books</span>
-            <a href="/Profe/Profe/RegistroForm">Registros</a>
-        </div>
-
-        <div>
-            <span class="material-symbols-outlined">vertical_align_bottom</span>
-            <a href="/Profe/Profe/ExportarDatos">Exportar datos</a>
-        </div>
-        <div>
-            <span class="material-symbols-outlined">logout</span>
-            <a href="~/Home/Index">Cerrar sesión</a>
-        </div>
-    </aside>
-
-    <main>
-        <form id="datos-alumno">
+  
+  
+        <form id="datos-alumno" method="get" asp-action="RegistroForm">
             <h3>Datos del alumno</h3><br>
             <section>
                 <label>Nombre:</label><br>
-                <input type="text" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..."><br>
                 <label>Fecha de cumpleaños:</label><br>
-                <input type="date"><br>
+                <input asp-for="Alumno.FechaCumple" type="date"><br>
                 <label>Dirección:</label><br>
-                <input type="text" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..."><br>
             </section>
             <section>
                 <label>Edad:</label><br>
-                <input type="number" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.Edad" type="number" placeholder="Escribir..."><br>
                 <label>Número de contacto:</label><br>
-                <input type="text" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..."><br>
             </section>
 
             <section id="datAlum-padeci">
-                <span><label>Padecimientos</label><input style="width: 10vw; " type="checkbox"></span><br>
-                <textarea placeholder="Escribir..." disabled></textarea><br>
-            </section><br>
+                <span><label>Padecimientos</label><input type="checkbox"/></span><br>
+                <textarea asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
+            </section>
 
 
             <section>
                 <label>Tutor:</label><br>
-                <input type="text" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..."><br>
                 <label>Email:</label><br>
-                <input type="email" placeholder="Escribir..."><br>
+                <input asp-for="Alumno.Email" type="email" placeholder="Escribir..."><br>
             </section>
             <section>
                 <label>Teléfono:</label><br>
-                <input type="text" placeholder="Escribir..."><br>
-            </section>
+                <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..."><br>
+            </section><br>
 
 
-            <hr size="2" width="167%"><br>
-            <!---->
+            <hr size="2" width="100%" style="grid-column: span 2;">
+
+            <!--listaaaaaaaaaa-->
             <h3>Oferta de talleres</h3><br>
-            <div id="contenedor-talleres">
-                <div class="op-taller">
-                    <input type="checkbox">
-                    <label>AcuarelaKids</label>
-                    <b>|</b>
-                    <label>Lunes Viernes</label>
-                    <b>|</b>
-                    <label>5:00 - 6:00 pm</label>
-                    <b>|</b>
-                    <label>5 espacios</label>
-                </div><br>
+             <div id="contenedor-talleres"> 
+            @foreach(var taller in Model.Talleres){
+           
+                <div for="check" class="op-taller">
+                    <input id="check" name="check" type="checkbox">
+                    <label for="check">@taller.Nombre</label>
+                    <label>@taller.Dias</label>
+                    <label>@taller.HoraInicio - @taller.HoraFinal</label>
+                    <label>@taller.LugaresDisp</label>
+                 </div><br> 
+            }  
+            
 
-                <div class="op-taller">
-                    <input type="checkbox">
-                    <label>AcuarelaKids</label>
-                    <b>|</b>
-                    <label>Lunes Viernes</label>
-                    <b>|</b>
-                    <label>5:00 - 6:00 pm</label>
-                    <b>|</b>
-                    <label>4 espacios</label>
-                </div><br>
-
-                <div class="op-taller">
-                    <input type="checkbox">
-                    <label>AcuarelaKids</label>
-                    <b>|</b>
-                    <label>Lunes Viernes</label>
-                    <b>|</b>
-                    <label>5:00 - 6:00 pm</label>
-                    <b>|</b>
-                    <label>8 espacios</label>
-                </div><br>
-
-                <div class="op-taller">
-                    <input type="checkbox">
-                    <label>AcuarelaKids</label>
-                    <b>|</b>
-                    <label>Lunes Viernes</label>
-                    <b>|</b>
-                    <label>5:00 - 6:00 pm</label>
-                    <b>|</b>
-                    <label>2 espacios</label>
-                </div><br>
-            </div><br>
+        </div><br> 
             <div id="contenedor-abajo">
                 <div class="tamaño">
                     <div>
                         <label>Atención psicopedagogica</label>
-                        <input type="checkbox">
                     </div>
-                    <input type="text" placeholder="Escribir...">
+                    <span><input asp-for="Alumno.AtencionPsico" type="text" placeholder="Escribir el día..." ></span>
+                    
                 </div><br>
 
                 <div class="tamaño">
                     <label>Lista de espera</label>
                     <select>
-                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
-                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
-                        <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
+                    @foreach(var t in Model.Talleres){
+                        <option>@t.Nombre<span> | @t.Dias</span> <span> | @t.HoraInicio - @t.HoraFinal</span></option>
+                    }
                     </select>
                 </div><br>
             </div><br>
 
-            <div style="display: inline-flex; justify-content: space-between; width: 170%;">
+            <div style="display: inline-flex; justify-content: space-between; width: 100%;
+            grid-column: span 2;">
                 <button type="button" class="buttons">Limpiar</button>
                 <button id="finalizar" type="button" class="buttons">Finalizar</button>
             </div>
@@ -193,6 +126,3 @@
                 </div>
             </form>
         </div>
-    </main>
-</body>
-</html>

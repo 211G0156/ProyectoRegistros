@@ -108,8 +108,11 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 foreach (var taller in request.TalleresEliminar)
                 {
                     var buscar = _context.Listatalleres.FirstOrDefault(x => x.IdTaller == taller && x.IdAlumno == request.Id);
+                    var lugares = _context.Tallers.FirstOrDefault(x => x.Id == taller);
+
                     if (buscar != null)
                     {
+                        lugares.LugaresDisp++;  // si se elimina se libera el espacio
                         _context.Listatalleres.Remove(buscar);
                     }
                 }
@@ -121,10 +124,15 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         {
             return View();
         }
-
+        [HttpGet]
         public IActionResult RegistroForm()
         {
-            return View();
+            var viewModel = new MisTalleresViewModel
+            {
+                Alumno = new Alumno(),
+                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+            };
+            return View(viewModel);
         }
     }
 }

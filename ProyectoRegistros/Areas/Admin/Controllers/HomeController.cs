@@ -5,6 +5,7 @@ using ProyectoRegistros.Areas.Admin.Models;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Areas.Profe.Models;
 using ProyectoRegistros.Models;
+using ProyectoRegistros.Models.ViewModels;
 using System.Linq;
 
 namespace ProyectoRegistros.Areas.Admin.Controllers
@@ -173,10 +174,15 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             }
             return Ok(new { success = true });
         }
-
+        [HttpGet]
         public IActionResult RegistroForm()
         {
-            return View();
+            var viewModel = new MisTalleresViewModel
+            {
+                Alumno = new Alumno(),
+                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+            };
+            return View(viewModel);
         }
         public IActionResult ExportarDatos()
         {
