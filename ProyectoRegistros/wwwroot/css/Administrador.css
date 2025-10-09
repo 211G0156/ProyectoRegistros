@@ -252,6 +252,10 @@ input[type=search] {
     background-color: white;
 /*    width: 70%;
 */}
+.botones button{
+    background-color:transparent;
+    border:none;
+}
 .historial {
     position: fixed;
     top: 0;
