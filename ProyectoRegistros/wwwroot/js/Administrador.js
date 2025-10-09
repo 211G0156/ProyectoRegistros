@@ -95,7 +95,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+document.querySelectorAll('.btneliminar').forEach(btn => {
+    btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        var nombre = btn.getAttribute('data-nombre');
 
+        var deleteInput = document.getElementById('DeleteId');
+        if (deleteInput) {
+            deleteInput.value = id;
+            document.querySelector('#modal-DeleteTaller label').textContent = nombre;
+            document.getElementById('modal-DeleteTaller').style.display = 'block';
+        } else {
+            console.warn('No se encontró #DeleteId en el DOM');
+        }
+    });
+});
+
+var deleteForm = document.querySelector('#modal-DeleteTaller form');
+if (deleteForm) {
+    deleteForm.addEventListener('submit', function (e) {
+        var val = document.getElementById('DeleteId')?.value;
+        console.log('Enviando formulario EliminarTaller, id =', val);
+    });
+}
 
 // crear taller
 // en vista index
@@ -226,3 +248,4 @@ document.querySelector("#finalizar").addEventListener("click", function () {
     recibo.style.display = "block";
     console.log("pipippip");
 });
+

@@ -34,7 +34,7 @@
             <label>Edad mínima:</label><br>
             <input class="inputForms" name="EdadMin" style="width:15%;" min="0" type="number" placeholder="..." required><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" name="EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" name=" EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
         </div>
 
         <label>Profesor:</label><br>
@@ -118,12 +118,13 @@
 
 <!--MODAL PARA ELIMINAR-->
 <div class="modal" id="modal-DeleteTaller">
-    <form asp-area="Admin" asp-action="EliminarTaller" asp-controller="Home" style=" margin: 33vh auto; ">
+    <form asp-area="Admin" asp-action="EliminarTaller" asp-controller="Home" method="post">
+        <input type="hidden" id="DeleteId" name="id" />
         <button class="cerrar" type="button">X</button><br>
         <fieldset>
             <legend>
                 <h2>¿Desea eliminar este taller?</h2>
-                <label style="color: red; font-size: 3vh;">AcuarelaKids</label>
+                <label style="color: red; font-size: 3vh;"></label>
             </legend>
         </fieldset>
 
@@ -132,8 +133,6 @@
         </div>
     </form>
 </div>
-
-
 
 
 
@@ -197,12 +196,12 @@
                         <td>$@taller.Costo</td>
                         <td>
                             <div class="botones">
-                                <a href="#" data-id="@taller.Id">
+                                <a href="@Url.Action("EditarTaller", "Home", new { id = taller.Id, area = "Admin" })">
                                     <img class="btneditar" src="~/img/edit.png" />
                                 </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = taller, area = "Admin" })" class="btneliminar">
+                                    <button type="button" data-id="@taller.Id" data-nombre="@taller.Nombre">
                                     <img class="btneliminar" src="~/img/X.png" />
-                                </a>
+                                    </button>
                             </div>
                         </td>
                     </tr>
@@ -213,4 +212,3 @@
     </div>
 
 </div>
-

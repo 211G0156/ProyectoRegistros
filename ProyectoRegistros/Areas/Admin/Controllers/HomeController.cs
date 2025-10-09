@@ -33,6 +33,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModel
                 {
+                    Id = t.Id,
                     Nombre = t.Nombre,
                     Dias = t.Dias,
                     Espacios = t.LugaresDisp,
@@ -51,7 +52,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(talleres);
         }
-            public IActionResult Alumnos()
+        public IActionResult Alumnos()
         {
             var alumnos = _context.Alumnos
                 .Include(a => a.Listatalleres)
@@ -128,51 +129,71 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult EditarTaller(int id)
+        {
+            var taller = _context.Tallers.Find(id);
+            if (taller == null) return NotFound();
+
+            var vm = new NuevoTallerVM
+            {
+                Id = taller.Id,
+                Nombre = taller.Nombre,
+                Dias = taller.Dias,
+                LugaresDisp = taller.LugaresDisp,
+                HoraInicio = taller.HoraInicio,
+                HoraFinal = taller.HoraFinal,
+                EdadMin = taller.EdadMin,
+                EdadMax = taller.EdadMax,
+                Costo = taller.Costo,
+                IdUsuario = taller.IdUsuario
+            };
+
+            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
+            return View(vm);
+        }
+
         [HttpPost]
         public IActionResult EditarTaller(NuevoTallerVM vm)
         {
             if (ModelState.IsValid)
             {
-                var EditTaller = _context.Tallers.Find(vm.Id);
-                if(EditTaller!=null)
+                var taller = _context.Tallers.Find(vm.Id);
+                if (taller != null)
                 {
-                    EditTaller.Nombre = vm.Nombre;
-                    EditTaller.LugaresDisp = vm.LugaresDisp;
-                    EditTaller.Dias = vm.Dias;
-                    EditTaller.HoraInicio = vm.HoraInicio;
-                    EditTaller.HoraFinal = vm.HoraFinal;
-                    EditTaller.EdadMin = vm.EdadMin;
-                    EditTaller.EdadMax = vm.EdadMax;
-                    EditTaller.Costo = vm.Costo;
-                    EditTaller.IdUsuario = vm.IdUsuario;
+                    taller.Nombre = vm.Nombre;
+                    taller.Dias = vm.Dias;
+                    taller.LugaresDisp = vm.LugaresDisp;
+                    taller.HoraInicio = vm.HoraInicio;
+                    taller.HoraFinal = vm.HoraFinal;
+                    taller.EdadMin = vm.EdadMin;
+                    taller.EdadMax = vm.EdadMax;
+                    taller.Costo = vm.Costo;
+                    taller.IdUsuario = vm.IdUsuario;
 
-                    _context.Update(EditTaller);
+                    _context.Update(taller);
                     _context.SaveChanges();
-
-                    return RedirectToAction("Index");
-
+                    return View("Index", taller);
                 }
+                return NotFound();
             }
-            return View(vm);
-
+            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
+            return View("Index");
         }
 
+
         [HttpPost]
-        public IActionResult EliminarTaller(TallerEliminarRequest request)
+        public IActionResult EliminarTaller(int? id)
         {
-            if (request.TalleresEliminar != null && request.TalleresEliminar.Length > 0)
+            if (!id.HasValue) return BadRequest("Falta el id del taller.");
+            var taller = _context.Tallers.Find(id.Value);
+            if (taller != null)
             {
-                foreach (var taller in request.TalleresEliminar)
-                {
-                    var buscar = _context.Listatalleres.FirstOrDefault(x => x.IdTaller == taller && x.IdAlumno == request.Id);
-                    if (buscar != null)
-                    {
-                        _context.Listatalleres.Remove(buscar);
-                    }
-                }
+                _context.Tallers.Remove(taller);
                 _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            return Ok(new { success = true });
+            return NotFound();
         }
         [HttpGet]
         public IActionResult RegistroForm()

@@ -4,7 +4,7 @@ namespace ProyectoRegistros.Areas.Admin.Models.ViewModels
 {
     public class NuevoTallerVM
     {
-        public int Id { get; internal set; }
+        public int Id { get; set; }
 
         public string Nombre { get; set; }
         public string Dias { get; set; }
