@@ -962,7 +962,7 @@ aside {
             font-weight: normal;
             overflow-x: hidden;
         }
-         input, select{
+        #datos-alumno input, select{
             /* width: 60%;  */
             height: 3vh;
             padding: 5px;
@@ -987,7 +987,7 @@ aside {
         #datAlum-padeci{
             grid-column: span 2;
         }
-        input[type ="checkbox"]{  /*checkbox*/
+        #datos-alumno input[type ="checkbox"]{  /*checkbox*/
             width: 2.5vh;
             box-shadow: none;
             background-color: #4c4545;
