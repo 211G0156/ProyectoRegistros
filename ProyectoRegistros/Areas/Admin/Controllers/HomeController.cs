@@ -128,30 +128,33 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             return View("Index", talleres);
         }
 
-
         [HttpGet]
-        public IActionResult EditarTaller(int id)
+        public IActionResult GetTaller(int id)
         {
-            var taller = _context.Tallers.Find(id);
-            if (taller == null) return NotFound();
+            var taller = _context.Tallers
+                .Include(t => t.IdUsuarioNavigation)
+                .FirstOrDefault(t => t.Id == id);
 
-            var vm = new NuevoTallerVM
+            if (taller == null)
+                return NotFound();
+
+            return Json(new
             {
-                Id = taller.Id,
-                Nombre = taller.Nombre,
-                Dias = taller.Dias,
-                LugaresDisp = taller.LugaresDisp,
-                HoraInicio = taller.HoraInicio,
-                HoraFinal = taller.HoraFinal,
-                EdadMin = taller.EdadMin,
-                EdadMax = taller.EdadMax,
-                Costo = taller.Costo,
-                IdUsuario = taller.IdUsuario
-            };
-
-            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
-            return View(vm);
+                id = taller.Id,
+                nombre = taller.Nombre,
+                dias = taller.Dias,
+                lugaresDisp = taller.LugaresDisp,
+                horaInicio = taller.HoraInicio.ToString(@"hh\:mm"),
+                horaFinal = taller.HoraFinal.ToString(@"hh\:mm"),
+                edadMin = taller.EdadMin,
+                edadMax = taller.EdadMax,
+                costo = taller.Costo,
+                idUsuario = taller.IdUsuario,
+                profesor = taller.IdUsuarioNavigation?.Nombre
+            });
         }
+
+
 
         [HttpPost]
         public IActionResult EditarTaller(NuevoTallerVM vm)
@@ -173,7 +176,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
                     _context.Update(taller);
                     _context.SaveChanges();
-                    return View("Index", taller);
+                    return RedirectToAction("Index");
                 }
                 return NotFound();
             }
@@ -183,18 +186,28 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public IActionResult EliminarTaller(int? id)
+        public IActionResult EliminarTaller(int id)
         {
-            if (!id.HasValue) return BadRequest("Falta el id del taller.");
-            var taller = _context.Tallers.Find(id.Value);
-            if (taller != null)
+            var taller = _context.Tallers
+                .Include(t => t.Listatalleres)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (taller == null)
+                return NotFound();
+
+            // Si el taller tiene alumnos inscritos, no permitir eliminar
+            if (taller.Listatalleres != null && taller.Listatalleres.Any())
             {
-                _context.Tallers.Remove(taller);
-                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return NotFound();
+
+            _context.Tallers.Remove(taller);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
+
+
         [HttpGet]
         public IActionResult RegistroForm()
         {

@@ -95,7 +95,7 @@
         </div>
 
         <label>Profesor:</label><br>
-        <select class="inputForms" name="IdUsuario" style="height: 3.5vh;">
+        <select class="inputForms" id="editProfesor" name="IdUsuario" style="height: 3.5vh;">
             <option value="">Seleccione un profesor...</option>
             @foreach (var profesor in ViewBag.Profesores)
             {
@@ -196,11 +196,13 @@
                         <td>$@taller.Costo</td>
                         <td>
                             <div class="botones">
-                                <a href="@Url.Action("EditarTaller", "Home", new { id = taller.Id, area = "Admin" })">
-                                    <img class="btneditar" src="~/img/edit.png" />
-                                </a>
-                                    <button type="button" data-id="@taller.Id" data-nombre="@taller.Nombre">
-                                    <img class="btneliminar" src="~/img/X.png" />
+@*<a href="@Url.Action("EditarTaller", "Home", new { id = taller.Id, area = "Admin" })">*@ 
+                                <button type="button" class="btneditar" >
+                                    <img src="~/img/edit.png" data-id="@taller.Id" />
+                                </button>
+
+                                    <button type="button" >
+                                    <img class="btneliminar" src="~/img/X.png" data-id="@taller.Id" data-nombre="@taller.Nombre" />
                                     </button>
                             </div>
                         </td>

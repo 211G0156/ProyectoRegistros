@@ -95,29 +95,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-document.querySelectorAll('.btneliminar').forEach(btn => {
-    btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-id');
-        var nombre = btn.getAttribute('data-nombre');
 
-        var deleteInput = document.getElementById('DeleteId');
-        if (deleteInput) {
-            deleteInput.value = id;
-            document.querySelector('#modal-DeleteTaller label').textContent = nombre;
-            document.getElementById('modal-DeleteTaller').style.display = 'block';
-        } else {
-            console.warn('No se encontró #DeleteId en el DOM');
-        }
-    });
-});
 
-var deleteForm = document.querySelector('#modal-DeleteTaller form');
-if (deleteForm) {
-    deleteForm.addEventListener('submit', function (e) {
-        var val = document.getElementById('DeleteId')?.value;
-        console.log('Enviando formulario EliminarTaller, id =', val);
-    });
-}
+//var deleteForm = document.querySelector('#modal-DeleteTaller form');
+//if (deleteForm) {
+//    deleteForm.addEventListener('submit', function (e) {
+//        var val = document.getElementById('DeleteId')?.value;
+//        console.log('Enviando formulario EliminarTaller, id =', val);
+//    });
+//}
+
 
 // crear taller
 // en vista index
@@ -135,6 +122,60 @@ document.querySelectorAll(".cerrar").forEach(btnCerrar => {
         const modal = btnCerrar.closest(".modal");
         if (modal) {
             modal.style.display = "none";
+        }
+    });
+});
+
+
+// EDITAR TALLER
+$(document).on("click", ".btneditar", function (e) {
+    e.preventDefault();
+    let id = $(this).data("id");
+
+    $.ajax({
+        url: `/Admin/Home/GetTaller/${id}`,
+        type: "GET",
+        success: function (data) {
+            $("#EditId").val(data.id);
+            $("#editNombre").val(data.nombre);
+            $("#editDias").val(data.dias);
+            $("#editEspacios").val(data.lugaresDisp);
+            $("#editHoraInicio").val(data.horaInicio);
+            $("#edit-HoraFinal").val(data.horaFinal);
+            $("#editEdadMin").val(data.edadMin);
+            $("#editEdadMax").val(data.edadMax);
+            $("#editCosto").val(data.costo);
+            $("select[name='IdUsuario']").val(data.idUsuario);
+
+            $("#modal-EditTaller").fadeIn();
+        },
+        error: function () {
+            alert("No se pudo obtener la información del taller");
+        }
+    });
+});
+
+
+// ELIMINAR TALLER
+$(document).on("click", ".btneliminar", function (e) {
+    e.preventDefault();
+    let id = $(this).data("id");
+    $("#modal-DeleteTaller").data("id", id).fadeIn();
+});
+
+$(document).on("submit", "#modal-DeleteTaller form", function (e) {
+    e.preventDefault();
+    let id = $("#modal-DeleteTaller").data("id");
+
+    $.ajax({
+        url: `/Admin/Home/EliminarTaller/${id}`,
+        type: "POST",
+        success: function () {
+            alert("Taller eliminado.");
+            location.reload();
+        },
+        error: function () {
+            alert("Error al eliminar el taller.");
         }
     });
 });
