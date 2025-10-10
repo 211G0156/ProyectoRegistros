@@ -30,6 +30,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var talleres = _context.Tallers
+                .Where(t => t.Estado == 1)
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModel
                 {
@@ -47,8 +48,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 .ToList();
 
             ViewBag.Profesores = _context.Usuarios
-    .Where(u => u.IdRol == 2)
-    .ToList();
+                .Where(u => u.IdRol == 2)
+                .ToList();
 
             return View(talleres);
         }
@@ -153,8 +154,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             });
         }
 
-
-
         [HttpPost]
         public IActionResult EditarTaller(NuevoTallerVM vm)
         {
@@ -194,15 +193,15 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             if (taller == null)
                 return NotFound();
 
-            // Si el taller tiene alumnos inscritos, no permitir eliminar
-            if (taller.Listatalleres != null && taller.Listatalleres.Any())
-            {
-                return BadRequest("No se puede eliminar este taller, tiene alumnos registrados.");
-            }
-            _context.Tallers.Remove(taller);
+            taller.Estado = 0;
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            if (taller.Listatalleres != null && taller.Listatalleres.Any())
+            {
+                return Ok("El taller tiene alumnos registrados. Se aplicó baja lógica.");
+            }
+
+            return Ok("Taller eliminado correctamente.");
         }
 
 

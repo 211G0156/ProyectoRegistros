@@ -162,42 +162,45 @@ document.querySelectorAll(".btneditar").forEach(boton => {
 document.addEventListener("DOMContentLoaded", function () {
     const deleteModal = document.getElementById("modal-DeleteTaller");
     const deleteForm = deleteModal?.querySelector("form");
+    const inputDeleteId = document.getElementById("DeleteId");
+    const labelRojo = deleteModal.querySelector("label");
 
     document.querySelectorAll(".btneliminar").forEach(botonImg => {
         botonImg.addEventListener("click", () => {
             const boton = botonImg.closest("button");
-            const id = boton.dataset.id;
-            const nombre = boton.dataset.nombre;
-
-            document.getElementById("DeleteId").value = id;
-
-            const labelRojo = deleteModal.querySelector("label");
-            labelRojo.textContent = `${nombre}`;
-
+            inputDeleteId.value = boton.dataset.id;
+            labelRojo.textContent = `Taller: ${boton.dataset.nombre}`;
             deleteModal.style.display = "block";
         });
+    });
+
+    deleteModal.querySelector(".cerrar")?.addEventListener("click", () => {
+        deleteModal.style.display = "none";
     });
 
     if (deleteForm) {
         deleteForm.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const id = document.getElementById("DeleteId").value;
+            const id = inputDeleteId.value;
             if (!id) {
-                alert("No se encontró el ID del taller a eliminar.");
+                alert("No se encontró el ID del taller.");
                 return;
             }
 
             try {
-                const response = await fetch(`/Admin/Home/EliminarTaller/${id}`, {
-                    method: "POST"
-                });
+                const confirmDelete = confirm(
+                    "Si el taller tiene alumnos registrados, se aplicará baja lógica. ¿Desea continuar?"
+                );
+                if (!confirmDelete) return;
+
+                const response = await fetch(`/Admin/Home/EliminarTaller/${id}`, { method: "POST" });
+                const text = await response.text();
 
                 if (response.ok) {
-                    alert("Taller eliminado correctamente.");
+                    alert(text);
                     window.location.reload();
                 } else {
-                    const text = await response.text();
-                    alert(text || "No se puede eliminar el taller.");
+                    alert(text || "No se pudo eliminar el taller.");
                 }
             } catch (err) {
                 console.error(err);

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProyectoRegistros.Areas.Admin.Models.ViewModels;
+using ProyectoRegistros.Models;
 
 namespace ProyectoRegistros.Areas.Admin.Controllers
 {
@@ -7,6 +9,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
     [Authorize(Roles = "Administrador")]
     public class UsuariosController:Controller
     {
+        private readonly ProyectoregistroContext _context;
+
+        public UsuariosController(ProyectoregistroContext context)
+        {
+            _context = context;
+        }
         public IActionResult Index()
         {
             //irán las consultas db
@@ -14,19 +22,19 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Agregar(/* parámetros del usuario */)
+        public IActionResult AgregarUsuario(UsuariosViewModel vm)
         {
             return RedirectToAction("Usuarios");
         }
 
         [HttpPost]
-        public IActionResult Editar(/* parámetros del usuario */)
+        public IActionResult EditarUsuario(/* parámetros del usuario */)
         {
             return RedirectToAction("Usuarios");
         }
 
         [HttpPost]
-        public IActionResult Eliminar(int id)
+        public IActionResult EliminarUsuario(int id)
         {
             return RedirectToAction("Usuarios");
         }
