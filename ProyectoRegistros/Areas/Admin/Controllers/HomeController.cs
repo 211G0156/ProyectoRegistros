@@ -149,8 +149,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 edadMin = taller.EdadMin,
                 edadMax = taller.EdadMax,
                 costo = taller.Costo,
-                idUsuario = taller.IdUsuario,
-                profesor = taller.IdUsuarioNavigation?.Nombre
+                idUsuario = taller.IdUsuario
             });
         }
 
@@ -198,9 +197,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             // Si el taller tiene alumnos inscritos, no permitir eliminar
             if (taller.Listatalleres != null && taller.Listatalleres.Any())
             {
-                return RedirectToAction("Index");
+                return BadRequest("No se puede eliminar este taller, tiene alumnos registrados.");
             }
-
             _context.Tallers.Remove(taller);
             _context.SaveChanges();
 

@@ -128,61 +128,87 @@ document.querySelectorAll(".cerrar").forEach(btnCerrar => {
 
 
 // EDITAR TALLER
-$(document).on("click", ".btneditar", function (e) {
-    e.preventDefault();
-    let id = $(this).data("id");
+document.querySelectorAll(".btneditar").forEach(boton => {
+    boton.addEventListener("click", async () => {
+        const id = boton.dataset.id;
 
-    $.ajax({
-        url: `/Admin/Home/GetTaller/${id}`,
-        type: "GET",
-        success: function (data) {
-            $("#EditId").val(data.id);
-            $("#editNombre").val(data.nombre);
-            $("#editDias").val(data.dias);
-            $("#editEspacios").val(data.lugaresDisp);
-            $("#editHoraInicio").val(data.horaInicio);
-            $("#edit-HoraFinal").val(data.horaFinal);
-            $("#editEdadMin").val(data.edadMin);
-            $("#editEdadMax").val(data.edadMax);
-            $("#editCosto").val(data.costo);
-            $("select[name='IdUsuario']").val(data.idUsuario);
+        try {
+            const response = await fetch(`/Admin/Home/GetTaller/${id}`);
+            if (!response.ok) throw new Error("Error al obtener taller");
 
-            $("#modal-EditTaller").fadeIn();
-        },
-        error: function () {
-            alert("No se pudo obtener la información del taller");
+            const data = await response.json();
+
+            document.getElementById("EditId").value = data.id;
+            document.getElementById("editNombre").value = data.nombre;
+            document.getElementById("editDias").value = data.dias;
+            document.getElementById("editEspacios").value = data.lugaresDisp;
+            document.getElementById("editHoraInicio").value = data.horaInicio;
+            document.getElementById("editHoraFinal").value = data.horaFinal;
+            document.getElementById("editEdadMin").value = data.edadMin;
+            document.getElementById("editEdadMax").value = data.edadMax;
+            document.getElementById("editCosto").value = data.costo;
+            document.getElementById("editProfesor").value = data.idUsuario;
+
+            document.getElementById("modal-EditTaller").style.display = "block";
+        } catch (err) {
+            console.error(err);
+            alert("Error al cargar datos del taller");
         }
     });
 });
 
 
 // ELIMINAR TALLER
-$(document).on("click", ".btneliminar", function (e) {
-    e.preventDefault();
-    let id = $(this).data("id");
-    $("#modal-DeleteTaller").data("id", id).fadeIn();
-});
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteModal = document.getElementById("modal-DeleteTaller");
+    const deleteForm = deleteModal?.querySelector("form");
 
-$(document).on("submit", "#modal-DeleteTaller form", function (e) {
-    e.preventDefault();
-    let id = $("#modal-DeleteTaller").data("id");
+    document.querySelectorAll(".btneliminar").forEach(botonImg => {
+        botonImg.addEventListener("click", () => {
+            const boton = botonImg.closest("button");
+            const id = boton.dataset.id;
+            const nombre = boton.dataset.nombre;
 
-    $.ajax({
-        url: `/Admin/Home/EliminarTaller/${id}`,
-        type: "POST",
-        success: function () {
-            alert("Taller eliminado.");
-            location.reload();
-        },
-        error: function () {
-            alert("Error al eliminar el taller.");
-        }
+            document.getElementById("DeleteId").value = id;
+
+            const labelRojo = deleteModal.querySelector("label");
+            labelRojo.textContent = `${nombre}`;
+
+            deleteModal.style.display = "block";
+        });
     });
+
+    if (deleteForm) {
+        deleteForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const id = document.getElementById("DeleteId").value;
+            if (!id) {
+                alert("No se encontró el ID del taller a eliminar.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Admin/Home/EliminarTaller/${id}`, {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    alert("Taller eliminado correctamente.");
+                    window.location.reload();
+                } else {
+                    const text = await response.text();
+                    alert(text || "No se puede eliminar el taller.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error al eliminar el taller.");
+            }
+        });
+    }
 });
 
 
 
-// modal de editar
 document.querySelectorAll(".btneditar").forEach(boton => {
     boton.addEventListener("click", function () {
         modEditar.style.display = "block";

@@ -34,7 +34,7 @@
             <label>Edad mínima:</label><br>
             <input class="inputForms" name="EdadMin" style="width:15%;" min="0" type="number" placeholder="..." required><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" name=" EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" name="EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
         </div>
 
         <label>Profesor:</label><br>
@@ -75,21 +75,21 @@
         <input name="Dias" class="inputForms" id="editDias" type="text" placeholder="Escribir..."><br>
 
         <label>Espacios:</label><br>
-        <input name="Lugares_Disp" class="inputForms" id="editEspacios" type="number" min="0" placeholder="Escribir..."><br>
+        <input name="LugaresDisp" class="inputForms" id="editEspacios" type="number" min="0" placeholder="Escribir..."><br>
 
         <div class="col">
             <label>Horario inicio:</label><br>
-            <input name="Horario_inicio" class="inputForms" id="editHoraInicio" type="time" style="width:25%;"><br>
+            <input name="HoraInicio" class="inputForms" id="editHoraInicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
-            <input name="Horario_final" class="inputForms" id="edit-HoraFinal" type="time" style="width:25%;"><br>
+            <input name="HoraFinal" class="inputForms" id="editHoraFinal" type="time" style="width:25%;"><br>
 
 
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
-            <input name="Edad_min" class="inputForms" id="editEdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="EdadMin" class="inputForms" id="editEdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
-            <input name="Edad_max" class="inputForms" id="editEdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="EdadMax" class="inputForms" id="editEdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
 
 
         </div>
@@ -111,7 +111,7 @@
 
         </div>
         <div style="display: flex; justify-content: center;">
-            <button type="submit" style="display: flex; justify-content: center;" class="buttons">Guardar</button>
+            <button type="submit"  style="display: flex; justify-content: center;" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
@@ -197,12 +197,12 @@
                         <td>
                             <div class="botones">
 @*<a href="@Url.Action("EditarTaller", "Home", new { id = taller.Id, area = "Admin" })">*@ 
-                                <button type="button" class="btneditar" >
-                                    <img src="~/img/edit.png" data-id="@taller.Id" />
+                                        <button type="button" class="btneditar" data-id="@taller.Id">
+                                    <img src="~/img/edit.png"  />
                                 </button>
 
-                                    <button type="button" >
-                                    <img class="btneliminar" src="~/img/X.png" data-id="@taller.Id" data-nombre="@taller.Nombre" />
+                                <button type="button" data-id="@taller.Id" data-nombre="@taller.Nombre">
+                                    <img class="btneliminar" src="~/img/X.png"  />
                                     </button>
                             </div>
                         </td>
