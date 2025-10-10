@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
         botonImg.addEventListener("click", () => {
             const boton = botonImg.closest("button");
             inputDeleteId.value = boton.dataset.id;
-            labelRojo.textContent = `Taller: ${boton.dataset.nombre}`;
+            labelRojo.textContent = `${boton.dataset.nombre}`;
             deleteModal.style.display = "block";
         });
     });

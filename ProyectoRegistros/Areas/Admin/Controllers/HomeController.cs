@@ -32,6 +32,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var talleres = _context.Tallers
                 .Where(t => t.Estado == 1)
                 .Include(t => t.IdUsuarioNavigation)
+                .OrderBy(t => t.Nombre)
                 .Select(t => new TalleresViewModel
                 {
                     Id = t.Id,
