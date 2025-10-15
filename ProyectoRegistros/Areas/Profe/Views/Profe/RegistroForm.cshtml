@@ -5,124 +5,195 @@
     Layout = "LayoutProfe";
 }
 
-  
-  
-        <form id="datos-alumno" method="get" asp-action="RegistroForm">
-            <h3>Datos del alumno</h3><br>
-            <section>
-                <label>Nombre:</label><br>
-                <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..."><br>
-                <label>Fecha de cumpleaños:</label><br>
-                <input asp-for="Alumno.FechaCumple" type="date"><br>
-                <label>Dirección:</label><br>
-                <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..."><br>
-            </section>
-            <section>
-                <label>Edad:</label><br>
-                <input asp-for="Alumno.Edad" type="number" placeholder="Escribir..."><br>
-                <label>Número de contacto:</label><br>
-                <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..."><br>
-            </section>
-
-            <section id="datAlum-padeci">
-                <span><label>Padecimientos</label><input type="checkbox"/></span><br>
-                <textarea asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
-            </section>
 
 
-            <section>
-                <label>Tutor:</label><br>
-                <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..."><br>
-                <label>Email:</label><br>
-                <input asp-for="Alumno.Email" type="email" placeholder="Escribir..."><br>
-            </section>
-            <section>
-                <label>Teléfono:</label><br>
-                <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..."><br>
-            </section><br>
+<form id="datos-alumno" method="get" asp-action="RegistroForm">
+    <h3>Datos del alumno</h3><br>
+    <section>
+        <label>Nombre:</label><br>
+        <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..."><br>
+        <label>Fecha de cumpleaños:</label><br>
+        <input asp-for="Alumno.FechaCumple" type="date"><br>
+        <label>Dirección:</label><br>
+        <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..."><br>
+    </section>
+    <section>
+        <label>Edad:</label><br>
+        <input asp-for="Alumno.Edad" type="number" placeholder="Escribir..."><br>
+        <label>Número de contacto:</label><br>
+        <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..."><br>
+    </section>
+
+    <section id="datAlum-padeci">
+        <span><label>Padecimientos</label><input type="checkbox" /></span><br>
+        <textarea asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
+    </section>
 
 
-            <hr size="2" width="100%" style="grid-column: span 2;">
+    <section>
+        <label>Tutor:</label><br>
+        <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..."><br>
+        <label>Email:</label><br>
+        <input asp-for="Alumno.Email" type="email" placeholder="Escribir..."><br>
+    </section>
+    <section>
+        <label>Teléfono:</label><br>
+        <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..."><br>
+    </section><br>
 
-            <!--listaaaaaaaaaa-->
-            <h3>Oferta de talleres</h3><br>
-             <div id="contenedor-talleres"> 
-            @foreach(var taller in Model.Talleres){
-           
-                <div for="check" class="op-taller">
-                    <input id="check" name="check" type="checkbox">
-                    <label for="check">@taller.Nombre</label>
+
+    <hr size="2" width="100%" style="grid-column: span 2;">
+
+    <!--listaaaaaaaaaa-->
+    <h3>Oferta de talleres</h3><br>
+    <div id="contenedor-talleres">
+        @foreach (var taller in Model.Talleres)
+        {
+            if (taller.LugaresDisp >= 1)
+            {
+                <div class="op-taller">
+                    <input class="check" type="checkbox">
+                    <label id="nombreTaller">@taller.Nombre</label>
                     <label>@taller.Dias</label>
                     <label>@taller.HoraInicio - @taller.HoraFinal</label>
                     <label>@taller.LugaresDisp</label>
-                 </div><br> 
-            }  
-            
-
-        </div><br> 
-            <div id="contenedor-abajo">
-                <div class="tamaño">
-                    <div>
-                        <label>Atención psicopedagogica</label>
-                    </div>
-                    <span><input asp-for="Alumno.AtencionPsico" type="text" placeholder="Escribir el día..." ></span>
-                    
-                </div><br>
-
-                <div class="tamaño">
-                    <label>Lista de espera</label>
-                    <select>
-                    @foreach(var t in Model.Talleres){
-                        <option>@t.Nombre<span> | @t.Dias</span> <span> | @t.HoraInicio - @t.HoraFinal</span></option>
-                    }
-                    </select>
-                </div><br>
-            </div><br>
-
-            <div style="display: inline-flex; justify-content: space-between; width: 100%;
-            grid-column: span 2;">
-                <button type="button" class="buttons">Limpiar</button>
-                <button id="finalizar" type="button" class="buttons">Finalizar</button>
-            </div>
-        </form>
-
-
-        <div class="modal" id="modal-recibo">
-            <form>
-                <h2>Confirmación de datos</h2>
-                <section id="donativo">
-                    <label>Pagado</label>
-                    <input type="checkbox">
-                    <label>$300</label>
-                </section>
-
-                <hr size="2" width="99%" style="margin-top: -25px;"><br>
-                <section>
-                    <label>Nombre: </label><br>
-                    <label>Cumpleaños: </label><br>
-                    <label>Dirección: </label><br>
-                    <label>Número de contacto: </label><br>
-                    <label>Padecimientos: </label><br>
-                    <label>Tutor: </label><br>
-                    <label>Email: </label><br>
-                    <label>Telefono: </label><br>
-                    <label>Talleres registrados: </label><br>
-                </section>
-                <section>
-                    <label>Myriam Ramirez Carreño</label><br>
-                    <label>31/07/03</label><br>
-                    <label>Madero</label><br>
-                    <label>862125555</label><br>
-                    <label>No</label><br>
-                    <label>Selena Garcia</label><br>
-                    <label>Selena@gmail.com</label><br>
-                    <label>862125555</label><br>
-                    <label> AcuarelaKids, Teatro, Fotografía.</label><br>
-                </section>
-
-                <div style="display: inline-flex; justify-content: space-between; width: 100%;">
-                    <button type="button" class="buttons">Cancelar</button>
-                    <button type="submit" class="buttons">Aceptar</button>
                 </div>
-            </form>
+
+                <br>
+            }
+        }
+
+
+    </div><br>
+    <div id="contenedor-abajo">
+        <div class="tamaño">
+            <div>
+                <label>Atención psicopedagogica</label>
+            </div>
+            <span><input asp-for="Alumno.AtencionPsico" type="text" placeholder="Escribir el día..."></span>
+
+        </div><br>
+
+        <div class="tamaño">
+            <label>Lista de espera</label>
+            <select>
+                @foreach (var t in Model.Talleres)
+                {
+                    if (t.LugaresDisp < 1)
+                    {
+                        <option>@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
+                    }
+                }
+            </select>
+        </div><br>
+    </div><br>
+
+    <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
+        <button type="button" class="buttons">Limpiar</button>
+        <button id="finalizar" type="button" class="buttons">Finalizar</button>
+    </div>
+</form>
+
+
+<div class="modal" id="modal-recibo">
+    <form>
+        <h2>Confirmación de datos</h2>
+        <section id="donativo">
+            <label>Pagado</label>
+            <input type="checkbox">
+            <label>$300</label>
+        </section>
+
+        <hr size="2" width="99%" style="margin-top: -25px;"><br>
+        <section>
+            <label>Nombre: </label><br>
+            <label>Cumpleaños: </label><br>
+            <label>Dirección: </label><br>
+            <label>Número de contacto: </label><br>
+            <label>Padecimientos: </label><br>
+            <label>Tutor: </label><br>
+            <label>Email: </label><br>
+            <label>Telefono: </label><br>
+            <label>Talleres registrados: </label><br>
+        </section>
+        <section>
+            <label>Myriam Ramirez Carreño</label><br>
+            <label>31/07/03</label><br>
+            <label>Madero</label><br>
+            <label>862125555</label><br>
+            <label>No</label><br>
+            <label>Selena Garcia</label><br>
+            <label>Selena@gmail.com</label><br>
+            <label>862125555</label><br>
+            <label> AcuarelaKids, Teatro, Fotografía.</label><br>
+        </section>
+
+        <div style="display: inline-flex; justify-content: space-between; width: 100%;">
+            <button type="button" class="buttons">Cancelar</button>
+            <button type="submit" class="buttons">Aceptar</button>
         </div>
+    </form>
+</div>
+
+<script>
+
+    //         const buscarTexto = "Atencion psicopedagogica";
+
+    // document.querySelectorAll(".op-taller").forEach(opcion => {
+    //     opcion.addEventListener("click", function (e) {
+    //         // Evita que el clic directo en el checkbox duplique el cambio
+    //         if (e.target.tagName === "INPUT") return;
+
+    //         const checkbox = opcion.querySelector("input[type='checkbox']");
+    //         checkbox.checked = !checkbox.checked;
+
+    //         const nombreTaller = opcion.querySelector("#nombreTaller").textContent.trim();
+
+    //         // Si el nombre del taller coincide con el texto buscado
+    //         if (nombreTaller.toLowerCase().includes(buscarTexto.toLowerCase())) {
+    //             console.log("Se seleccionó el taller de Atención Psicopedagógica");
+    //             // Aquí puedes hacer lo que necesites, por ejemplo:
+    //             // opcion.style.display = "none";
+    //             // o ejecutar alguna otra función
+    //         }
+    //     });
+    // });
+
+
+        const buscarTexto = "Atencion psicopedagogica";
+
+        document.querySelectorAll(".op-taller").forEach(opcion => {
+            opcion.addEventListener("click", function (e) {
+                if (e.target.tagName === "INPUT") return;
+
+                const checkbox = opcion.querySelector("input[type='checkbox']");
+                checkbox.checked = !checkbox.checked;
+
+                const nombreTaller = opcion.querySelector("#nombreTaller").textContent.trim();
+                const labelDias = opcion.querySelectorAll("label")[1];
+
+                if (nombreTaller.toLowerCase().includes(buscarTexto.toLowerCase())) {
+
+                    let inputDias = opcion.querySelector(".input-dias");
+                    if (!inputDias) {
+                        inputDias = document.createElement("input");
+                        inputDias.type = "text";
+                        inputDias.classList.add("input-dias");
+                        inputDias.placeholder = "Escribe los días aquí...";
+                        inputDias.value = labelDias.textContent.trim();
+                        inputDias.style.marginLeft = "10px";
+
+                        labelDias.replaceWith(inputDias);
+
+                        inputDias.addEventListener("blur", () => {
+                            labelDias.textContent = inputDias.value.trim() || "Sin días";
+                            inputDias.replaceWith(labelDias);
+                        });
+                    }
+
+                    inputDias.focus();
+                }
+            });
+        });
+
+</script>

@@ -13,6 +13,8 @@ public partial class Taller
 
     public string Dias { get; set; } = null!;
 
+    public sbyte ConCita { get; set; }
+
     public TimeOnly HoraInicio { get; set; }
 
     public TimeOnly HoraFinal { get; set; }
