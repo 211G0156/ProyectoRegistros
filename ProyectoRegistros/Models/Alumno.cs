@@ -29,5 +29,5 @@ public partial class Alumno
 
     public int IdTaller { get; set; }
 
-    public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
+    public virtual ICollection<Listatalleres> Listatalleres { get; set; } = new List<Listatalleres>();
 }

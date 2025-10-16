@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Models;
 
@@ -17,26 +18,89 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            //irán las consultas db
-            return View("Alumnos");
+            var usuarios = _context.Usuario
+                .Where(u => u.Estado == 1)
+                .OrderBy(u => u.Nombre)
+                .ToList();
+
+            return View(usuarios);  
         }
 
         [HttpPost]
-        public IActionResult AgregarUsuario(UsuariosViewModel vm)
+        public IActionResult AgregarUsuario(Usuario usuario)
         {
-            return RedirectToAction("Usuarios");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var usuarios = new Usuario
+                    {
+                        Nombre = usuario.Nombre,
+                        Correo = usuario.Correo,
+                        NumTel = usuario.NumTel,
+                        Contraseña = usuario.Contraseña,
+                        IdRol = usuario.IdRol,
+                        Estado = 1
+                    };
+                    _context.Usuario.Add(usuario);
+                    _context.SaveChanges();
+                    return RedirectToAction("Usuarios");
+                }
+                catch(Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
+                }
+            }
+
+            ViewData["ShowAddModal"] = true;
+            return View("Usuarios", usuario);
+        }
+
+        [HttpGet]
+        public IActionResult GetUsuario(int id)
+        {
+            var usuario = _context.Usuario.FirstOrDefault(u => u.Id == id);
+            if (usuario == null)
+                return NotFound();
+
+            return Json(new
+            {
+                id = usuario.Id,
+                nombre = usuario.Nombre,
+                correo = usuario.Correo,
+                numTel = usuario.NumTel,
+                contraseña = usuario.Contraseña
+            });
         }
 
         [HttpPost]
-        public IActionResult EditarUsuario(/* parámetros del usuario */)
+        public IActionResult EditarUsuario(Usuario usuario)
         {
-            return RedirectToAction("Usuarios");
+            if (ModelState.IsValid)
+            {
+                var original = _context.Usuario.Find(usuario.Id);
+                if (original != null)
+                {
+                    original.Nombre = usuario.Nombre;
+                    original.Correo = usuario.Correo;
+                    original.NumTel = usuario.NumTel;
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View("Usuarios", _context.Usuario.ToList());
         }
 
         [HttpPost]
         public IActionResult EliminarUsuario(int id)
         {
-            return RedirectToAction("Usuarios");
+            var usuario = _context.Usuario.FirstOrDefault(u => u.Id == id);
+            if (usuario == null)
+                return NotFound();
+            usuario.Estado = 0;
+            _context.SaveChanges();
+            return Ok("Usuario eliminado correctamente.");
         }
     }
 }

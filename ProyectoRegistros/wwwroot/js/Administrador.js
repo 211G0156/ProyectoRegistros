@@ -16,13 +16,6 @@ if (regresar) {
         window.location.href = "/Admin";
     });
 }
-// Boton de volver en alumnos
-//const regButton = document.querySelector(".reg");
-//if (regButton) {
-//    regButton.addEventListener("click", function () {
-//        window.location.href = "Index.html";
-//    });
-//}
 
 
 /*MENU PRINCIPAL*/
@@ -95,15 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-
-
-//var deleteForm = document.querySelector('#modal-DeleteTaller form');
-//if (deleteForm) {
-//    deleteForm.addEventListener('submit', function (e) {
-//        var val = document.getElementById('DeleteId')?.value;
-//        console.log('Enviando formulario EliminarTaller, id =', val);
-//    });
-//}
 
 
 // crear taller
@@ -210,27 +194,42 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
+// EDITAR USUARIO
 
 document.querySelectorAll(".btneditar").forEach(boton => {
-    boton.addEventListener("click", function () {
-        modEditar.style.display = "block";
+    boton.addEventListener("click", async () => {
+        const id = boton.dataset.id;
+
+        try {
+            const response = await fetch(`/Admin/Home/GetTaller/${id}`);
+            if (!response.ok) throw new Error("Error al obtener taller");
+
+            const data = await response.json();
+
+            document.getElementById("editId").value = data.id;
+            document.getElementById("editNombre").value = data.nombre;
+            document.getElementById("editCorreo").value = data.correo;
+            document.getElementById("editTel").value = data.NumTel;
+            document.getElementById("editContraseña").value = data.Contraseña;
+            document.getElementById("editRol").value = data.IdRol;
+
+
+            document.getElementById("modal-EditTaller").style.display = "block";
+        } catch (err) {
+            console.error(err);
+            alert("Error al cargar datos del taller");
+        }
     });
 
-    // modal de eliminar
-    document.querySelectorAll(".btneliminar").forEach(boton => {
-        boton.addEventListener("click", function () {
+// ELIMINAR USUARIO
+
+document.querySelectorAll(".btneliminar").forEach(boton => {
+     boton.addEventListener("click", function () {
             modEliminar.style.display = "block";
-        });
+     });
     });
 
 });
-
-//// modal de crear taller
-//document.querySelector("#aggTaller").addEventListener("click", function () {
-//    modAgregar.style.display = "block";
-//});
-
 
 
  //en vista index
@@ -251,66 +250,6 @@ if (aggButton) {
         modAgregar.style.display = "block";
     });
 }
-////Abrir modal de editar e ingresa datos
-//$(document).on("click", ".btneditar", function (e) {
-//    e.preventDefault();
-//    let id = $(this).data("id");
-
-//    $.get("/Admin/Home/GetTaller/" + id, function (data) {
-//        $("#edit-Id").val(data.id);
-//        $("#edit-Nombre").val(data.nombre);
-//        $("#edit-Dias").val(data.dias);
-//        $("#edit-Espacios").val(data.espacios);
-//        $("#edit-HoraInicio").val(data.horaInicio);
-//        $("#edit-HoraFinal").val(data.horaFinal);
-//        $("#edit-EdadMin").val(data.edadMin);
-//        $("#edit-EdadMax").val(data.edadMax);
-//        $("#edit-Costo").val(data.costo);
-//        $("#edit-Profesor").val(data.idUsuario); // profesor seleccionado
-
-//        $("#modal-EditTaller").fadeIn();
-//    });
-//});
-
-//// Guardar cambios
-//$("#formEditTaller").on("submit", function (e) {
-//    e.preventDefault();
-
-//    let taller = {
-//        Id: $("#edit-Id").val(),
-//        Nombre: $("#edit-Nombre").val(),
-//        Dias: $("#edit-Dias").val(),
-//        LugaresDisp: $("#edit-Espacios").val(),
-//        HoraInicio: $("#edit-HoraInicio").val(),
-//        HoraFinal: $("#edit-HoraFinal").val(),
-//        EdadMin: $("#edit-EdadMin").val(),
-//        EdadMax: $("#edit-EdadMax").val(),
-//        Costo: $("#edit-Costo").val(),
-//        IdUsuario: $("#edit-Profesor").val()
-//    };
-
-//    $.ajax({
-//        url: "/Admin/Home/EditarTaller",
-//        type: "POST",
-//        contentType: "application/json",
-//        data: JSON.stringify(taller),
-//        success: function (resp) {
-//            if (resp.success) {
-//                alert("Taller actualizado correctamente");
-//                location.reload();
-//            }
-//        }
-//    });
-//});
-
-
-
-    //// Botón cerrar
-    //$(document).on("click", "#modal-EditTaller .cerrar", function () {
-    //    $("#modal-EditTaller").fadeOut();
-    //});
-
-
 
 // this is forrrrr el recibo q sale despues de registrar alumno
 let recibo = document.getElementById("modal-recibo")

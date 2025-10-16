@@ -7,9 +7,8 @@
 
 
 <!--MODAL PARA AGREGAR-->
-
 <div class="modal" id="modal-AddTaller">
-    <form form asp-area="Admin" asp-action="AgregarUsuario" asp-controller="Usuarios" method="post" style=" margin: 18vh auto; " enctype="multipart/form-data">
+    <form asp-area="Admin" asp-controller="Usuarios" asp-action="AgregarUsuario" method="post" style="margin: 18vh auto;">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -17,34 +16,35 @@
         </div><br>
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."@*  asp-for="Usuarios.Nombre" *@ required><br>
+        <input class="inputForms" type="text" name="Nombre" placeholder="Escribir..." required><br>
+
         <label>Correo Electrónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..." required><br>
+        <input class="inputForms" type="email" name="Correo" placeholder="Escribir..." required><br>
+
         <label>Número Telefónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..." required><br>
+        <input class="inputForms" type="text" name="NumTel" placeholder="Escribir..." required><br>
+
+        <label>Contraseña:</label><br>
+        <input class="inputForms" type="text" name="Contraseña" placeholder="Escribir..." required><br>
+
+
         <label>Rol:</label><br>
-        <select class="inputForms" style="height: 3.5vh;" required>
-            <option>Profesor/a</option>
+        <select class="inputForms" id="editRol" name="IdRol" style="height: 3.5vh;" required>
+            <option value="1">Administrador</option>
+            <option value="2">Profesor</option>
+            <option value="3">Visitante</option>
         </select>
 
-        <div class="error">
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-        </div>
         <div style="display: flex; justify-content: center;">
             <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
 
-
 <!--MODAL PARA EDITAR-->
-
 <div class="modal" id="modal-EditTaller">
-    <form style=" margin: 18vh auto; ">
+    <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 18vh auto;">
+        <input type="hidden" name="Id" id="editId" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -52,22 +52,25 @@
         </div><br>
 
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" id="editNombre" type="text" name="Nombre" required><br>
+
         <label>Correo Electrónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" id="editCorreo" type="email" name="Correo"required><br>
+
         <label>Número Telefónico:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" id="editTel" type="text" name="NumTel" required><br>
+
+        <label>Contraseña:</label><br>
+        <input class="inputForms" id="editContraseña" type="text" name="Contraseña" placeholder="Escribir..." required><br>
+
+
         <label>Rol:</label><br>
-        <select class="inputForms" style="height: 3.5vh;">
-            <option>Profesor/a</option>
+        <select class="inputForms" name="IdRol" id="editRol" style="height: 3.5vh;">
+            <option value="1">Administrador</option>
+            <option value="2">Profesor</option>
+            <option value="3">Visitante</option>
         </select>
-        <div class="error">
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-        </div>
+
         <div style="display:flex; justify-content:center;">
             <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
         </div>
@@ -76,12 +79,13 @@
 
 <!--MODAL PARA ELIMINAR-->
 <div class="modal" id="modal-DeleteTaller">
-    <form style=" margin: 33vh auto; ">
+    <form asp-area="Admin" asp-action="EliminarUsuario" asp-controller="Usuarios" id="formDeleteUsuario" method="post" style="margin: 33vh auto;">
+        <input type="hidden" id="deleteId" name="id" />
         <button class="cerrar" type="button">X</button><br>
         <fieldset>
             <legend>
                 <h2>¿Desea eliminar este usuario?</h2>
-                <label style="color: red; font-size: 3vh;">Selena García</label>
+                <label style="color: red; font-size: 3vh;"></label>
             </legend>
         </fieldset>
         <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
@@ -137,12 +141,13 @@
                         <td>@usuario.NumTel</td>
                         <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = usuario.Id, area = "Admin" })">
-                                    <img class="btneditar" src="~/img/edit.png" />
-                                </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = usuario.Id, area = "Admin" })" class="btneliminar">
-                                    <img class="btneliminar" src="~/img/X.png" />
-                                </a>
+                                <button type="button" class="btneditar usuario" data-id="@usuario.Id">
+                                    <img src="~/img/edit.png" />
+                                </button>
+
+                                <button class="btneliminar usuario" type="button" data-id="@usuario.Id" data-nombre="@usuario.Nombre">
+                                    <img  src="~/img/X.png" />
+                                </button>
                             </div>
                         </td>
                     </tr>

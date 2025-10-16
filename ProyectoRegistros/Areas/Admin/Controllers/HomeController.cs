@@ -29,7 +29,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            var talleres = _context.Tallers
+            var talleres = _context.Taller
                 .Where(t => t.Estado == 1)
                 .Include(t => t.IdUsuarioNavigation)
                 .OrderBy(t => t.Nombre)
@@ -48,7 +48,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 })
                 .ToList();
 
-            ViewBag.Profesores = _context.Usuarios
+            ViewBag.Profesores = _context.Usuario
                 .Where(u => u.IdRol == 2)
                 .ToList();
 
@@ -56,7 +56,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Alumnos()
         {
-            var alumnos = _context.Alumnos
+            var alumnos = _context.Alumno
                 .Include(a => a.Listatalleres)
                     .ThenInclude(lt => lt.IdTallerNavigation)
                         .ThenInclude(t => t.IdUsuarioNavigation)
@@ -98,7 +98,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         Estado = 1 
                     };
 
-                    _context.Tallers.Add(taller);
+                    _context.Taller.Add(taller);
                     _context.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -108,8 +108,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 }
             }
 
-            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
-            var talleres = _context.Tallers
+            ViewBag.Profesores = _context.Usuario.Where(u => u.IdRol == 2).ToList();
+            var talleres = _context.Taller
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModel
                 {
@@ -133,7 +133,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetTaller(int id)
         {
-            var taller = _context.Tallers
+            var taller = _context.Taller
                 .Include(t => t.IdUsuarioNavigation)
                 .FirstOrDefault(t => t.Id == id);
 
@@ -160,7 +160,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var taller = _context.Tallers.Find(vm.Id);
+                var taller = _context.Taller.Find(vm.Id);
                 if (taller != null)
                 {
                     taller.Nombre = vm.Nombre;
@@ -179,7 +179,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 }
                 return NotFound();
             }
-            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
+            ViewBag.Profesores = _context.Usuario.Where(u => u.IdRol == 2).ToList();
             return View("Index");
         }
 
@@ -187,7 +187,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult EliminarTaller(int id)
         {
-            var taller = _context.Tallers
+            var taller = _context.Taller
                 .Include(t => t.Listatalleres)
                 .FirstOrDefault(t => t.Id == id);
 
@@ -212,7 +212,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+                Talleres = _context.Taller.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
             };
             return View(viewModel);
         }
@@ -222,7 +222,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Usuarios()
         {
-            var usuarios = _context.Usuarios.ToList(); // trae los usuarios de la BD
+            var usuarios = _context.Usuario.ToList(); // trae los usuarios de la BD
             return View(usuarios);
         }
 

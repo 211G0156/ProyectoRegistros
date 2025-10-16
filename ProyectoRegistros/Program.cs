@@ -12,7 +12,7 @@ using ProyectoRegistros.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ProyectoregistroContext>(options =>
-    options.UseMySql("server=localhost;database=proyectoregistro;user=root;password=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql")));
+ options.UseMySql("server=localhost;user=root;password=root;database=proyectoregistro", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.43-mysql")));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

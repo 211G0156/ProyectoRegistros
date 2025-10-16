@@ -17,7 +17,9 @@ public partial class Usuario
 
     public int IdRol { get; set; }
 
+    public sbyte Estado { get; set; }
+
     public virtual Rol IdRolNavigation { get; set; } = null!;
 
-    public virtual ICollection<Taller> Tallers { get; set; } = new List<Taller>();
+    public virtual ICollection<Taller> Taller { get; set; } = new List<Taller>();
 }

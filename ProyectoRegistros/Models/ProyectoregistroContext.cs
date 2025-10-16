@@ -7,7 +7,7 @@ namespace ProyectoRegistros.Models;
 
 public partial class ProyectoregistroContext : DbContext
 {
-    public ProyectoregistroContext(string query)
+    public ProyectoregistroContext()
     {
     }
 
@@ -16,16 +16,19 @@ public partial class ProyectoregistroContext : DbContext
     {
     }
 
-    public virtual DbSet<Alumno> Alumnos { get; set; }
+    public virtual DbSet<Alumno> Alumno { get; set; }
 
-    public virtual DbSet<Listatallere> Listatalleres { get; set; }
+    public virtual DbSet<Listatalleres> Listatalleres { get; set; }
 
-    public virtual DbSet<Rol> Rols { get; set; }
+    public virtual DbSet<Rol> Rol { get; set; }
 
-    public virtual DbSet<Taller> Tallers { get; set; }
+    public virtual DbSet<Taller> Taller { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<Usuario> Usuario { get; set; }
 
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        =>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -50,7 +53,7 @@ public partial class ProyectoregistroContext : DbContext
             entity.Property(e => e.Tutor).HasMaxLength(30);
         });
 
-        modelBuilder.Entity<Listatallere>(entity =>
+        modelBuilder.Entity<Listatalleres>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -107,7 +110,7 @@ public partial class ProyectoregistroContext : DbContext
             entity.Property(e => e.LugaresDisp).HasColumnName("Lugares_Disp");
             entity.Property(e => e.Nombre).HasMaxLength(30);
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Tallers)
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Taller)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fkTallerUsuario");
@@ -130,7 +133,7 @@ public partial class ProyectoregistroContext : DbContext
                 .HasMaxLength(15)
                 .HasColumnName("numTel");
 
-            entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
+            entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuario)
                 .HasForeignKey(d => d.IdRol)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fkUsuarioRol");

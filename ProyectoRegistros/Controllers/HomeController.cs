@@ -27,7 +27,7 @@ namespace ProyectoRegistros.Controllers
         }
         public IActionResult TalleresDisponibles()
         {
-            var talleres = Context.Tallers
+            var talleres = Context.Taller
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModels
                 {
@@ -50,7 +50,7 @@ namespace ProyectoRegistros.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string correo, string password)
         {
-            var usuario = Context.Usuarios.SingleOrDefault(u => u.Correo == correo && u.Contraseña == password);
+            var usuario = Context.Usuario.SingleOrDefault(u => u.Correo == correo && u.Contraseña == password);
 
             if (usuario != null)
             {

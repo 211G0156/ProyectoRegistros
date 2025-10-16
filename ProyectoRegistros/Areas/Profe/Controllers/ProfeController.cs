@@ -48,14 +48,14 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 return RedirectToAction("Index", "Login");
             }
             var idUser = int.Parse(user);
-            var talleres = _context.Tallers.Where(x => x.IdUsuario == idUser).OrderBy(x => x.Nombre).ToList();
+            var talleres = _context.Taller.Where(x => x.IdUsuario == idUser).OrderBy(x => x.Nombre).ToList();
 
             return View(talleres);
         }
         public IActionResult Alumnos()
         {
             var user = User.FindFirstValue("Id");
-            var misTalleres = _context.Tallers.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
+            var misTalleres = _context.Taller.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
             var alumno = _context.Listatalleres.Where(x => misTalleres.Contains(x.IdTaller)).Include(a => a.IdAlumnoNavigation)
             .Include(t => t.IdTallerNavigation)
             .OrderBy(x => x.IdAlumnoNavigation.Nombre).ToList();
@@ -72,7 +72,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         [HttpPost]
         public IActionResult EditarAlumno(Alumno alumno)
         {
-            var existAlumno = _context.Alumnos.Find(alumno.Id);
+            var existAlumno = _context.Alumno.Find(alumno.Id);
             if (existAlumno != null)
             {
                 existAlumno.Nombre=alumno.Nombre;
@@ -108,7 +108,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 foreach (var taller in request.TalleresEliminar)
                 {
                     var buscar = _context.Listatalleres.FirstOrDefault(x => x.IdTaller == taller && x.IdAlumno == request.Id);
-                    var lugares = _context.Tallers.FirstOrDefault(x => x.Id == taller);
+                    var lugares = _context.Taller.FirstOrDefault(x => x.Id == taller);
 
                     if (buscar != null)
                     {
@@ -130,7 +130,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+                Talleres = _context.Taller.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
             };
             return View(viewModel);
         }
