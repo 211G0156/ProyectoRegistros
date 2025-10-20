@@ -26,7 +26,7 @@ namespace ProyectoRegistros.Areas.Visitante.Controllers
         [Route("/Visitante")]
         public IActionResult Index()
         {
-            var talleres = _context.Taller
+            var talleres = _context.Tallers
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModel
                 {

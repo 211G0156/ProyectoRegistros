@@ -18,7 +18,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var usuarios = _context.Usuario
+            var usuarios = _context.Usuarios
                 .Where(u => u.Estado == 1)
                 .OrderBy(u => u.Nombre)
                 .ToList();
@@ -42,7 +42,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         IdRol = usuario.IdRol,
                         Estado = 1
                     };
-                    _context.Usuario.Add(usuario);
+                    _context.Usuarios.Add(usuario);
                     _context.SaveChanges();
                     return RedirectToAction("Usuarios");
                 }
@@ -59,7 +59,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetUsuario(int id)
         {
-            var usuario = _context.Usuario.FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario == null)
                 return NotFound();
 
@@ -78,7 +78,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var original = _context.Usuario.Find(usuario.Id);
+                var original = _context.Usuarios.Find(usuario.Id);
                 if (original != null)
                 {
                     original.Nombre = usuario.Nombre;
@@ -89,13 +89,13 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 }
             }
 
-            return View("Usuarios", _context.Usuario.ToList());
+            return View("Usuarios", _context.Usuarios.ToList());
         }
 
         [HttpPost]
         public IActionResult EliminarUsuario(int id)
         {
-            var usuario = _context.Usuario.FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario == null)
                 return NotFound();
             usuario.Estado = 0;
