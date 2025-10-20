@@ -31,5 +31,5 @@ public partial class Taller
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 
-    public virtual ICollection<Listatalleres> Listatalleres { get; set; } = new List<Listatalleres>();
+    public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
 }

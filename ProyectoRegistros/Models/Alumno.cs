@@ -27,7 +27,7 @@ public partial class Alumno
 
     public sbyte AtencionPsico { get; set; }
 
-    public int IdTaller { get; set; }
+    public sbyte Estado { get; set; }
 
-    public virtual ICollection<Listatalleres> Listatalleres { get; set; } = new List<Listatalleres>();
+    public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
 }
