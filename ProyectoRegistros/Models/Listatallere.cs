@@ -13,6 +13,8 @@ public partial class Listatallere
 
     public DateTime FechaRegistro { get; set; }
 
+    public string? FechaCita { get; set; }
+
     public virtual Alumno IdAlumnoNavigation { get; set; } = null!;
 
     public virtual Taller IdTallerNavigation { get; set; } = null!;
