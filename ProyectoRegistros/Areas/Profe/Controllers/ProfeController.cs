@@ -130,7 +130,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+                Talleres = _context.Tallers.Where(x=> x.Estado == 1).ToList()
             };
             return View(viewModel);
         }

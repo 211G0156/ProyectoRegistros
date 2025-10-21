@@ -15,6 +15,10 @@ public partial class Listatallere
 
     public string? FechaCita { get; set; }
 
+    public sbyte? Pagado { get; set; }
+
+    public DateTime? FechaPago { get; set; }
+
     public virtual Alumno IdAlumnoNavigation { get; set; } = null!;
 
     public virtual Taller IdTallerNavigation { get; set; } = null!;

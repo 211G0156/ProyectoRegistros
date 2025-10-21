@@ -799,19 +799,24 @@ aside {
             height: 3vh;
             padding: 5px;
             border: none;
-            margin: 2vh 0;
+            margin: 2vh auto;
             border-radius: 5px;
             box-shadow: 1px 1px 20px 0px rgba(128, 128, 128, 0.555);
         } 
         .op-taller{
-            /* height: 7vh; */
+            height: 7vh; 
             display: flex;
             padding: 2vh 1vw;
             color: #000000ab;
             border-radius: 5px;
             background-color: #D9D9D9;
             justify-content: space-around;
+            box-sizing: content-box;
+            cursor: pointer;
         }
+         .op-taller:hover{
+            background-color: #d9d9d989;
+         }
         .op-taller label{
             margin: auto;
         }
@@ -847,3 +852,11 @@ aside {
          #contenedor-abajo label{
             width: 25vw;
          }
+
+.input-dias {
+    max-width: 10%;
+}
+
+.input-horas {
+    max-width: 20%;
+}
