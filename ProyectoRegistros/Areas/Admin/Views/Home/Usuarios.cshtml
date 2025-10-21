@@ -7,7 +7,7 @@
 
 
 <!--MODAL PARA AGREGAR-->
-<div class="modal" id="modal-AddTaller">
+<div class="modal" id="modal-AddUsuario">
     <form asp-area="Admin" asp-controller="Usuarios" asp-action="AgregarUsuario" method="post" style="margin: 18vh auto;">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
@@ -27,9 +27,8 @@
         <label>Contraseña:</label><br>
         <input class="inputForms" type="text" name="Contraseña" placeholder="Escribir..." required><br>
 
-
         <label>Rol:</label><br>
-        <select class="inputForms" id="editRol" name="IdRol" style="height: 3.5vh;" required>
+        <select class="inputForms" name="IdRol" style="height: 3.5vh;" required>
             <option value="1">Administrador</option>
             <option value="2">Profesor</option>
             <option value="3">Visitante</option>
@@ -42,9 +41,9 @@
 </div>
 
 <!--MODAL PARA EDITAR-->
-<div class="modal" id="modal-EditTaller">
+<div class="modal" id="modal-EditUsuario">
     <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 18vh auto;">
-        <input type="hidden" name="Id" id="editId" />
+        <input type="hidden" name="Id" id="EditUsuarioId" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -78,9 +77,9 @@
 </div>
 
 <!--MODAL PARA ELIMINAR-->
-<div class="modal" id="modal-DeleteTaller">
+<div class="modal" id="modal-DeleteUsuario">
     <form asp-area="Admin" asp-action="EliminarUsuario" asp-controller="Usuarios" id="formDeleteUsuario" method="post" style="margin: 33vh auto;">
-        <input type="hidden" id="deleteId" name="id" />
+        <input type="hidden" id="DeleteUsuarioId" name="id" />
         <button class="cerrar" type="button">X</button><br>
         <fieldset>
             <legend>

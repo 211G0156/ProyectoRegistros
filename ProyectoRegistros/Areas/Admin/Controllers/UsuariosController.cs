@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Models;
+using System.Linq;
 
 namespace ProyectoRegistros.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Administrador")]
-    public class UsuariosController:Controller
+    public class UsuariosController : Controller
     {
         private readonly ProyectoregistroContext _context;
 
@@ -16,50 +16,49 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+
+        public IActionResult Usuarios()
         {
             var usuarios = _context.Usuarios
                 .Where(u => u.Estado == 1)
-                .OrderBy(u => u.Nombre)
+                .Include(u => u.IdRolNavigation)
+                .AsNoTracking()
                 .ToList();
 
-            return View(usuarios);  
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
 
+
         [HttpPost]
-        public IActionResult AgregarUsuario(Usuario usuario)
+        public IActionResult AgregarUsuario(Usuario nuevo)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var usuarios = new Usuario
-                    {
-                        Nombre = usuario.Nombre,
-                        Correo = usuario.Correo,
-                        NumTel = usuario.NumTel,
-                        Contraseña = usuario.Contraseña,
-                        IdRol = usuario.IdRol,
-                        Estado = 1
-                    };
-                    _context.Usuarios.Add(usuario);
-                    _context.SaveChanges();
-                    return RedirectToAction("Usuarios");
-                }
-                catch(Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
-                }
+                nuevo.Estado = 1;
+
+                _context.Usuarios.Add(nuevo);
+                _context.SaveChanges();
+                return RedirectToAction("Usuarios");
             }
 
-            ViewData["ShowAddModal"] = true;
-            return View("Usuarios", usuario);
+            var usuarios = _context.Usuarios
+                .Where(u => u.Estado == 1)
+                .Include(u => u.IdRolNavigation)
+                .ToList();
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
+
+
 
         [HttpGet]
         public IActionResult GetUsuario(int id)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios
+                .Where(u => u.Estado == 1)
+                .FirstOrDefault(u => u.Id == id);
+
             if (usuario == null)
                 return NotFound();
 
@@ -69,7 +68,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 nombre = usuario.Nombre,
                 correo = usuario.Correo,
                 numTel = usuario.NumTel,
-                contraseña = usuario.Contraseña
+                contraseña = usuario.Contraseña,
+                idRol = usuario.IdRol
             });
         }
 
@@ -84,12 +84,21 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     original.Nombre = usuario.Nombre;
                     original.Correo = usuario.Correo;
                     original.NumTel = usuario.NumTel;
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
+                    original.Contraseña = usuario.Contraseña;
+                    original.IdRol = usuario.IdRol;
 
-            return View("Usuarios", _context.Usuarios.ToList());
+                    _context.Update(original);
+                    _context.SaveChanges();
+                    return RedirectToAction("Usuarios");
+                }
+                return NotFound();
+            }
+            var usuarios = _context.Usuarios
+                .Where(u => u.Estado == 1)
+                .Include(u => u.IdRolNavigation)
+                .ToList();
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
 
         [HttpPost]
@@ -98,9 +107,15 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario == null)
                 return NotFound();
+
             usuario.Estado = 0;
             _context.SaveChanges();
-            return Ok("Usuario eliminado correctamente.");
+
+            if (usuario.Tallers != null && usuario.Tallers.Any())
+            {
+                return Ok("El usuario tiene talleres registrados. Se aplicó baja lógica.");
+            }
+            return RedirectToAction("Usuarios");
         }
     }
 }

@@ -56,7 +56,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Alumnos()
         {
-            var alumnos = _context.Alumnos
+            var alumnos = _context.Alumnos.
+                Where(a=>a.Estado==1)
                 .Include(a => a.Listatalleres)
                     .ThenInclude(lt => lt.IdTallerNavigation)
                         .ThenInclude(t => t.IdUsuarioNavigation)
@@ -133,7 +134,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetTaller(int id)
         {
-            var taller = _context.Tallers
+            var taller = _context.Tallers.
+                Where(t=>t.Estado==1)
                 .Include(t => t.IdUsuarioNavigation)
                 .FirstOrDefault(t => t.Id == id);
 
