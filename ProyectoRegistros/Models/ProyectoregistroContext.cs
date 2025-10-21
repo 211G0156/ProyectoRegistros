@@ -26,6 +26,10 @@ public partial class ProyectoregistroContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySql("server=localhost;database=proyectoregistro;user=root;password=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.34-mysql"));
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -63,9 +67,13 @@ public partial class ProyectoregistroContext : DbContext
             entity.Property(e => e.FechaCita)
                 .HasMaxLength(50)
                 .HasColumnName("fechaCita");
+            entity.Property(e => e.FechaPago)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
             entity.Property(e => e.FechaRegistro)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Pagado).HasDefaultValueSql("'0'");
 
             entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.Listatalleres)
                 .HasForeignKey(d => d.IdAlumno)
