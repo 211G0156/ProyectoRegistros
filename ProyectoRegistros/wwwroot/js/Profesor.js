@@ -210,5 +210,3 @@ document.querySelector("#finalizar").addEventListener("click", function () {
     recibo.style.display = "block";
     console.log("pipippip");
 });
-
-// demo , todo funcional, si como profe se registra 15 de noviembre, q si va ser local o q wea
