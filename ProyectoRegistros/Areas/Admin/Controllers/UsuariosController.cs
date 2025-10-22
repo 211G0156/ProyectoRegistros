@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Models;
 using System.Linq;
 
@@ -17,48 +18,43 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             _context = context;
         }
 
-        public IActionResult Usuarios()
+        public IActionResult Index()
         {
             var usuarios = _context.Usuarios
-                .Where(u => u.Estado == 1)
                 .Include(u => u.IdRolNavigation)
-                .AsNoTracking()
+                .Where(u => u.Estado == 1)
+                .Select(u => new UsuariosViewModel
+                {
+                    Id = u.Id,
+                    Nombre = u.Nombre,
+                    Correo = u.Correo,
+                    NumTel = u.NumTel,
+                    RolNombre = u.IdRolNavigation.Rol1,
+                    Estado = u.Estado
+                })
                 .ToList();
-
 
             return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
 
 
         [HttpPost]
-        public IActionResult AgregarUsuario(Usuario nuevo)
+        public IActionResult AgregarUsuario(Usuario usuario)
         {
             if (ModelState.IsValid)
             {
-                nuevo.Estado = 1;
-
-                _context.Usuarios.Add(nuevo);
+                usuario.Estado = 1;
+                _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
-                return RedirectToAction("Usuarios");
             }
 
-            var usuarios = _context.Usuarios
-                .Where(u => u.Estado == 1)
-                .Include(u => u.IdRolNavigation)
-                .ToList();
-
-            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
+            return RedirectToAction("Index", "Usuarios", new { area = "Admin" });
         }
-
-
 
         [HttpGet]
         public IActionResult GetUsuario(int id)
         {
-            var usuario = _context.Usuarios
-                .Where(u => u.Estado == 1)
-                .FirstOrDefault(u => u.Id == id);
-
+            var usuario = _context.Usuarios.Include(u => u.IdRolNavigation).FirstOrDefault(u => u.Id == id);
             if (usuario == null)
                 return NotFound();
 
@@ -86,20 +82,14 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     original.NumTel = usuario.NumTel;
                     original.Contraseña = usuario.Contraseña;
                     original.IdRol = usuario.IdRol;
-
                     _context.Update(original);
                     _context.SaveChanges();
-                    return RedirectToAction("Usuarios");
                 }
-                return NotFound();
             }
-            var usuarios = _context.Usuarios
-                .Where(u => u.Estado == 1)
-                .Include(u => u.IdRolNavigation)
-                .ToList();
 
-            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
+            return RedirectToAction("Index", "Usuarios", new { area = "Admin" });
         }
+
 
         [HttpPost]
         public IActionResult EliminarUsuario(int id)
@@ -110,12 +100,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             usuario.Estado = 0;
             _context.SaveChanges();
-
-            if (usuario.Tallers != null && usuario.Tallers.Any())
-            {
-                return Ok("El usuario tiene talleres registrados. Se aplicó baja lógica.");
-            }
-            return RedirectToAction("Usuarios");
+            return Ok("Usuario eliminado correctamente.");
         }
     }
 }

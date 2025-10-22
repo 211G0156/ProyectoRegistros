@@ -224,9 +224,23 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
         public IActionResult Usuarios()
         {
-            var usuarios = _context.Usuarios.ToList(); // trae los usuarios de la BD
-            return View(usuarios);
+            var usuarios = _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .Where(u => u.Estado == 1)
+                .Select(u => new UsuariosViewModel
+                {
+                    Id = u.Id,
+                    Nombre = u.Nombre,
+                    Correo = u.Correo,
+                    NumTel = u.NumTel,
+                    RolNombre = u.IdRolNavigation.Rol1,
+                    Estado = u.Estado
+                })
+                .ToList();
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
+
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProyectoRegistros.Models.Usuario>
+﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.UsuariosViewModel>
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -126,6 +126,7 @@
                     <th>Nombre</th>
                     <th>Correo Electrónico</th>
                     <th>Número Telefónico</th>
+                    <th>Rol</th>
                     <th>Opciones</th>
                 </tr>
 
@@ -138,6 +139,7 @@
                         <td>@usuario.Nombre</td>
                         <td>@usuario.Correo</td>
                         <td>@usuario.NumTel</td>
+                        <td>@usuario.RolNombre</td>
                         <td>
                             <div class="botones">
                                 <button type="button" class="btneditar usuario" data-id="@usuario.Id">
