@@ -234,7 +234,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     Correo = u.Correo,
                     NumTel = u.NumTel,
                     RolNombre = u.IdRolNavigation.Rol1,
-                    Estado = u.Estado
                 })
                 .ToList();
 

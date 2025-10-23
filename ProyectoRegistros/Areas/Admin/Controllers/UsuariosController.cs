@@ -30,7 +30,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     Correo = u.Correo,
                     NumTel = u.NumTel,
                     RolNombre = u.IdRolNavigation.Rol1,
-                    Estado = u.Estado
                 })
                 .ToList();
 
@@ -39,14 +38,21 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public IActionResult AgregarUsuario(Usuario usuario)
+        public IActionResult AgregarUsuario(NuevoUsuarioVM vm)
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    usuario.Estado = 1; 
+                    var usuario = new Usuario
+                    {
+                        Nombre = vm.Nombre,
+                        Correo = vm.Correo,
+                        NumTel = vm.NumTel,
+                        Contraseña = vm.Contraseña,
+                        IdRol = vm.IdRol,
+                        Estado = 1
+                    };
                     _context.Usuarios.Add(usuario);
                     _context.SaveChanges();
                     return RedirectToAction("Index");
@@ -56,9 +62,21 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
                 }
             }
+            var usuarios = _context.Usuarios
+                .Include(u => u.IdRolNavigation)
+                .Where(u => u.Estado == 1)
+                .Select(u => new UsuariosViewModel
+                {
+                    Id = u.Id,
+                    Nombre = u.Nombre,
+                    Correo = u.Correo,
+                    NumTel = u.NumTel,
+                    RolNombre = u.IdRolNavigation.Rol1,
+                })
+                .ToList();
 
             ViewData["ShowAddModal"] = true;
-            return RedirectToAction("Index", "Usuarios", new { area = "Admin" });
+            return View("Index", usuarios);
         }
 
         [HttpGet]
@@ -82,28 +100,28 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditarUsuario(Usuario usuario)
+        public IActionResult EditarUsuario(NuevoUsuarioVM vm)
         {
-
             if (ModelState.IsValid)
             {
-                var original = _context.Usuarios.Find(usuario.Id);
-                if (original != null)
+                var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == vm.Id);
+                if(usuario!=null)
                 {
-                    original.Nombre = usuario.Nombre;
-                    original.Correo = usuario.Correo;
-                    original.NumTel = usuario.NumTel;
-                    original.Contraseña = usuario.Contraseña;
-                    original.IdRol = usuario.IdRol;
-                    original.Estado = 1;
+                    usuario.Nombre = vm.Nombre;
+                    usuario.Correo = vm.Correo;
+                    usuario.NumTel = vm.NumTel;
+                    usuario.Contraseña = vm.Contraseña;
+                    usuario.IdRol = vm.IdRol;
 
-                    _context.Update(original);
+                    _context.Update(usuario);
                     _context.SaveChanges();
                     return RedirectToAction("Index");
                 }
-            }
+                return NotFound();
 
-            return RedirectToAction("Index", "Usuarios", new { area = "Admin" });
+            }
+            return View("Index");
+
         }
 
 

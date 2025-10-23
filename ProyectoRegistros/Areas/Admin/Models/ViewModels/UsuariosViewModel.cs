@@ -8,6 +8,5 @@
         public string NumTel { get; set; } = null!;
         public string Contraseña { get; set; } = null!;
         public string RolNombre { get; set; } = null!;
-        public sbyte Estado { get; set; }
     }
 }
