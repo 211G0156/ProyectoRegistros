@@ -41,20 +41,32 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AgregarUsuario(Usuario usuario)
         {
+
             if (ModelState.IsValid)
             {
-                usuario.Estado = 1;
-                _context.Usuarios.Add(usuario);
-                _context.SaveChanges();
+                try
+                {
+                    usuario.Estado = 1; 
+                    _context.Usuarios.Add(usuario);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
+                }
             }
 
+            ViewData["ShowAddModal"] = true;
             return RedirectToAction("Index", "Usuarios", new { area = "Admin" });
         }
 
         [HttpGet]
         public IActionResult GetUsuario(int id)
         {
-            var usuario = _context.Usuarios.Include(u => u.IdRolNavigation).FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios.Where(u => u.Estado == 1)
+                .Include(u => u.IdRolNavigation)
+                .FirstOrDefault(u => u.Id == id);
             if (usuario == null)
                 return NotFound();
 
@@ -72,6 +84,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult EditarUsuario(Usuario usuario)
         {
+
             if (ModelState.IsValid)
             {
                 var original = _context.Usuarios.Find(usuario.Id);
@@ -82,8 +95,11 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     original.NumTel = usuario.NumTel;
                     original.Contraseña = usuario.Contraseña;
                     original.IdRol = usuario.IdRol;
+                    original.Estado = 1;
+
                     _context.Update(original);
                     _context.SaveChanges();
+                    return RedirectToAction("Index");
                 }
             }
 

@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const data = await response.json();
                 document.getElementById("EditUsuarioId").value = data.id;
-                document.getElementById("editNombre").value = data.nombre;
+                document.getElementById("editNombreUsu").value = data.nombre;
                 document.getElementById("editCorreo").value = data.correo;
                 document.getElementById("editTel").value = data.numTel;
                 document.getElementById("editContraseña").value = data.contraseña;
