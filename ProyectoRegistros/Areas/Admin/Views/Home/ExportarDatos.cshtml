@@ -1,4 +1,6 @@
-﻿@{
+﻿@using ProyectoRegistros.Models
+@model ProyectoRegistros.Areas.Admin.Models.ViewModels.ExportarDatosVM
+@{
     Layout = "LayoutAdmin";
 }
 
@@ -10,73 +12,99 @@
     <img id="ig2" src="~/img/Historial.png" />
 </header>
 
-
 <div class="todo">
     <div class="filtrar">
         <h2>Filtrar por:</h2>
         <hr />
-        <div class="datos">
-            <h3>Profesor o profesores:</h3>
-            <div class="custom-select">
-                <div class="select-header">
-                    <span>Selecciona opciones</span>
-                    <i class="fa fa-caret-down"></i>
+
+        <form asp-area="Admin" asp-controller="ExportarDatos" asp-action="DescargarDatos" method="post">
+
+            <div class="datos">
+                <h3>Profesor o profesores:</h3>
+                <div class="custom-select">
+                    <div class="select-header">
+                        <span>Selecciona opciones</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="select-content">
+                        @foreach (var profesor in (ViewBag.Profesores ?? new List<Usuario>()))
+                        {
+                            <label>
+                                <input type="checkbox" name="ProfesoresIds" value="@profesor.Id" />
+                                @profesor.Nombre
+                            </label>
+                        }
+                    </div>
                 </div>
-                <div class="select-content">
-                    <label><input type="checkbox" /> Opción 1</label>
-                    <label><input type="checkbox" /> Opción 2</label>
-                    <label><input type="checkbox" /> Opción 3</label>
-                    <label><input type="checkbox" /> Opción 4</label>
-                    <label><input type="checkbox" /> Opción 5</label>
+
+                <hr>
+
+                <h3>Cantidad de alumnos:</h3>
+                <input type="number" name="CantidadAlumnosMax" max="100" min="0" placeholder="Ej. 20" />
+                <hr>
+
+                <h3>Taller o talleres:</h3>
+                <div class="custom-select">
+                    <div class="select-header">
+                        <span>Selecciona opciones</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="select-content">
+                        @foreach (var taller in (ViewBag.Talleres ?? new List<Taller>()))
+                        {
+                            <label>
+                                <input type="checkbox" name="TalleresIds" value="@taller.Id" />
+                                @taller.Nombre
+                            </label>
+                        }
+                    </div>
                 </div>
+
+                <hr>
+
+                <h3>Días:</h3>
+                <div class="custom-select">
+                    <div class="select-header">
+                        <span>Selecciona opciones</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="select-content">
+                        @foreach (var dia in (ViewBag.Dias ?? new List<string>()))
+                        {
+                            <label>
+                                <input type="checkbox" name="Dias" value="@dia" />
+                                @dia
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <hr>
+
+                <h3>Horas:</h3>
+                <div class="custom-select">
+                    <div class="select-header">
+                        <span>Selecciona opciones</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="select-content">
+                        @foreach (var rango in (ViewBag.Horas ?? new List<string>()))
+                        {
+                            <label>
+                                <input type="checkbox" name="Horas" value="@rango" />
+                                @rango
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <hr>
+
+
             </div>
-
-            <hr>
-
-
-            <h3>Cantidad de alumnos:</h3>
-            <input type="number" max="100" min="0" />
-
-            <hr>
-
-
-            <h3>Taller o talleres:</h3>
-            <div class="custom-select">
-                <div class="select-header">
-                    <span>Selecciona opciones</span>
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="select-content">
-                    <label><input type="checkbox" /> Opción 1</label>
-                    <label><input type="checkbox" /> Opción 2</label>
-                    <label><input type="checkbox" /> Opción 3</label>
-                </div>
-            </div>
-            <hr>
-
-
-            <h3>Días:</h3>
-            <select>
-                <option>Todos</option>
-                <option>Lunes</option>
-            </select>
-
-            <hr>
-
-
-            <h3>Horas:</h3>
-            <select>
-                <option>Todos</option>
-                <option>2:00 - 3:00 p.m.</option>
-                <option>3:00 - 4:00 p.m.</option>
-                <option>4:00 - 5:00 p.m.</option>
-            </select>
-        </div>
+        </form>
 
     </div>
-
-
-    <input class="verArchivo" type="button" value="Ver archivo" />
+    <input class="verArchivo" type="submit" value="Ver archivo" />
 
 </div>
-
