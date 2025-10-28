@@ -17,7 +17,8 @@
         <h2>Filtrar por:</h2>
         <hr />
 
-        <form asp-area="Admin" asp-controller="ExportarDatos" asp-action="DescargarDatos" method="post">
+        <form asp-area="Admin" asp-controller="ExportarDatos" asp-action="DescargarDatos" method="post" data-ajax="false">
+           
 
             <div class="datos">
                 <h3>Profesor o profesores:</h3>
@@ -27,6 +28,9 @@
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="select-content">
+                        <label>
+                            <input type="checkbox" name="ProfesoresIds" value="0" /> Todos
+                        </label>
                         @foreach (var profesor in (ViewBag.Profesores ?? new List<Usuario>()))
                         {
                             <label>
@@ -34,6 +38,7 @@
                                 @profesor.Nombre
                             </label>
                         }
+
                     </div>
                 </div>
 
@@ -50,6 +55,9 @@
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="select-content">
+                        <label>
+                            <input type="checkbox" name="TalleresIds" value="0" /> Todos
+                        </label>
                         @foreach (var taller in (ViewBag.Talleres ?? new List<Taller>()))
                         {
                             <label>
@@ -57,6 +65,7 @@
                                 @taller.Nombre
                             </label>
                         }
+
                     </div>
                 </div>
 
@@ -69,13 +78,14 @@
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="select-content">
-                        @foreach (var dia in (ViewBag.Dias ?? new List<string>()))
-                        {
-                            <label>
-                                <input type="checkbox" name="Dias" value="@dia" />
-                                @dia
-                            </label>
-                        }
+                        <label><input type="checkbox" name="Dias" value="Todos" /> Todos</label>
+                        <label><input type="checkbox" name="Dias" value="Lunes" /> Lunes</label>
+                        <label><input type="checkbox" name="Dias" value="Martes" /> Martes</label>
+                        <label><input type="checkbox" name="Dias" value="Miércoles" /> Miércoles</label>
+                        <label><input type="checkbox" name="Dias" value="Jueves" /> Jueves</label>
+                        <label><input type="checkbox" name="Dias" value="Viernes" /> Viernes</label>
+                        <label><input type="checkbox" name="Dias" value="Cita" /> Cita</label>
+
                     </div>
                 </div>
 
