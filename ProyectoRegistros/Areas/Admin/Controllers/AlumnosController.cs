@@ -21,7 +21,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(/* parámetros del alumno */)
+        public IActionResult Editar()
         {
             return RedirectToAction("Alumnos");
         }

@@ -89,8 +89,10 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var query = _context.Tallers
                 .Include(t => t.IdUsuarioNavigation)
                 .Include(t => t.Listatalleres)
+                    .ThenInclude(lt => lt.IdAlumnoNavigation)
                 .Where(t => t.Estado == 1)
-                .AsEnumerable(); 
+                .AsEnumerable();
+
 
             if (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any() && !filtros.ProfesoresIds.Contains(0))
                 query = query.Where(t => filtros.ProfesoresIds.Contains(t.IdUsuario));
@@ -119,9 +121,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     {
                         var partes = rango.Split('-');
                         if (partes.Length != 2) return false;
-
-                        if (TimeOnly.TryParse(partes[0].Trim(), out var inicio) &&
-                            TimeOnly.TryParse(partes[1].Trim(), out var fin))
+                        if (TimeOnly.TryParse(partes[0].Trim(), out var inicio) && TimeOnly.TryParse(partes[1].Trim(), out var fin))
                         {
                             return t.HoraInicio >= inicio && t.HoraFinal <= fin;
                         }
@@ -137,20 +137,71 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 var worksheet = workbook.Worksheets.Add("Talleres");
                 var currentRow = 1;
 
-                worksheet.Cell(currentRow, 1).Value = "Taller";
-                worksheet.Cell(currentRow, 2).Value = "Profesor";
-                worksheet.Cell(currentRow, 3).Value = "Días";
-                worksheet.Cell(currentRow, 4).Value = "Horario";
-                worksheet.Cell(currentRow, 5).Value = "Alumnos Inscritos";
-
                 foreach (var taller in talleres)
                 {
+                    var tallerHeaderCell = worksheet.Cell(currentRow, 1);
+                    tallerHeaderCell.Value = $"Taller: {taller.Nombre} | " +
+                                             $"Profesor: {taller.IdUsuarioNavigation?.Nombre ?? "N/A"} | " +
+                                             $"Horario: {taller.Dias} ({taller.HoraInicio:HH\\:mm} - {taller.HoraFinal:HH\\:mm}) | " +
+                                             $"Inscritos: {taller.Listatalleres.Count}";
+
+                    var tallerHeaderRange = worksheet.Range(currentRow, 1, currentRow, 12);
+                    tallerHeaderRange.Merge();
+                    tallerHeaderRange.Style.Font.Bold = true;
+                    tallerHeaderRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    tallerHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     currentRow++;
-                    worksheet.Cell(currentRow, 1).Value = taller.Nombre;
-                    worksheet.Cell(currentRow, 2).Value = taller.IdUsuarioNavigation?.Nombre ?? "N/A"; // Usamos '?' por seguridad
-                    worksheet.Cell(currentRow, 3).Value = taller.Dias;
-                    worksheet.Cell(currentRow, 4).Value = $"{taller.HoraInicio:HH\\:mm} - {taller.HoraFinal:HH\\:mm}";
-                    worksheet.Cell(currentRow, 5).Value = taller.Listatalleres.Count;
+
+                    worksheet.Cell(currentRow, 1).Value = "#";
+                    worksheet.Cell(currentRow, 2).Value = "Nombre";
+                    worksheet.Cell(currentRow, 3).Value = "Edad";
+                    worksheet.Cell(currentRow, 4).Value = "Padecimientos";
+                    worksheet.Cell(currentRow, 5).Value = "Tutor";
+                    worksheet.Cell(currentRow, 6).Value = "Teléfono";
+                    worksheet.Cell(currentRow, 7).Value = "Teléfono 2";
+                    worksheet.Cell(currentRow, 8).Value = "Fecha Cumpleaños";
+                    worksheet.Cell(currentRow, 9).Value = "Dirección";
+                    worksheet.Cell(currentRow, 10).Value = "Email";
+                    worksheet.Cell(currentRow, 11).Value = "Atención Psicológica";
+                    worksheet.Cell(currentRow, 12).Value = "Pago";
+                    worksheet.Row(currentRow).Style.Font.Bold = true;
+                    currentRow++;
+
+                    int studentCounter = 1;
+
+                    var inscritosOrdenados = taller.Listatalleres
+                        .OrderBy(lt => lt.Pagado == 1 ? 1 : 2)
+                        .ThenBy(lt => lt.IdAlumnoNavigation?.Nombre);
+
+                    foreach (var inscripcion in inscritosOrdenados)
+                    {
+                        var alumno = inscripcion.IdAlumnoNavigation;
+                        if (alumno == null) continue;
+
+                        worksheet.Cell(currentRow, 1).Value = studentCounter++;
+                        worksheet.Cell(currentRow, 2).Value = alumno.Nombre;
+                        worksheet.Cell(currentRow, 3).Value = alumno.Edad;
+                        worksheet.Cell(currentRow, 4).Value = alumno.Padecimientos;
+                        worksheet.Cell(currentRow, 5).Value = alumno.Tutor;
+                        worksheet.Cell(currentRow, 6).Value = alumno.NumContacto;
+                        worksheet.Cell(currentRow, 7).Value = alumno.NumSecundario;
+                        worksheet.Cell(currentRow, 8).Value = alumno.FechaCumple;
+                        worksheet.Cell(currentRow, 8).Style.NumberFormat.Format = "dd/MM/yyyy";
+                        worksheet.Cell(currentRow, 9).Value = alumno.Direccion;
+                        worksheet.Cell(currentRow, 10).Value = alumno.Email;
+                        worksheet.Cell(currentRow, 11).Value = alumno.AtencionPsico == 1 ? "Si" : "No";
+                        worksheet.Cell(currentRow, 12).Value = inscripcion.Pagado == 1 ? "Si" : "No";
+
+                        if (inscripcion.Pagado != 1)
+                        {
+                            worksheet.Row(currentRow).Style.Fill.BackgroundColor = XLColor.Yellow;
+                            worksheet.Row(currentRow).Style.Font.FontColor = XLColor.Red;
+                        }
+
+                        currentRow++;
+                    }
+
+                    currentRow++;
                 }
 
                 worksheet.Columns().AdjustToContents();
@@ -160,7 +211,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     workbook.SaveAs(stream);
                     var content = stream.ToArray();
                     var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    var fileName = "ReporteDeTalleres.xlsx";
+                    var fileName = "ReporteDetalladoTalleres.xlsx";
 
                     return File(content, contentType, fileName);
                 }
