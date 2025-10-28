@@ -27,6 +27,29 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+
+    // filtrado por edad, en registro
+    
+    const edadInput = document.getElementById('edadAlumno');  //10
+    const contenedorTalleres = document.getElementById('contenedor-talleres');
+
+    edadInput.addEventListener('input', () => {
+        const edad = parseInt(edadInput.value);  //10
+
+        contenedorTalleres.querySelectorAll('.op-taller').forEach(taller => {
+            const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+            const edadMaxAttr = taller.getAttribute('data-edadmax');
+            const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+
+            const cumpleEdad = !isNaN(edad) && edad >= edadMin && (edadMax === null || edad <= edadMax);
+
+            if (cumpleEdad) {
+                taller.style.display = 'block';
+            } else {
+                taller.style.display = 'none';
+            }
+        });
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -205,8 +228,119 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // this is forrrrr el recibo q sale despues de registrar alumno
-let recibo = document.getElementById("modal-recibo")
-document.querySelector("#finalizar").addEventListener("click", function () {
-    recibo.style.display = "block";
-    console.log("pipippip");
+// let recibo = document.getElementById("modal-recibo")
+// document.querySelector("#finalizar").addEventListener("click", function () {
+//     recibo.style.display = "block";
+//     console.log("pipippip");
+// });
+
+
+// para capturar datos del taller atencion psic.
+const buscarTexto = "atencion psicopedagogica";
+const limpiar = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(); // para problemas con acentos
+
+document.querySelectorAll(".op-taller").forEach(op => {
+  op.addEventListener("click", e => {
+    e.stopPropagation();
+    const checkbox = op.querySelector("input[type='checkbox']");
+    const nombre = limpiar(op.querySelector(".nombreTaller").textContent);
+    const esAtencion = nombre.includes(limpiar(buscarTexto));
+
+    if (esAtencion && checkbox.checked) {
+      checkbox.checked = false; 
+      cerrarInputs();     
+      return;                 
+    }
+    cerrarInputs();
+
+    if (!esAtencion) {
+      checkbox.checked = !checkbox.checked;
+      return;
+    }
+
+    checkbox.checked = true;
+
+    ["dias", "horas"].forEach(tipo => {
+      const label = op.querySelector(`.label-${tipo}`);
+      let input = document.createElement("input");
+      input.type = "text";
+      input.className = `input-${tipo}`;
+      input.value = label.textContent.trim() || `Sin ${tipo}`;
+      label.style.display = "none";
+      label.after(input);
+      input.focus();
+      input.addEventListener("click", ev => ev.stopPropagation());
+    });
+  });
 });
+
+document.addEventListener("click", cerrarInputs);
+
+function cerrarInputs() {
+  document.querySelectorAll(".op-taller").forEach(op => {
+    ["dias", "horas"].forEach(tipo => {
+      const input = op.querySelector(`.input-${tipo}`);
+      const label = op.querySelector(`.label-${tipo}`);
+      if (input) {
+        label.textContent = input.value.trim() || `Sin ${tipo}`;
+        input.remove();
+        label.style.display = "inline-block";
+      }
+    });
+  });
+}
+
+
+
+
+/*previsualizacion de datos en recibo*/
+    $(document).ready(function() {
+        // activar el txtarea de padecimientos
+        $('#chbpadecimiento').change(function() {
+            const textarea = $('#txtpadecimientos');
+            const lblPadecimientos = $('#modal-recibo #padecimientos');
+            if ($(this).is(':checked')) {
+                textarea.prop('disabled', false);
+            } else {
+                textarea.prop('disabled', true).val('');
+                lblPadecimientos.text('Ninguno');
+            }
+        });
+        $('#txtpadecimientos').on('input', function() {
+            const valor = $(this).val().trim();
+            $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
+        });
+
+         $('#datos-alumno #finalizar').click(function() {
+            var talleres = [];
+            var total = 0;
+            $('#modal-recibo').css('display', 'block');
+            $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
+            $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
+            $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
+            $('#modal-recibo #numContacto').text($('#Alumno_NumContacto').val());
+            $('#modal-recibo #padecimientos').text($('#txtpadecimientos').val().trim() || 'Ninguno');
+            $('#modal-recibo #tutor').text($('#Alumno_Tutor').val());
+            $('#modal-recibo #email').text($('#Alumno_Email').val());
+            $('#modal-recibo #numSecundario').text($('#Alumno_NumSecundario').val());
+        
+        $('input[name="TalleresSeleccionados"]:checked').each(function() {
+            var tallerNombre = $(this).siblings('.nombreTaller').text();
+            var tallerPrecio = $(this).siblings('.precioTaller').text(); 
+            var dias = $(this).siblings('.label-dias').text(); 
+            var hora = $(this).siblings('.label-horas').text(); 
+
+            var precioNumerico = parseFloat(tallerPrecio.replace(/[^0-9.-]+/g, "")); 
+            total += precioNumerico;
+            talleres.push(`<strong>${tallerNombre}</strong> ${dias} - ${hora}`);
+        });
+        $('#modal-recibo #talleres').empty().html( 
+            talleres.length > 0 ? talleres.join(' <br>') : 'Ninguno');
+            $('#modal-recibo #donativo-total').text('Total: $' + total.toFixed(2)); 
+        });
+        $('#modal-recibo #cancelar').click(function() {
+            $('#modal-recibo').css('display', 'none');
+            talleres = [];
+            total = 0;
+        });
+    });

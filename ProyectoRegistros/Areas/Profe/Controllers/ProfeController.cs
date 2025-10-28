@@ -130,9 +130,49 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.Estado == 1).ToList()
+                Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList()
             };
+            if (viewModel.Talleres == null)
+            {
+                viewModel.Talleres = new List<Taller>();
+            }
             return View(viewModel);
+        }
+        
+        [HttpPost]
+        public IActionResult RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Alumnos.Add(model.Alumno);
+                _context.SaveChanges();
+
+                if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+                {
+                    var listaTalleres = new List<Listatallere>();
+                    foreach (var tallerId in TalleresSeleccionados)
+                    {
+                        var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+                        if (taller != null)
+                        {
+                            listaTalleres.Add(new Listatallere
+                            {
+                                IdAlumno = model.Alumno.Id,
+                                IdTaller = taller.Id,
+                                FechaRegistro = DateTime.Now,
+                                FechaCita = null,
+                                Pagado = 0,
+                                FechaPago = DateTime.Now
+                            });
+                        }
+                    }
+                    _context.Listatalleres.AddRange(listaTalleres);
+                    _context.SaveChanges();
+                }
+                return RedirectToAction("AlumnoRegistrado");
+            }
+            model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
+            return View(model);
         }
     }
 }
