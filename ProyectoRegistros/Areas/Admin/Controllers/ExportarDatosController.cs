@@ -54,6 +54,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
             ViewBag.Profesores = _context.Usuarios
                 .Where(u => u.IdRol == 2 && u.Estado == 1)
                 .OrderBy(u => u.Nombre)

@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // CONFIRMAR ELIMINAR USUARIO (sin confirm extra)
+    // CONFIRMAR ELIMINAR USUARIO
     const formDeleteUsuario = document.getElementById("formDeleteUsuario");
     if (formDeleteUsuario) {
         formDeleteUsuario.addEventListener("submit", async function (e) {

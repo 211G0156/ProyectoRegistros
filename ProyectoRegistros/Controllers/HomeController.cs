@@ -50,8 +50,7 @@ namespace ProyectoRegistros.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string correo, string password)
         {
-            var usuario = Context.Usuarios.SingleOrDefault(u => u.Correo == correo && u.Contraseña == password);
-
+            var usuario = Context.Usuarios.SingleOrDefault(u => u.Correo == correo && u.Contraseña == password && u.Estado == 1);
             if (usuario != null)
             {
 
