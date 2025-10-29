@@ -13,6 +13,7 @@
 </header>
 
 <div class="todo">
+
     <div class="filtrar">
         <h2>Filtrar por:</h2>
         <hr />
@@ -117,3 +118,66 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var customSelects = document.querySelectorAll('.custom-select');
+
+        customSelects.forEach(function (customSelect) {
+            const checkboxes = customSelect.querySelectorAll('input[type="checkbox"]');
+            const todosCheckbox = Array.from(checkboxes).find(cb => cb.value === '0' || cb.value === 'Todos');
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function(e) {
+                    if (cb === todosCheckbox && cb.checked) {
+                        checkboxes.forEach(otherCb => {
+                            if (otherCb !== todosCheckbox) { otherCb.checked = false; }
+                        });
+                    } else if (cb !== todosCheckbox && cb.checked) {
+                        if (todosCheckbox) { todosCheckbox.checked = false; }
+                    }
+                });
+
+                cb.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+
+        const exportForm = document.querySelector('form[action="/Admin/ExportarDatos/DescargarDatos"]');
+
+        if (exportForm) {
+            exportForm.addEventListener('submit', function(e) {
+
+                const cantidadInput = exportForm.querySelector('input[name="CantidadAlumnosMax"]');
+                const cantidadFilled = cantidadInput && cantidadInput.value.trim() !== '';
+
+                const allCheckedBoxes = exportForm.querySelectorAll('input[type="checkbox"]:checked');
+                let specificFilterChecked = false;
+
+                allCheckedBoxes.forEach(cb => {
+                    if (cb.value !== '0' && cb.value !== 'Todos') {
+                        specificFilterChecked = true;
+                    }
+                });
+
+                if (!cantidadFilled && !specificFilterChecked) {
+                    e.preventDefault();
+
+                    if (allCheckedBoxes.length > 0) {
+                        alert('Error: No puedes generar un reporte seleccionando únicamente "Todos".\n\nPor favor, selecciona al menos un filtro específico (un profesor, un taller, etc.) o usa el filtro de "Cantidad de Alumnos".');
+                    } else {
+                        alert('Error: Debes seleccionar al menos un filtro para generar el reporte.');
+                    }
+                }
+            });
+        }
+        @if (TempData["ErrorExportar"] != null)
+        {
+                <text>
+                    alert('@Html.Raw(TempData["ErrorExportar"])');
+                </text>
+        }
+    });
+</script>

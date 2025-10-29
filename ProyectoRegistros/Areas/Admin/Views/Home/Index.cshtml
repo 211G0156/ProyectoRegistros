@@ -32,9 +32,9 @@
 
         <div class="col">
             <label>Edad mínima:</label><br>
-            <input class="inputForms" name="EdadMin" style="width:15%;" min="0" type="number" placeholder="..." required><br>
+            <input class="inputForms" name="EdadMin" style="width:15%;" min="0" max="120" type="number" placeholder="..." required><br>
             <label>Edad máxima:</label><br>
-            <input class="inputForms" name="EdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input class="inputForms" name="EdadMax" style="width:15%;" min="0" max="120" type="number" placeholder="..."><br>
         </div>
 
         <label>Profesor:</label><br>
@@ -47,7 +47,7 @@
         </select><br>
 
         <label>Costo:</label><br>
-        <input class="inputForms" name="Costo" type="number" step="0.01" placeholder="Escribir..." required><br>
+        <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
         <div class="error">
         </div>
 
@@ -87,9 +87,9 @@
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
-            <input name="EdadMin" class="inputForms" id="editEdadMin" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="EdadMin" class="inputForms" id="editEdadMin" min="0" max="120" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
-            <input name="EdadMax" class="inputForms" id="editEdadMax" style="width:15%;" min="0" type="number" placeholder="..."><br>
+            <input name="EdadMax" class="inputForms" id="editEdadMax" min="0" max="120" style="width:15%;" min="0" type="number" placeholder="..."><br>
 
 
         </div>
@@ -104,7 +104,7 @@
         </select><br>
 
         <label>Costo:</label><br>
-        <input name="Costo" class="inputForms" id="editCosto" type="number" min="0" placeholder="Escribir..."><br>
+        <input name="Costo" class="inputForms" id="editCosto" step="1.00" min="0" max="10000" type="number" placeholder="Escribir..."><br>
         <input type="hidden" name="Estado" value="1" />
 
         <div asp-validation-summary="All" class="error">

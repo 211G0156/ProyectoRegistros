@@ -86,13 +86,30 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult DescargarDatos(ExportarDatosVM filtros)
         {
+            var diasSeleccionados = Request.Form["Dias"].ToList();
+            var rangosSeleccionados = Request.Form["Horas"].ToList();
+
+            bool filtroEspecificoElegido =
+                (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any(id => id != 0)) || // Revisa que alguno sea DIFERENTE de 0
+                (filtros.TalleresIds != null && filtros.TalleresIds.Any(id => id != 0)) || // Revisa que alguno sea DIFERENTE de 0
+                filtros.CantidadAlumnosMax.HasValue ||
+                (diasSeleccionados.Any(d => d != "Todos")) || // Revisa que alguno sea DIFERENTE de "Todos"
+                (rangosSeleccionados.Any(r => r != "Todos")); // Revisa que alguno sea DIFERENTE de "Todos"
+
+            if (!filtroEspecificoElegido)
+            {
+                TempData["ErrorExportar"] = "Debes seleccionar al menos un filtro específico (un profesor, un día, etc.) o un límite de alumnos para generar el reporte.";
+
+                return RedirectToAction("Index");
+            }
+
+
             var query = _context.Tallers
                 .Include(t => t.IdUsuarioNavigation)
                 .Include(t => t.Listatalleres)
                     .ThenInclude(lt => lt.IdAlumnoNavigation)
                 .Where(t => t.Estado == 1)
                 .AsEnumerable();
-
 
             if (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any() && !filtros.ProfesoresIds.Contains(0))
                 query = query.Where(t => filtros.ProfesoresIds.Contains(t.IdUsuario));
@@ -103,7 +120,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             if (filtros.CantidadAlumnosMax.HasValue)
                 query = query.Where(t => t.Listatalleres.Count <= filtros.CantidadAlumnosMax.Value);
 
-            var diasSeleccionados = Request.Form["Dias"].ToList();
             if (diasSeleccionados.Any() && !diasSeleccionados.Contains("Todos"))
             {
                 query = query.Where(t =>
@@ -113,7 +129,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 ));
             }
 
-            var rangosSeleccionados = Request.Form["Horas"].ToList();
             if (rangosSeleccionados.Any() && !rangosSeleccionados.Contains("Todos"))
             {
                 query = query.Where(t =>
@@ -144,7 +159,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                                              $"Profesor: {taller.IdUsuarioNavigation?.Nombre ?? "N/A"} | " +
                                              $"Horario: {taller.Dias} ({taller.HoraInicio:HH\\:mm} - {taller.HoraFinal:HH\\:mm}) | " +
                                              $"Inscritos: {taller.Listatalleres.Count}";
-
                     var tallerHeaderRange = worksheet.Range(currentRow, 1, currentRow, 12);
                     tallerHeaderRange.Merge();
                     tallerHeaderRange.Style.Font.Bold = true;
@@ -155,20 +169,19 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     worksheet.Cell(currentRow, 1).Value = "#";
                     worksheet.Cell(currentRow, 2).Value = "Nombre";
                     worksheet.Cell(currentRow, 3).Value = "Edad";
-                    worksheet.Cell(currentRow, 4).Value = "Padecimientos";
-                    worksheet.Cell(currentRow, 5).Value = "Tutor";
-                    worksheet.Cell(currentRow, 6).Value = "Teléfono";
-                    worksheet.Cell(currentRow, 7).Value = "Teléfono 2";
-                    worksheet.Cell(currentRow, 8).Value = "Fecha Cumpleaños";
+                    worksheet.Cell(currentRow, 4).Value = "Fecha de cumpleaños";
+                    worksheet.Cell(currentRow, 5).Value = "Padecimientos";
+                    worksheet.Cell(currentRow, 6).Value = "Tutor";
+                    worksheet.Cell(currentRow, 7).Value = "Teléfono";
+                    worksheet.Cell(currentRow, 8).Value = "Número de respaldo";
                     worksheet.Cell(currentRow, 9).Value = "Dirección";
                     worksheet.Cell(currentRow, 10).Value = "Email";
-                    worksheet.Cell(currentRow, 11).Value = "Atención Psicológica";
+                    worksheet.Cell(currentRow, 11).Value = "Atención psicopedagógica";
                     worksheet.Cell(currentRow, 12).Value = "Pago";
                     worksheet.Row(currentRow).Style.Font.Bold = true;
                     currentRow++;
 
                     int studentCounter = 1;
-
                     var inscritosOrdenados = taller.Listatalleres
                         .OrderBy(lt => lt.Pagado == 1 ? 1 : 2)
                         .ThenBy(lt => lt.IdAlumnoNavigation?.Nombre);
@@ -181,12 +194,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         worksheet.Cell(currentRow, 1).Value = studentCounter++;
                         worksheet.Cell(currentRow, 2).Value = alumno.Nombre;
                         worksheet.Cell(currentRow, 3).Value = alumno.Edad;
-                        worksheet.Cell(currentRow, 4).Value = alumno.Padecimientos;
-                        worksheet.Cell(currentRow, 5).Value = alumno.Tutor;
-                        worksheet.Cell(currentRow, 6).Value = alumno.NumContacto;
-                        worksheet.Cell(currentRow, 7).Value = alumno.NumSecundario;
-                        worksheet.Cell(currentRow, 8).Value = alumno.FechaCumple;
-                        worksheet.Cell(currentRow, 8).Style.NumberFormat.Format = "dd/MM/yyyy";
+                        worksheet.Cell(currentRow, 4).Value = alumno.FechaCumple;
+                        worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = "dd/MM/yyyy";
+                        worksheet.Cell(currentRow, 5).Value = alumno.Padecimientos;
+                        worksheet.Cell(currentRow, 6).Value = alumno.Tutor;
+                        worksheet.Cell(currentRow, 7).Value = alumno.NumContacto;
+                        worksheet.Cell(currentRow, 8).Value = alumno.NumSecundario;
                         worksheet.Cell(currentRow, 9).Value = alumno.Direccion;
                         worksheet.Cell(currentRow, 10).Value = alumno.Email;
                         worksheet.Cell(currentRow, 11).Value = alumno.AtencionPsico == 1 ? "Si" : "No";
@@ -197,10 +210,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                             worksheet.Row(currentRow).Style.Fill.BackgroundColor = XLColor.Yellow;
                             worksheet.Row(currentRow).Style.Font.FontColor = XLColor.Red;
                         }
-
                         currentRow++;
                     }
-
                     currentRow++;
                 }
 
