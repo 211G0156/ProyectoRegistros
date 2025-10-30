@@ -153,23 +153,11 @@
                 const cantidadInput = exportForm.querySelector('input[name="CantidadAlumnosMax"]');
                 const cantidadFilled = cantidadInput && cantidadInput.value.trim() !== '';
 
-                const allCheckedBoxes = exportForm.querySelectorAll('input[type="checkbox"]:checked');
-                let specificFilterChecked = false;
+                const anyCheckboxChecked = exportForm.querySelectorAll('input[type="checkbox"]:checked').length > 0;
 
-                allCheckedBoxes.forEach(cb => {
-                    if (cb.value !== '0' && cb.value !== 'Todos') {
-                        specificFilterChecked = true;
-                    }
-                });
-
-                if (!cantidadFilled && !specificFilterChecked) {
+                if (!anyCheckboxChecked && !cantidadFilled) {
                     e.preventDefault();
-
-                    if (allCheckedBoxes.length > 0) {
-                        alert('Error: No puedes generar un reporte seleccionando únicamente "Todos".\n\nPor favor, selecciona al menos un filtro específico (un profesor, un taller, etc.) o usa el filtro de "Cantidad de Alumnos".');
-                    } else {
-                        alert('Error: Debes seleccionar al menos un filtro para generar el reporte.');
-                    }
+                    alert('Error: Debes seleccionar al menos un filtro para generar el reporte');
                 }
             });
         }

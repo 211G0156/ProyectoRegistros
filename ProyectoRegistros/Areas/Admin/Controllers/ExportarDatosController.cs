@@ -89,20 +89,18 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var diasSeleccionados = Request.Form["Dias"].ToList();
             var rangosSeleccionados = Request.Form["Horas"].ToList();
 
-            bool filtroEspecificoElegido =
-                (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any(id => id != 0)) || // Revisa que alguno sea DIFERENTE de 0
-                (filtros.TalleresIds != null && filtros.TalleresIds.Any(id => id != 0)) || // Revisa que alguno sea DIFERENTE de 0
+            bool filtroLlenado =
+                (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any()) ||
+                (filtros.TalleresIds != null && filtros.TalleresIds.Any()) ||
                 filtros.CantidadAlumnosMax.HasValue ||
-                (diasSeleccionados.Any(d => d != "Todos")) || // Revisa que alguno sea DIFERENTE de "Todos"
-                (rangosSeleccionados.Any(r => r != "Todos")); // Revisa que alguno sea DIFERENTE de "Todos"
+                diasSeleccionados.Any() ||
+                rangosSeleccionados.Any();
 
-            if (!filtroEspecificoElegido)
+            if (!filtroLlenado)
             {
-                TempData["ErrorExportar"] = "Debes seleccionar al menos un filtro específico (un profesor, un día, etc.) o un límite de alumnos para generar el reporte.";
-
+                TempData["ErrorExportar"] = "Debes seleccionar al menos un filtro para generar el reporte.";
                 return RedirectToAction("Index");
             }
-
 
             var query = _context.Tallers
                 .Include(t => t.IdUsuarioNavigation)
@@ -207,7 +205,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
                         if (inscripcion.Pagado != 1)
                         {
-                            worksheet.Row(currentRow).Style.Fill.BackgroundColor = XLColor.Yellow;
+                            worksheet.Range(currentRow, 1, currentRow, 12).Style.Fill.BackgroundColor = XLColor.Yellow;
                             worksheet.Row(currentRow).Style.Font.FontColor = XLColor.Red;
                         }
                         currentRow++;

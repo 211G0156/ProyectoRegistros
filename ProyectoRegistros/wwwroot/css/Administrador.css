@@ -966,6 +966,9 @@ aside {
             font-weight: normal;
             overflow-x: hidden;
         }
+        .buscador input[type=search]{
+            width:90%;
+         }
         #datos-alumno input, select{
             /* width: 60%;  */
             height: 3vh;
