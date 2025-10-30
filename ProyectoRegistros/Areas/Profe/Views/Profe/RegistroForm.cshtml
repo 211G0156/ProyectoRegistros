@@ -25,7 +25,10 @@
     </section>
 
     <section id="datAlum-padeci">
-        <span><label>Padecimientos</label><input type="checkbox" /></span><br>
+        <span>
+            <label>Padecimientos</label>
+            <input id="chbpadecimiento" type="checkbox" />
+        </span><br>
         <textarea id="txtpadecimientos" asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
     </section>
 
@@ -59,8 +62,6 @@
                     <label class="label-horas">@taller.HoraInicio - @taller.HoraFinal</label>
                     <label>@taller.LugaresDisp</label>
                 </div>
-
-                <br>
             }
         }
 

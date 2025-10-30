@@ -36,18 +36,23 @@ document.addEventListener('DOMContentLoaded', function () {
     edadInput.addEventListener('input', () => {
         const edad = parseInt(edadInput.value);  //10
 
-        contenedorTalleres.querySelectorAll('.op-taller').forEach(taller => {
-            const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
-            const edadMaxAttr = taller.getAttribute('data-edadmax');
-            const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
-
-            const cumpleEdad = !isNaN(edad) && edad >= edadMin && (edadMax === null || edad <= edadMax);
-
-            if (cumpleEdad) {
-                taller.style.display = 'block';
-            } else {
-                taller.style.display = 'none';
-            }
+        const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+        if (isNaN(edad) || edad === 0) {
+            talleres.forEach(taller => taller.style.display = 'none');
+            contenedorTalleres.style.display = 'none';
+            return; 
+        }
+        contenedorTalleres.style.display = 'block';
+        talleres.forEach(taller => {
+        const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+        const edadMaxAttr = taller.getAttribute('data-edadmax');
+        const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+        const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+        if (cumpleEdad) {
+            taller.style.display = '';
+        } else {
+            taller.style.display = 'none';
+        }
         });
     });
 });
@@ -295,13 +300,17 @@ function cerrarInputs() {
 
 /*previsualizacion de datos en recibo*/
     $(document).ready(function() {
+        var imprimir = document.getElementById("imprimible");
+
         // activar el txtarea de padecimientos
         $('#chbpadecimiento').change(function() {
             const textarea = $('#txtpadecimientos');
             const lblPadecimientos = $('#modal-recibo #padecimientos');
             if ($(this).is(':checked')) {
+                textarea.css('display', 'block');
                 textarea.prop('disabled', false);
             } else {
+                textarea.css('display', 'none');
                 textarea.prop('disabled', true).val('');
                 lblPadecimientos.text('Ninguno');
             }
