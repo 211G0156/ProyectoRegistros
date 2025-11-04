@@ -232,13 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-// this is forrrrr el recibo q sale despues de registrar alumno
-// let recibo = document.getElementById("modal-recibo")
-// document.querySelector("#finalizar").addEventListener("click", function () {
-//     recibo.style.display = "block";
-//     console.log("pipippip");
-// });
-
 
 // para capturar datos del taller atencion psic.
 const buscarTexto = "atencion psicopedagogica";
@@ -320,10 +313,17 @@ function cerrarInputs() {
             $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
         });
 
-         $('#datos-alumno #finalizar').click(function() {
+        
+         $('#finalizar').off('click').on('click', function (e) {
+            e.preventDefault(); 
+            const form = document.getElementById('datos-alumno');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
             var talleres = [];
             var total = 0;
-            $('#modal-recibo').css('display', 'block');
+            $('#modal-recibo').show();
             $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
             $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
             $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
@@ -349,7 +349,27 @@ function cerrarInputs() {
         });
         $('#modal-recibo #cancelar').click(function() {
             $('#modal-recibo').css('display', 'none');
-            talleres = [];
-            total = 0;
         });
-    });
+
+        // Marcar pago de donativo
+        $('#chkDonativo').off('change').on('change', function () {
+        const isPagado = $(this).is(':checked');
+        const idAlumno = $('#Alumno_Id').val();
+
+            $('#PagadoHidden').val(isPagado ? 'true' : 'false'); 
+            $('#chkDonativo').next('label').text(isPagado ? 'Pagado' : 'No pagado');
+            if (isPagado) {
+                $('#modal-recibo #fechaPago').text('Fecha de pago: ' + new Date().toLocaleDateString('es-MX'));
+            } else {
+                $('#modal-recibo #fechaPago').text('');
+            }
+        });
+
+        $('#aceptarRecibo').off('click').on('click', function () {
+            const isPagado = $('#chkDonativo').is(':checked');
+            $('#PagadoHidden').val(isPagado ? 'true' : 'false');
+            console.log("PagadoHidden al enviar:", $('#PagadoHidden').val());
+            $('#modal-recibo').hide(); 
+            $('#datos-alumno')[0].submit();
+        });
+ });

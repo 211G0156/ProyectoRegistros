@@ -7,21 +7,24 @@
 
 
 
-<form id="datos-alumno" method="post" asp-action="RegistroForm">
+<form id="datos-alumno" method="post" asp-action="RegistroForm" asp-controller="Profe">
     <h3>Datos del alumno</h3><br>
     <section>
+        <input type="hidden" id="PagadoHidden" name="Pagado" value="false" />
+        <input asp-for="Alumno.Id" type="hidden" id="Alumno_Id" value="@Model.Alumno.Id"/>
+
         <label>Nombre:</label><br>
-        <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Fecha de cumpleaños:</label><br>
-        <input asp-for="Alumno.FechaCumple" type="date"><br>
+        <input asp-for="Alumno.FechaCumple" type="date" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Dirección:</label><br>
-        <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Edad:</label><br>
-        <input id="edadAlumno" asp-for="Alumno.Edad" type="number" placeholder="Escribir..."><br>
+        <input id="edadAlumno" asp-for="Alumno.Edad" type="number" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Número de contacto:</label><br>
-        <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
 
     <section id="datAlum-padeci">
@@ -35,13 +38,13 @@
 
     <section>
         <label>Tutor:</label><br>
-        <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Email:</label><br>
-        <input asp-for="Alumno.Email" type="email" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Email" type="email" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Teléfono:</label><br>
-        <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section><br>
 
 
@@ -91,7 +94,6 @@
 
 
 <div class="modal" id="modal-recibo">
-    <form>
         <section class="datos-alumno">
             <h2>Confirmación de datos</h2>
             <img src="~/img/logo.png"/>
@@ -128,12 +130,11 @@
         </div>
             <hr size="2" width="99%"><br>
             <section id="donativo">
-                <label id="donativo-total"></label>
-                <input type="checkbox">
+                <label for="chkDonativo" id="donativo-total"></label>
+                <input id="chkDonativo" type="checkbox">
             </section>
         <div style="display: inline-flex; justify-content: space-between; width: 100%;">
             <button id="cancelar" type="button" class="buttons">Cancelar</button>
-            <button type="submit" class="buttons">Aceptar</button>
+            <button id="aceptarRecibo" type="button" class="buttons">Aceptar</button>
         </div>
-    </form>
 </div>

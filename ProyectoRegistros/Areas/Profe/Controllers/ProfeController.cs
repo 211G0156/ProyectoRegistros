@@ -138,41 +138,76 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             }
             return View(viewModel);
         }
-        
+
         [HttpPost]
         public IActionResult RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
         {
             if (ModelState.IsValid)
             {
+                var errores = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+                Console.WriteLine("ERRORES: " + string.Join(", ", errores));
+            }
+            var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre);
+
+            if (alumnoExistente == null)
+            {
+                model.Alumno.Estado = 1;
                 _context.Alumnos.Add(model.Alumno);
                 _context.SaveChanges();
+            }
+            else
+            {
+                model.Alumno = alumnoExistente;
+                _context.Update(alumnoExistente);
+                _context.SaveChanges();
+            }
+            bool pagado = false;
+            var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "True"))
+            {
+                pagado = true;
+            }
 
-                if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+            if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+            {
+                var listaTalleres = new List<Listatallere>();
+                foreach (var tallerId in TalleresSeleccionados)
                 {
-                    var listaTalleres = new List<Listatallere>();
-                    foreach (var tallerId in TalleresSeleccionados)
+                    var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+                    if (taller != null)
                     {
-                        var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
-                        if (taller != null)
+                        listaTalleres.Add(new Listatallere
                         {
-                            listaTalleres.Add(new Listatallere
-                            {
-                                IdAlumno = model.Alumno.Id,
-                                IdTaller = taller.Id,
-                                FechaRegistro = DateTime.Now,
-                                FechaCita = null,
-                                Pagado = 0,
-                                FechaPago = DateTime.Now
-                            });
-                        }
+                            IdAlumno = model.Alumno.Id,
+                            IdTaller = taller.Id,
+                            FechaRegistro = DateTime.Now,
+                            FechaCita = null,
+                            Pagado = 0,
+                            FechaPago = DateTime.Now
+                        });
                     }
-                    _context.Listatalleres.AddRange(listaTalleres);
-                    _context.SaveChanges();
                 }
-                return RedirectToAction("AlumnoRegistrado");
+                _context.Listatalleres.AddRange(listaTalleres);
+                _context.SaveChanges();
             }
             model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
             return View(model);
+        }
+        
+        [HttpPost]
+        public IActionResult ActualizarPago(int idAlumno, bool pagado)
+        {
+            var talleres = _context.Listatalleres.Where(l => l.IdAlumno == idAlumno).ToList();
+            foreach (var t in talleres)
+            {
+                t.Pagado = (sbyte)(pagado ? 1 : 0);
+                t.FechaPago = pagado ? DateTime.Now : null;
+            }
+
+            _context.SaveChanges();
+
+            return Json(new { success = true });
         }
     }
 }

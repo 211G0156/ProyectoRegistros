@@ -19,7 +19,7 @@ public partial class Alumno
 
     public string NumSecundario { get; set; } = null!;
 
-    public string Padecimientos { get; set; } = null!;
+    public string? Padecimientos { get; set; }
 
     public string Tutor { get; set; } = null!;
 
