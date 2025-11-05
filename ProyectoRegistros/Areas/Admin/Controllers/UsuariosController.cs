@@ -21,7 +21,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             _context = context;
             _emailService = emailService;
         }
-
         public IActionResult Index()
         {
             var usuarios = _context.Usuarios
@@ -98,6 +97,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             ViewData["ShowAddModal"] = true;
             return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
+
         [HttpGet]
         public IActionResult GetUsuario(int id)
         {
