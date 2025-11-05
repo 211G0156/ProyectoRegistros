@@ -182,9 +182,9 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                             IdAlumno = model.Alumno.Id,
                             IdTaller = taller.Id,
                             FechaRegistro = DateTime.Now,
-                            FechaCita = null,
-                            Pagado = 0,
-                            FechaPago = DateTime.Now
+                            FechaCita = taller.Dias,
+                            Pagado = (sbyte)(pagado ? 1 : 0),
+                            FechaPago = pagado ? DateTime.Now : null,
                         });
                     }
                 }

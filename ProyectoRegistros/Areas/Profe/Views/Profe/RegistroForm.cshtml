@@ -92,13 +92,13 @@
     </div>
 </form>
 
-
 <div class="modal" id="modal-recibo">
+    <div>
         <section class="datos-alumno">
             <h2>Confirmación de datos</h2>
             <img src="~/img/logo.png"/>
         </section>
-        <hr size="0" width="99%" style="margin-top:3vh; box-shadow:-1px 3px 6px 1px lightslategrey"><br>
+        <hr size="0" width="99%" style="margin-top:3vh; box-shadow:-1px 3px 6px 1px rgba(172, 172, 176, 0.426)"><br>
         <section class="datos-alumno">
             <label>NOMBRE: </label><br>
             <label>CUMPLEAÑOS: </label><br>
@@ -116,6 +116,7 @@
             <label id="direccion" name="Direccion">@Model.Alumno.Direccion</label><br>
             <label id="numContacto" name="NumContacto">@Model.Alumno.NumContacto</label><br>
             <label id="padecimientos" name="Padecimientos">@Model.Alumno.Padecimientos</label><br>
+            @* <label id="padecimientos" name="Dias">@Model.Alumno</label><br> *@
             <label id="tutor" name="Tutor">@Model.Alumno.Tutor</label><br>
             <label id="email" name="Email">@Model.Alumno.Email</label><br>
             <label id="numSecundario" name="NumSecundario">@Model.Alumno.NumSecundario</label><br>
@@ -137,4 +138,12 @@
             <button id="cancelar" type="button" class="buttons">Cancelar</button>
             <button id="aceptarRecibo" type="button" class="buttons">Aceptar</button>
         </div>
+    </div>
 </div>
+@* checar lo de agg alumno, que si selecciona un taller, se quiten 
+con los que serian a la misma hora
+
+
+que se guarde con cita, ya que no ,llegaa a la base
+
+en imprimir, hacerlo con un formato oficial de cclems *@
