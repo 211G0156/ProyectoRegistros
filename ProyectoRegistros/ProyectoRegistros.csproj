@@ -7,10 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\**" />
     <Compile Remove="ViewModels\**" />
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="Repositories\**" />
     <Content Remove="ViewModels\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="Repositories\**" />
     <EmbeddedResource Remove="ViewModels\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="Repositories\**" />
     <None Remove="ViewModels\**" />
+    <None Remove="wwwroot\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,11 +56,6 @@
     <Resource Include="wwwroot\img\Historial.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-    <Folder Include="wwwroot\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
