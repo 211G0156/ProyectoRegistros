@@ -292,84 +292,93 @@ function cerrarInputs() {
 
 
 /*previsualizacion de datos en recibo*/
-    $(document).ready(function() {
-        var imprimir = document.getElementById("imprimible");
+    //$(document).ready(function() {
+    //    // activar el txtarea de padecimientos
+    //    $('#chbpadecimiento').change(function() {
+    //        const textarea = $('#txtpadecimientos');
+    //        const lblPadecimientos = $('#modal-recibo #padecimientos');
+    //        if ($(this).is(':checked')) {
+    //            textarea.css('display', 'block');
+    //            textarea.prop('disabled', false);
+    //        } else {
+    //            textarea.css('display', 'none');
+    //            textarea.prop('disabled', true).val('');
+    //            lblPadecimientos.text('Ninguno');
+    //        }
+    //    });
+    //    $('#txtpadecimientos').on('input', function() {
+    //        const valor = $(this).val().trim();
+    //        $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
+    //    });
 
-        // activar el txtarea de padecimientos
-        $('#chbpadecimiento').change(function() {
-            const textarea = $('#txtpadecimientos');
-            const lblPadecimientos = $('#modal-recibo #padecimientos');
-            if ($(this).is(':checked')) {
-                textarea.css('display', 'block');
-                textarea.prop('disabled', false);
-            } else {
-                textarea.css('display', 'none');
-                textarea.prop('disabled', true).val('');
-                lblPadecimientos.text('Ninguno');
-            }
-        });
-        $('#txtpadecimientos').on('input', function() {
-            const valor = $(this).val().trim();
-            $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
-        });
-
+    //    // enviar datos al recibo
+    //    $('#finalizar').off('click').on('click', function (e) {
+    //        e.preventDefault();
+    //        const form = document.getElementById('datos-alumno');
+    //        if (!form.checkValidity()) {
+    //            form.reportValidity();
+    //            return;
+    //        }
+    //        var talleres = [];
+    //        var total = 0;
+    //        $('#modal-recibo').show();
+    //        $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
+    //        $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
+    //        $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
+    //        $('#modal-recibo #numContacto').text($('#Alumno_NumContacto').val());
+    //        $('#modal-recibo #padecimientos').text($('#txtpadecimientos').val().trim() || 'Ninguno');
+    //        $('#modal-recibo #tutor').text($('#Alumno_Tutor').val());
+    //        $('#modal-recibo #email').text($('#Alumno_Email').val());
+    //        $('#modal-recibo #numSecundario').text($('#Alumno_NumSecundario').val());
+       
         
-         $('#finalizar').off('click').on('click', function (e) {
-            e.preventDefault(); 
-            const form = document.getElementById('datos-alumno');
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
-            var talleres = [];
-            var total = 0;
-            $('#modal-recibo').show();
-            $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
-            $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
-            $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
-            $('#modal-recibo #numContacto').text($('#Alumno_NumContacto').val());
-            $('#modal-recibo #padecimientos').text($('#txtpadecimientos').val().trim() || 'Ninguno');
-            $('#modal-recibo #tutor').text($('#Alumno_Tutor').val());
-            $('#modal-recibo #email').text($('#Alumno_Email').val());
-            $('#modal-recibo #numSecundario').text($('#Alumno_NumSecundario').val());
-        
-        $('input[name="TalleresSeleccionados"]:checked').each(function() {
-            var tallerNombre = $(this).siblings('.nombreTaller').text();
-            var tallerPrecio = $(this).siblings('.precioTaller').text(); 
-            var dias = $(this).siblings('.label-dias').text(); 
-            var hora = $(this).siblings('.label-horas').text(); 
+    //        $('input[name="TalleresSeleccionados"]:checked').each(function() {
+    //            var tallerNombre = $(this).siblings('.nombreTaller').text();
+    //            var tallerPrecio = $(this).siblings('.precioTaller').text();
+    //            var dias = $(this).siblings('.label-dias').text();
+    //            var hora = $(this).siblings('.label-horas').text();
 
-            var precioNumerico = parseFloat(tallerPrecio.replace(/[^0-9.-]+/g, "")); 
-            total += precioNumerico;
-            talleres.push(`<strong>${tallerNombre}</strong> ${dias} - ${hora}`);
-        });
-        $('#modal-recibo #talleres').empty().html( 
-            talleres.length > 0 ? talleres.join(' <br>') : 'Ninguno');
-            $('#modal-recibo #donativo-total').text('Total: $' + total.toFixed(2)); 
-        });
-        $('#modal-recibo #cancelar').click(function() {
-            $('#modal-recibo').css('display', 'none');
-        });
+    //            var precioNumerico = parseFloat(tallerPrecio.replace(/[^0-9.-]+/g, ""));
+    //            total += precioNumerico;
+    //            talleres.push(`<strong>${tallerNombre}</strong> ${dias} - ${hora}`);
+    //        });
+    //        $('#modal-recibo #talleres').empty().html(talleres.length > 0 ? talleres.join(' <br>') : 'Ninguno');
+    //        $('#modal-recibo #donativo-total').text('Total: $' + total.toFixed(2)); 
+    //    }); 
 
-        // Marcar pago de donativo
-        $('#chkDonativo').off('change').on('change', function () {
-        const isPagado = $(this).is(':checked');
-        const idAlumno = $('#Alumno_Id').val();
+    //    // LOL
+    //    // detectar cambios en los checkboxes de talleres
+    //    $(document).on('change', '#seleccionados', function () {
+    //        console.log("Cambio detectado");
+    //        const seleccionados = [];
+            
+    //        $('input[name="TalleresSeleccionados"]:checked').each(function () {
+    //            const taller = $(this).closest('.op-taller');
+    //            const dias = taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
+    //            const [inicio, fin] = taller.find('.label-horas').text().split('-').map(h => h.trim());
+    //            seleccionados.push({ dias, inicio, fin });
+    //        });
 
-            $('#PagadoHidden').val(isPagado ? 'true' : 'false'); 
-            $('#chkDonativo').next('label').text(isPagado ? 'Pagado' : 'No pagado');
-            if (isPagado) {
-                $('#modal-recibo #fechaPago').text('Fecha de pago: ' + new Date().toLocaleDateString('es-MX'));
-            } else {
-                $('#modal-recibo #fechaPago').text('');
-            }
-        });
+    //        $('input[name="TalleresSeleccionados"]').each(function () {
+    //            const taller = $(this).closest('.op-taller');
+    //            const diasTaller = taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
+    //            const [inicio, fin] = taller.find('.label-horas').text().split('-').map(h => h.trim());
 
-        $('#aceptarRecibo').off('click').on('click', function () {
-            const isPagado = $('#chkDonativo').is(':checked');
-            $('#PagadoHidden').val(isPagado ? 'true' : 'false');
-            console.log("PagadoHidden al enviar:", $('#PagadoHidden').val());
-            $('#modal-recibo').hide(); 
-            $('#datos-alumno')[0].submit();
-        });
- });
+    //            let choca = false;
+    //            for (const s of seleccionados) {
+    //                const mismoDia = s.dias.some(d => diasTaller.includes(d));
+    //                if (mismoDia && (inicio < s.fin && fin > s.inicio)) {
+    //                    choca = true;
+    //                    break;
+    //                }
+    //            }
+
+    //            if (choca && !$(this).is(':checked')) {
+    //                $(this).prop('disabled', true);
+    //                taller.css('opacity', '0.5');
+    //            } else {
+    //                $(this).prop('disabled', false);
+    //                taller.css('opacity', '1');
+    //            }
+    //        });
+    //    });
