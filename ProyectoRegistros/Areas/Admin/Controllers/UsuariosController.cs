@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Models;
+using ProyectoRegistros.Services;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ProyectoRegistros.Areas.Admin.Controllers
 {
@@ -12,12 +15,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
     public class UsuariosController : Controller
     {
         private readonly ProyectoregistroContext _context;
-
-        public UsuariosController(ProyectoregistroContext context)
+        private readonly EmailService _emailService;
+        public UsuariosController(ProyectoregistroContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
-
         public IActionResult Index()
         {
             var usuarios = _context.Usuarios
@@ -38,30 +41,46 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public IActionResult AgregarUsuario(NuevoUsuarioVM vm)
+        public async Task<IActionResult> AgregarUsuario(NuevoUsuarioVM vm)
         {
+            ModelState.Remove("Contraseña");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    string passwordAleatorio = GenerarPasswordAleatorio();
+
                     var usuario = new Usuario
                     {
                         Nombre = vm.Nombre,
                         Correo = vm.Correo,
                         NumTel = vm.NumTel,
-                        Contraseña = vm.Contraseña,
+                        Contraseña = passwordAleatorio, 
                         IdRol = vm.IdRol,
                         Estado = 1
                     };
                     _context.Usuarios.Add(usuario);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync(); 
+
+                    var asunto = "Contraseña para el Sistema de Registros";
+                    var cuerpo = $"Hola {usuario.Nombre},<br><br>" +
+                                 "Se ha creado una cuenta para ti en nuestro sistema.<br>" +
+                                 $"Tu contraseña es: <b>{passwordAleatorio}</b><br><br>" +
+                                 "Para restablecer la contraseña debes ir con el administrador.";
+
+                    await _emailService.EnviarEmailAsync(usuario.Correo, asunto, cuerpo);
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
+                    ModelState.AddModelError(string.Empty, "Error al crear usuario: " + ex.Message);
+
+                    System.Diagnostics.Debug.WriteLine("ERROR AL ENVIAR CORREO: " + ex.ToString());
                 }
             }
+
             var usuarios = _context.Usuarios
                 .Include(u => u.IdRolNavigation)
                 .Where(u => u.Estado == 1)
@@ -76,7 +95,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 .ToList();
 
             ViewData["ShowAddModal"] = true;
-            return View("Index", usuarios);
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
         }
 
         [HttpGet]
@@ -105,7 +124,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == vm.Id);
-                if(usuario!=null)
+                if (usuario != null)
                 {
                     usuario.Nombre = vm.Nombre;
                     usuario.Correo = vm.Correo;
@@ -135,6 +154,24 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             usuario.Estado = 0;
             _context.SaveChanges();
             return Ok("Usuario eliminado correctamente.");
+        }
+    
+
+        private string GenerarPasswordAleatorio(int length = 12)
+        {
+            const string caracteresValidos = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            StringBuilder res = new StringBuilder();
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+                while (length-- > 0)
+                {
+                    rng.GetBytes(uintBuffer);
+                    uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                    res.Append(caracteresValidos[(int)(num % (uint)caracteresValidos.Length)]);
+                }
+            }
+            return res.ToString();
         }
     }
 }

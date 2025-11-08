@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MySql.EntityFrameworkCore;
 using ProyectoRegistros.Models;
+using ProyectoRegistros.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
+
+builder.Services.AddSingleton<EmailService, SmtpEmailService>();
 
 var app = builder.Build();
 
