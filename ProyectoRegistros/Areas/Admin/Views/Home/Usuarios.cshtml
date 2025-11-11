@@ -103,54 +103,95 @@
 </header>
 
 
-<div class="filtros2">
-    <div class="buscador2">
-        <!--<img src="../img/lupa1.png" />-->
-        <input id="" type="search" placeholder="Buscar..." />
-
+<form asp-area="Admin" asp-controller="Home" asp-action="Usuarios" method="get" id="filtro-form-usuarios">
+    <div class="filtros2">
+        <div class="buscador2">
+            <input id="search-usuarios" name="searchTerm" type="search"
+                   placeholder="Buscar..." value="@ViewData["CurrentFilter"]" />
+        </div>
+        <input id="aggUsuario" type="button" value="Crear usuario" />
     </div>
+</form>
 
-
-
-    <input id="aggUsuario" type="button" value="Crear usuario" />
+<div id="tabla-container">
+    @await Html.PartialAsync("_UsuariosTabla", Model)
 </div>
 
-<div class="tablita">
-    <div class="tabla-scroll">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Correo Electrónico</th>
-                    <th>Número Telefónico</th>
-                    <th>Rol</th>
-                    <th>Opciones</th>
-                </tr>
 
-            </thead>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const searchInput = document.getElementById('search-usuarios');
+        const tablaContainer = document.getElementById('tabla-container');
+        let debounceTimer;
 
-            <tbody>
-                @foreach (var usuario in Model)
-                {
-                    <tr>
-                        <td>@usuario.Nombre</td>
-                        <td>@usuario.Correo</td>
-                        <td>@usuario.NumTel</td>
-                        <td>@usuario.RolNombre</td>
-                        <td>
-                            <div class="botones">
-                                <button type="button" class="btneditar usuario" data-id="@usuario.Id">
-                                    <img src="~/img/edit.png" />
-                                </button>
+        function actualizarTabla() {
+            const searchTerm = searchInput.value;
+            const url = `@Url.Action("Usuarios", "Home")?searchTerm=${encodeURIComponent(searchTerm)}`;
 
-                                <button class="btneliminar usuario" type="button" data-id="@usuario.Id" data-nombre="@usuario.Nombre">
-                                    <img  src="~/img/X.png" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => {
+                tablaContainer.innerHTML = html;
+            })
+            .catch(error => console.error('Error al actualizar la tabla:', error));
+        }
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(actualizarTabla, 300); 
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
+            this.value = this.value.replace(regex, '');
+        });
+
+        tablaContainer.addEventListener('click', async function(event) {
+            
+            const editButton = event.target.closest('.btneditar.usuario');
+            if (editButton) {
+                event.preventDefault(); 
+                const id = editButton.dataset.id;
+                try {
+                    const response = await fetch(`/Admin/Usuarios/GetUsuario?id=${id}`); 
+                    if (!response.ok) throw new Error("Error al obtener usuario");
+                    const data = await response.json();
+                    
+                    document.getElementById("EditUsuarioId").value = data.id;
+                    document.getElementById("editNombreUsu").value = data.nombre;
+                    document.getElementById("editCorreo").value = data.correo;
+                    document.getElementById("editTel").value = data.numTel;
+                    document.getElementById("editContraseña").value = data.contraseña;
+                    document.getElementById("editRol").value = data.idRol;
+                    
+                    document.getElementById("modal-EditUsuario").style.display = "block";
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al cargar datos del usuario");
                 }
-            </tbody>
-        </table>
-    </div>
-</div>
+            }
+
+            const deleteButton = event.target.closest('.btneliminar.usuario');
+            if (deleteButton) {
+                event.preventDefault();
+                const id = deleteButton.dataset.id;
+                const nombre = deleteButton.dataset.nombre;
+                
+                document.getElementById("DeleteUsuarioId").value = id;
+                document.querySelector("#modal-DeleteUsuario label").textContent = nombre;
+                document.getElementById("modal-DeleteUsuario").style.display = "block";
+            }
+        });
+
+        document.getElementById("aggUsuario")?.addEventListener("click", function () {
+            document.getElementById("modal-AddUsuario").style.display = "block";
+        });
+        
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('cerrar')) {
+                event.target.closest('.modal').style.display = 'none';
+            }
+        });
+    });
+</script>

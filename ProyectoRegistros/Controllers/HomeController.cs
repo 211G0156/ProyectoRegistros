@@ -25,9 +25,22 @@ namespace ProyectoRegistros.Controllers
         {
             return View();
         }
-        public IActionResult TalleresDisponibles()
+        [HttpGet]
+        public async Task<IActionResult> TalleresDisponibles(int? edad)
         {
-            var talleres = Context.Tallers
+            IQueryable<Taller> query = Context.Tallers.AsQueryable();
+
+            query = query.Where(t => t.Estado == 1);
+
+            if (edad.HasValue)
+            {
+                query = query.Where(t =>
+                    edad.Value >= t.EdadMin &&
+                    (t.EdadMax == null || edad.Value <= t.EdadMax)
+                );
+            }
+
+            var talleres = await query
                 .Include(t => t.IdUsuarioNavigation)
                 .Select(t => new TalleresViewModels
                 {
@@ -36,17 +49,20 @@ namespace ProyectoRegistros.Controllers
                     Espacios = t.LugaresDisp,
                     Horario = t.HoraInicio.ToString(@"hh\:mm tt") + " - " + t.HoraFinal.ToString(@"hh\:mm tt"),
                     Edad = t.EdadMax.HasValue
-                           ? $"{t.EdadMin} a {t.EdadMax.Value} años"
-                           : $"{t.EdadMin} en adelante",
+                        ? $"{t.EdadMin} a {t.EdadMax.Value} años"
+                        : $"{t.EdadMin} en adelante",
                     Profesor = t.IdUsuarioNavigation.Nombre,
                     Costo = t.Costo
                 })
-                .ToList();
+                .ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_TalleresTabla", talleres);
+            }
 
             return View(talleres);
         }
-
-
         [HttpPost]
         public async Task<IActionResult> Index(string correo, string password)
         {

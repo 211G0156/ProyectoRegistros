@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProyectoRegistros.Models.ViewModels.TalleresViewModels>
+
+<div class="tablita">
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Días</th>
+                    <th>Espacios</th>
+                    <th>Horario</th>
+                    <th>Edad</th>
+                    <th>Profesor</th>
+                    <th>Donativo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var taller in Model)
+                {
+                    <tr>
+                        <td>@taller.Nombre</td>
+                        <td>@taller.Dias</td>
+                        <td>@taller.Espacios</td>
+                        <td>@taller.Horario</td>
+                        <td>@taller.Edad</td>
+                        <td>@taller.Profesor</td>
+                        <td>$@taller.Costo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -26,46 +26,98 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         [Route("/Profe/Profe")]
         [Route("/Profe")]
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            //var talleres = _context.Tallers
-            //    .Include(t => t.IdUsuarioNavigation)
-            //    .Select(t => new MisTalleresViewModel
-            //    {
-            //        Nombre = t.Nombre,
-            //        Dias = t.Dias,
-            //        Espacios = t.LugaresDisp,
-            //        Horario = t.HoraInicio.ToString(@"hh\:mm tt") + " - " + t.HoraFinal.ToString(@"hh\:mm tt"),
-            //        Edad = t.EdadMax.HasValue
-            //               ? $"{t.EdadMin} a {t.EdadMax.Value} años"
-            //               : $"{t.EdadMin} en adelante",
-            //        Costo = t.Costo
-            //    })
-            //    .ToList();
             var user = User.FindFirstValue("Id");
             if (user == null)
             {
                 return RedirectToAction("Index", "Login");
             }
+
+            ViewData["CurrentFilter"] = searchTerm;
             var idUser = int.Parse(user);
-            var talleres = _context.Tallers.Where(x => x.IdUsuario == idUser).OrderBy(x => x.Nombre).ToList();
+
+            IQueryable<Taller> query = _context.Tallers.AsQueryable();
+
+            query = query.Where(x => x.IdUsuario == idUser && x.Estado == 1);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                bool isNumeric = int.TryParse(searchTerm, out int edad);
+
+                query = query.Where(t =>
+                    t.Nombre.Contains(searchTerm) ||
+                    t.Dias.Contains(searchTerm) ||
+                    (isNumeric && edad >= t.EdadMin && (t.EdadMax == null || edad <= t.EdadMax))
+                );
+            }
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query
+                   .OrderBy(t => t.Nombre.StartsWith(searchTerm) ? 0 : 1)
+                   .ThenBy(t => t.Dias.StartsWith(searchTerm) ? 2 : 3)
+                   .ThenBy(t => t.Nombre);
+            }
+            else
+            {
+                query = query.OrderBy(t => t.Nombre);
+            }
+
+            var talleres = await query.ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_ProfeTalleresTabla", talleres);
+            }
 
             return View(talleres);
         }
-        public IActionResult Alumnos()
+        public async Task<IActionResult> Alumnos(string searchTerm)
         {
             var user = User.FindFirstValue("Id");
-            var misTalleres = _context.Tallers.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
-            var alumno = _context.Listatalleres.Where(x => misTalleres.Contains(x.IdTaller)).Include(a => a.IdAlumnoNavigation)
-            .Include(t => t.IdTallerNavigation)
-            .OrderBy(x => x.IdAlumnoNavigation.Nombre).ToList();
+            if (user == null) return RedirectToAction("Index", "Login");
 
-            // Agrupar los talleres por alumno
-            var alumnosConTalleres = alumno.GroupBy(a => a.IdAlumnoNavigation.Id).Select(g => new
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var misTalleres = _context.Tallers.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
+
+            IQueryable<Listatallere> query = _context.Listatalleres.AsQueryable();
+
+            query = query.Where(x => misTalleres.Contains(x.IdTaller));
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x => x.IdAlumnoNavigation.Nombre.Contains(searchTerm));
+            }
+
+            var alumnosLista = await query
+                .Include(a => a.IdAlumnoNavigation)
+                .Include(t => t.IdTallerNavigation)
+                .OrderBy(x => x.IdAlumnoNavigation.Nombre)
+                .ToListAsync();
+
+            var alumnosConTalleres = alumnosLista.GroupBy(a => a.IdAlumnoNavigation.Id).Select(g => new
             {
                 Alumno = g.FirstOrDefault().IdAlumnoNavigation,
                 Talleres = g.Select(t => t.IdTallerNavigation).ToList()
-            }).ToList();
+            });
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                alumnosConTalleres = alumnosConTalleres
+                    .OrderBy(a => a.Alumno.Nombre.StartsWith(searchTerm, StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                    .ThenBy(a => a.Alumno.Nombre);
+            }
+            else
+            {
+                alumnosConTalleres = alumnosConTalleres.OrderBy(a => a.Alumno.Nombre);
+            }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_ProfeAlumnosTabla", alumnosConTalleres);
+            }
 
             return View(alumnosConTalleres);
         }

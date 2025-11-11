@@ -117,7 +117,6 @@
 </div>
 
 
-
 <header class="principal">
     <div class="izq">
         <img id="ig1" class="reg" src="~/img/arrow_back.png" />
@@ -128,56 +127,45 @@
 
 <div class="filtros">
     <div class="buscador3">
-        <input type="search" id="fil" placeholder="Nombre..." />
-
+        <input type="search" id="fil" name="searchTerm"
+               placeholder="Nombre..." value="@ViewData["CurrentFilter"]" />
     </div>
-
-
 </div>
 
-
-<div class="tablita">
-    <div class="tabla-scroll">
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Tutor</th>
-                    <th>Teléfono</th>
-                    <th>Teléfono 2</th>
-                    <th>Padecimientos</th>
-                    <th>Talleres</th>
-                    <th>Opciones</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-                @foreach (var alumno in Model)
-                {
-                    <tr>
-                        <td>@alumno.Nombre</td>
-                        <td>@alumno.Tutor</td>
-                        <td>@alumno.NumContacto</td>
-                        <td>@alumno.NumSecundario</td>
-                        <td>@alumno.Padecimientos</td>
-                        <td>@string.Join(", ", alumno.Talleres)</td>
-                        <td>
-                            <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = alumno.Id, area = "Admin" })">
-                                    <img class="btneditar" src="~/img/edit.png" />
-                                </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = alumno.Id, area = "Admin" })" class="btneliminar">
-                                    <img class="btneliminar" src="~/img/X.png" />
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    </div>
-
+<div id="tabla-container">
+    @await Html.PartialAsync("_AlumnosTabla", Model)
 </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const searchInput = document.getElementById('fil');
+            const tablaContainer = document.getElementById('tabla-container');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    const searchTerm = searchInput.value;
+                    const url = `@Url.Action("Alumnos", "Home")?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+                    fetch(url, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        tablaContainer.innerHTML = html;
+                    })
+                    .catch(error => console.error('Error al actualizar la tabla:', error));
+
+                }, 300);
+            });
+            searchInput.addEventListener('input', function(e) {
+                const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
+
+                this.value = this.value.replace(regex, '');
+            });
+        });
+    </script>

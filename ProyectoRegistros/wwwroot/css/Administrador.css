@@ -461,7 +461,6 @@ table td:nth-last-child(1){
     display: flex;
     align-items: center;
     padding: 10px 50px 10px; 
-    justify-content: space-between;
 }
 
 .filtros2 {
@@ -499,10 +498,11 @@ table td:nth-last-child(1){
 #verAlumno {
     cursor: pointer;
     background-color: #86775E;
-    border-radius:10px;
-    border:none;
-    color:white;
-font-size:17px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-size: 17px;
+    width: auto;
 }
 .checar {
     display: flex;
@@ -566,14 +566,15 @@ font-size:17px;
     border-radius:5px;
     width:40%;
 }
-.verArchivo{
-    display:flex;
-    height:40px;
-    border:none;
-    border-radius:10px;
-    background-color:cadetblue;
-    font-size:20px;
-    cursor:pointer;
+.verArchivo {
+    display: flex;
+    height: 40px;
+    border: none;
+    align-items: center;
+    border-radius: 10px;
+    background-color: cadetblue;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 
@@ -967,7 +968,7 @@ aside {
             overflow-x: hidden;
         }
         .buscador input[type=search]{
-            width:90%;
+            width:70%;
          }
         #datos-alumno input, select{
             /* width: 60%;  */

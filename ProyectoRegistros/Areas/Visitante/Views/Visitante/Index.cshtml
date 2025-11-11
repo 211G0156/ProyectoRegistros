@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<ProyectoRegistros.Areas.Visitante.Models.ViewModels.TalleresViewModel>
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "LayoutVisit";
 }
-
 
 <header class="principal">
     <div class="izq">
@@ -15,42 +14,42 @@
 
 <div class="filtros">
     <div class="buscador">
-        <input type="search" placeholder="Nombre, edad, día..." />
-    </div>
-
-
-</div>
-
-<div class="tablita">
-    <div class="tabla-scroll">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Días</th>
-                    <th>Espacios</th>
-                    <th>Horario</th>
-                    <th>Edad</th>
-                    <th>Profesor</th>
-                    <th>Donativo</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-                @foreach (var taller in Model)
-                {
-                    <tr>
-                        <td>@taller.Nombre</td>
-                        <td>@taller.Dias</td>
-                        <td>@taller.Espacios</td>
-                        <td>@taller.Horario</td>
-                        <td>@taller.Edad</td>
-                        <td>@taller.Profesor</td>
-                        <td>$@taller.Costo</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <input type="search" id="search-visitante" name="searchTerm"
+               placeholder="Nombre, edad, día..."
+               value="@ViewData["CurrentFilter"]" />
     </div>
 </div>
+
+<div id="tabla-container">
+    @await Html.PartialAsync("_VisitanteTalleresTabla", Model)
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const searchInput = document.getElementById('search-visitante');
+            const tablaContainer = document.getElementById('tabla-container');
+            let debounceTimer;
+
+            function actualizarTabla() {
+                const searchTerm = searchInput.value;
+                const url = `@Url.Action("Index", "Visitante")?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+                fetch(url, {
+                    method: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tablaContainer.innerHTML = html;
+                })
+                .catch(error => console.error('Error al actualizar la tabla:', error));
+            }
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(actualizarTabla, 300);
+            });
+
+        });
+    </script>

@@ -5,38 +5,32 @@
     Layout = "LayoutAdmin";
 }
 
-<!--MODAL PARA AGREGAR-->
 <div class="modal" id="modal-AddTaller">
     <form asp-area="Admin" asp-controller="Home" asp-action="AgregarTaller" method="post">
+        <input type="hidden" name="searchTerm" value="@ViewData["CurrentFilter"]" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Agregar Taller</h2>
         </div><br>
-
         <label>Nombre:</label><br>
         <input class="inputForms" name="Nombre" type="text" placeholder="Escribir..." required><br>
-
         <label>Días:</label><br>
         <input class="inputForms" name="Dias" type="text" placeholder="Escribir..." required><br>
-
         <label>Espacios:</label><br>
         <input class="inputForms" name="LugaresDisp" type="number" min="0" placeholder="Escribir..." required><br>
-
         <div class="col">
             <label>Horario inicio:</label><br>
             <input class="inputForms" name="HoraInicio" type="time" style="width:25%;" required><br>
             <label>Horario final:</label><br>
             <input class="inputForms" name="HoraFinal" type="time" style="width:25%;" required><br>
         </div>
-
         <div class="col">
             <label>Edad mínima:</label><br>
             <input class="inputForms" name="EdadMin" style="width:15%;" min="0" max="120" type="number" placeholder="..." required><br>
             <label>Edad máxima:</label><br>
             <input class="inputForms" name="EdadMax" style="width:15%;" min="0" max="120" type="number" placeholder="..."><br>
         </div>
-
         <label>Profesor:</label><br>
         <select class="inputForms" name="IdUsuario" style="height: 3.5vh;" required>
             <option value="">Seleccione un profesor...</option>
@@ -45,55 +39,42 @@
                 <option value="@profesor.Id">@profesor.Nombre</option>
             }
         </select><br>
-
         <label>Costo:</label><br>
         <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
         <div class="error">
         </div>
-
         <div style="display: flex; justify-content: center;">
             <button type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
-
-
-<!--MODAL PARA EDITAR-->
-
 <div class="modal" id="modal-EditTaller">
     <form asp-area="Admin" asp-action="EditarTaller" asp-controller="Home" id="formEditTaller" method="post">
+        <input type="hidden" name="searchTerm" value="@ViewData["CurrentFilter"]" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Editar Taller</h2>
         </div><br>
         <input type="hidden" id="EditId" name="Id" />
-
         <label>Nombre:</label><br>
         <input class="inputForms" name="Nombre" id="editNombre" type="text" placeholder="Escribir..."><br>
         <label>Dias:</label><br>
         <input name="Dias" class="inputForms" id="editDias" type="text" placeholder="Escribir..."><br>
-
         <label>Espacios:</label><br>
         <input name="LugaresDisp" class="inputForms" id="editEspacios" type="number" min="0" placeholder="Escribir..."><br>
-
         <div class="col">
             <label>Horario inicio:</label><br>
             <input name="HoraInicio" class="inputForms" id="editHoraInicio" type="time" style="width:25%;"><br>
             <label>Horario final:</label><br>
             <input name="HoraFinal" class="inputForms" id="editHoraFinal" type="time" style="width:25%;"><br>
-
-
         </div>
         <div class="col">
             <label>Edad minima:</label><br>
             <input name="EdadMin" class="inputForms" id="editEdadMin" min="0" max="120" style="width:15%;" min="0" type="number" placeholder="..."><br>
             <label>Edad máxima:</label><br>
             <input name="EdadMax" class="inputForms" id="editEdadMax" min="0" max="120" style="width:15%;" min="0" type="number" placeholder="..."><br>
-
-
         </div>
-
         <label>Profesor:</label><br>
         <select class="inputForms" id="editProfesor" name="IdUsuario" style="height: 3.5vh;">
             <option value="">Seleccione un profesor...</option>
@@ -102,21 +83,16 @@
                 <option value="@profesor.Id">@profesor.Nombre</option>
             }
         </select><br>
-
         <label>Costo:</label><br>
         <input name="Costo" class="inputForms" id="editCosto" step="1.00" min="0" max="10000" type="number" placeholder="Escribir..."><br>
         <input type="hidden" name="Estado" value="1" />
-
-        <div asp-validation-summary="All" class="error">
-
+@*         <div asp-validation-summary="All" class="error">
         </div>
-        <div style="display: flex; justify-content: center;">
-            <button type="submit"  style="display: flex; justify-content: center;" class="buttons">Guardar</button>
+ *@        <div style="display: flex; justify-content: center;">
+            <button type="submit"  style="display: flex; justify-content: center;" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
-
-<!--MODAL PARA ELIMINAR-->
 <div class="modal" id="modal-DeleteTaller">
     <form asp-area="Admin" asp-action="EliminarTaller" asp-controller="Home" method="post">
         <input type="hidden" id="DeleteId" name="id" />
@@ -127,14 +103,11 @@
                 <label style="color: red; font-size: 3vh;"></label>
             </legend>
         </fieldset>
-
         <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
             <button type="submit" class="buttons">Confirmar</button>
         </div>
     </form>
 </div>
-
-
 
 <header class="principal">
     <div class="izq">
@@ -145,71 +118,116 @@
 </header>
 
 
-<div class="filtros">
-    <div class="buscador">
-        <form method="get" action="@Url.Action("MyAction", "MyController")" style="width:100%;">
-        <input type="search"id="search" placeholder="Nombre, edad, día..." />
-        </form>
-        <div class="checar">
-            <input type="checkbox" id="talleresActuales" />
-            <label for="talleresActuales">Ver talleres recientes</label>
-        </div>
+<div class="filtros" style="display: flex; align-items: center; padding: 15px 50px; gap: 20px;">
+
+    <div class="buscador" style="flex-grow: 0; margin: 0;">
+        <input type="search" id="search-input" name="searchTerm"
+               placeholder="Nombre, edad o día..."
+               value="@ViewData["CurrentFilter"]"
+               style="width: 300px;" />
     </div>
 
+    <div class="checar" style="margin: 0 0 0 -10px;">
+        <input type="checkbox" id="checkbox-recientes" name="recienAgregados"
+               value="true" @ViewData["RecienAgregadosChecked"] />
+        <label for="checkbox-recientes">Ver talleres recientes</label>
+    </div>
 
-    <div class="BotonesTaller">
+    <div class="BotonesTaller" style="margin-left: auto; display: flex; gap: 15px;">
         <input id="aggTaller" type="button" value="Crear taller" />
-        <input id="verAlumno" class="verLista" type="button" href="/Admin/Home/Alumnos" value="Lista de alumnos" />
+
+        <a id="verAlumno" class="verLista"
+           href="@Url.Action("Alumnos", "Home", new { area = "Admin" })"
+           style="height: 40px; padding: 0 15px; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box;">
+            Lista de alumnos
+        </a>
     </div>
 
 </div>
 
 
-<div class="tablita">
-    <div class="tabla-scroll">
+<div id="tabla-container">
+    @await Html.PartialAsync("_TalleresTabla", Model)
+</div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Días</th>
-                    <th>Espacios</th>
-                    <th>Horario</th>
-                    <th>Edad</th>
-                    <th>Profesor</th>
-                    <th>Donativo</th>
-                    <th>Opciones</th>
-                </tr>
 
-            </thead>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-            <tbody>
-                @foreach (var taller in Model)
-                {
-                    <tr>
-                        <td>@taller.Nombre</td>
-                        <td>@taller.Dias</td>
-                        <td>@taller.Espacios</td>
-                        <td>@taller.Horario</td>
-                        <td>@taller.Edad</td>
-                        <td>@taller.Profesor</td>
-                        <td>$@taller.Costo</td>
-                        <td>
-                            <div class="botones">
-                                        <button type="button" class="btneditar" data-id="@taller.Id">
-                                    <img src="~/img/edit.png"  />
-                                </button>
+            const searchInput = document.getElementById('search-input');
+            const checkbox = document.getElementById('checkbox-recientes');
+            const tablaContainer = document.getElementById('tabla-container');
+            let debounceTimer;
 
-                                <button type="button" data-id="@taller.Id" data-nombre="@taller.Nombre">
-                                    <img class="btneliminar" src="~/img/X.png"  />
-                                    </button>
-                            </div>
-                        </td>
-                    </tr>
+            function actualizarTabla() {
+                const searchTerm = searchInput.value;
+                const recientes = checkbox.checked;
+                const url = `@Url.Action("Index", "Home")?searchTerm=${encodeURIComponent(searchTerm)}&recienAgregados=${recientes}`;
+
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.text())
+                .then(html => { tablaContainer.innerHTML = html; })
+                .catch(error => console.error('Error al actualizar la tabla:', error));
+            }
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(actualizarTabla, 300);
+            });
+            checkbox.addEventListener('change', actualizarTabla);
+
+
+            tablaContainer.addEventListener('click', async function(event) {
+
+                const editButton = event.target.closest('.btneditar');
+                if (editButton) {
+                    event.preventDefault();
+                    const id = editButton.dataset.id;
+
+                    try {
+                        const response = await fetch(`/Admin/Home/GetTaller/${id}`);
+                        if (!response.ok) throw new Error("Error al obtener taller");
+                        const data = await response.json();
+
+                        document.getElementById("EditId").value = data.id;
+                        document.getElementById("editNombre").value = data.nombre;
+                        document.getElementById("editDias").value = data.dias;
+                        document.getElementById("editEspacios").value = data.lugaresDisp;
+                        document.getElementById("editHoraInicio").value = data.horaInicio;
+                        document.getElementById("editHoraFinal").value = data.horaFinal;
+                        document.getElementById("editEdadMin").value = data.edadMin;
+                        document.getElementById("editEdadMax").value = data.edadMax;
+                        document.getElementById("editCosto").value = data.costo;
+                        document.getElementById("editProfesor").value = data.idUsuario;
+
+                        document.getElementById("modal-EditTaller").style.display = "block";
+                    } catch (err) {
+                        console.error(err);
+                        alert("Error al cargar datos del taller");
+                    }
                 }
-            </tbody>
-        </table>
 
-    </div>
+                const deleteButton = event.target.closest('.btneliminar');
+                if (deleteButton) {
+                    event.preventDefault();
+                    const id = deleteButton.dataset.id;
+                    const nombre = deleteButton.dataset.nombre;
 
-</div>
+                    document.getElementById("DeleteId").value = id;
+                    document.querySelector("#modal-DeleteTaller label").textContent = nombre;
+                    document.getElementById("modal-DeleteTaller").style.display = "block";
+                }
+            });
+
+            document.getElementById("aggTaller")?.addEventListener("click", function () {
+
+                document.getElementById("modal-AddTaller").style.display = "block";
+            });
+
+            document.body.addEventListener('click', function(event) {
+                if (event.target.classList.contains('cerrar')) {
+                    event.target.closest('.modal').style.display = 'none';
+                }
+            });
+        });
+    </script>

@@ -17,48 +17,45 @@
     </header>
 
     <div class="filtros">
-
         <div class="buscador">
-            <input type="number" min="3" max="100" placeholder="Edad del alumno" />
-
+            <input type="number" id="search-edad" min="3" max="100" placeholder="Edad del alumno" />
         </div>
     </div>
 
-
-    <div class="tablita">
-        <div class="tabla-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Días</th>
-                        <th>Espacios</th>
-                        <th>Horario</th>
-                        <th>Edad</th>
-                        <th>Profesor</th>
-                        <th>Donativo</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-                    @foreach (var taller in Model)
-                    {
-                        <tr>
-                            <td>@taller.Nombre</td>
-                            <td>@taller.Dias</td>
-                            <td>@taller.Espacios</td>
-                            <td>@taller.Horario</td>
-                            <td>@taller.Edad</td>
-                            <td>@taller.Profesor</td>
-                            <td>$@taller.Costo</td>
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-        </div>
+    <div id="tabla-container">
+        @await Html.PartialAsync("_TalleresTabla", Model)
     </div>
+
     <script src="~/js/NoInician.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const searchInput = document.getElementById('search-edad');
+            const tablaContainer = document.getElementById('tabla-container');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    const edad = searchInput.value;
+                    const url = `@Url.Action("TalleresDisponibles", "Home")?edad=${encodeURIComponent(edad)}`;
+
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        tablaContainer.innerHTML = html;
+                    })
+                    .catch(error => console.error('Error al actualizar la tabla:', error));
+
+                }, 300);
+            });
+        });
+    </script>
 </body>
 </html>

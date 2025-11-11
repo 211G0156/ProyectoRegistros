@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ProyectoRegistros.Models.Taller>
+
+<div class="tablita">
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Días</th>
+                    <th>Espacios</th>
+                    <th>Horario</th>
+                    <th>Edad</th>
+                    <th>Donativo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var taller in Model)
+                {
+                    <tr>
+                        <td>@taller.Nombre</td>
+                        <td>@taller.Dias</td>
+                        <td>@taller.LugaresDisp</td>
+
+                        <td>@taller.HoraInicio.ToString(@"hh\:mm tt") - @taller.HoraFinal.ToString(@"hh\:mm tt")</td>
+                        <td>
+                            @if (taller.EdadMax.HasValue && taller.EdadMax.Value > 0)
+                            {
+                                <span>@taller.EdadMin a @taller.EdadMax.Value años</span>
+                            }
+                            else
+                            {
+                                <span>@taller.EdadMin en adelante</span>
+                            }
+                        </td>
+
+                        <td>$@taller.Costo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

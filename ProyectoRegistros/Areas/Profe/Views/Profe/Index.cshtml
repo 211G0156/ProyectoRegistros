@@ -1,44 +1,58 @@
 ﻿@model IEnumerable<ProyectoRegistros.Models.Taller>
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "LayoutProfe";
 }
 
+<header class="principal">
+    <div class="izq">
+        <i class="menu material-symbols-outlined">menu</i>
+        <h2>Mis Talleres</h2>
+    </div>
+    <img id="ig2" src="~/img/Historial.png" />
+</header>
+
 <div class="filtros">
     <div class="buscador">
-        <input type="search" placeholder="Nombre, edad, día..." />
+        <input type="search" id="search-talleres-profe" name="searchTerm"
+               placeholder="Nombre, edad, día..."
+               value="@ViewData["CurrentFilter"]" />
     </div>
-    <input id="verAlumno" class="verLista" type="button" value="Lista de alumnos" />
+
+    <a id="verAlumno" class="verLista"
+       href="@Url.Action("Alumnos", "Profe", new { area = "Profe" })">Lista de alumnos</a>
 </div>
 
-<div class="tablita">
-    <div class="tabla-scroll">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Días</th>
-                    <th>Espacios</th>
-                    <th>Horario</th>
-                    <th>Edad</th>
-                    <th>Donativo</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-                @foreach (var taller in Model)
-                {
-                    <tr>
-                        <td>@taller.Nombre</td>
-                        <td>@taller.Dias</td>
-                        <td>@taller.LugaresDisp</td>
-                        <td>@taller.HoraInicio a @taller.HoraFinal</td>
-                        <td>@taller.EdadMin a @taller.EdadMax</td>
-                        <td>$@taller.Costo</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+<div id="tabla-container">
+    @await Html.PartialAsync("_ProfeTalleresTabla", Model)
 </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const searchInput = document.getElementById('search-talleres-profe');
+            const tablaContainer = document.getElementById('tabla-container');
+            let debounceTimer;
+
+            function actualizarTabla() {
+                const searchTerm = searchInput.value;
+                const url = `@Url.Action("Index", "Profe")?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+                fetch(url, {
+                    method: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tablaContainer.innerHTML = html;
+                })
+                .catch(error => console.error('Error al actualizar la tabla:', error));
+            }
+
+            // Lógica del Buscador (con retraso)
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(actualizarTabla, 300);
+            });
+        });
+    </script>
