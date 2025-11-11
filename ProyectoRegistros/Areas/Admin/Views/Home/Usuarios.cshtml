@@ -39,7 +39,7 @@
 
 <!--MODAL PARA EDITAR-->
 <div class="modal" id="modal-EditUsuario">
-    <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 18vh auto;">
+    <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 18vh auto; text-align: left;">
         <input type="hidden" name="Id" id="EditUsuarioId" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
@@ -57,8 +57,8 @@
         <input class="inputForms" id="editTel" type="text" name="NumTel" required><br>
 
         <label>Contraseña:</label><br>
-        <input class="inputForms" id="editContraseña" type="text" name="Contraseña" placeholder="Escribir..." required><br>
-
+        <input class="inputForms" id="editContraseña" type="text" name="Contraseña"
+               placeholder="Dejar en blanco para no cambiar la contraseña" /><br />
 
         <label>Rol:</label><br>
         <select class="inputForms" name="IdRol" id="editRol" style="height: 3.5vh;">
@@ -66,6 +66,8 @@
             <option value="2">Profesor</option>
             <option value="3">Visitante</option>
         </select>
+
+
 
         <div style="display:flex; justify-content:center;">
             <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
@@ -161,7 +163,7 @@
                     document.getElementById("editNombreUsu").value = data.nombre;
                     document.getElementById("editCorreo").value = data.correo;
                     document.getElementById("editTel").value = data.numTel;
-                    document.getElementById("editContraseña").value = data.contraseña;
+                    document.getElementById("editContraseña").value = "";
                     document.getElementById("editRol").value = data.idRol;
                     
                     document.getElementById("modal-EditUsuario").style.display = "block";

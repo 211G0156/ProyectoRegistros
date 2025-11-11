@@ -21,24 +21,43 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             _context = context;
             _emailService = emailService;
         }
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var usuarios = _context.Usuarios
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var query = _context.Usuarios
                 .Include(u => u.IdRolNavigation)
-                .Where(u => u.Estado == 1)
-                .Select(u => new UsuariosViewModel
-                {
-                    Id = u.Id,
-                    Nombre = u.Nombre,
-                    Correo = u.Correo,
-                    NumTel = u.NumTel,
-                    RolNombre = u.IdRolNavigation.Rol1,
-                })
-                .ToList();
+                .Where(u => u.Estado == 1);
 
-            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(u => u.Nombre.Contains(searchTerm))
+                    .OrderBy(u => u.Nombre.StartsWith(searchTerm) ? 0 : 1)
+                    .ThenBy(u => u.Nombre);
+            }
+            else
+            {
+                query = query.OrderBy(u => u.Nombre);
+            }
+
+            var usuariosVM = await query.Select(u => new UsuariosViewModel
+            {
+                Id = u.Id,
+                Nombre = u.Nombre,
+                Correo = u.Correo,
+                NumTel = u.NumTel,
+                RolNombre = u.IdRolNavigation.Rol1,
+            })
+            .ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("~/Areas/Admin/Views/Home/_UsuariosTabla.cshtml", usuariosVM);
+            }
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuariosVM);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AgregarUsuario(NuevoUsuarioVM vm)
@@ -113,7 +132,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 nombre = usuario.Nombre,
                 correo = usuario.Correo,
                 numTel = usuario.NumTel,
-                contraseña = usuario.Contraseña,
+                contraseña = "",
                 idRol = usuario.IdRol
             });
         }
@@ -121,6 +140,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult EditarUsuario(NuevoUsuarioVM vm)
         {
+            ModelState.Remove("Contraseña");
             if (ModelState.IsValid)
             {
                 var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == vm.Id);
@@ -129,8 +149,13 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     usuario.Nombre = vm.Nombre;
                     usuario.Correo = vm.Correo;
                     usuario.NumTel = vm.NumTel;
-                    usuario.Contraseña = vm.Contraseña;
+                    //usuario.Contraseña = vm.Contraseña;
                     usuario.IdRol = vm.IdRol;
+
+                    if (!string.IsNullOrEmpty(vm.Contraseña))
+                    {
+                        usuario.Contraseña = vm.Contraseña;
+                    }
 
                     _context.Update(usuario);
                     _context.SaveChanges();
@@ -139,8 +164,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 return NotFound();
 
             }
-            return View("Index");
-
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml",vm);
         }
 
 
