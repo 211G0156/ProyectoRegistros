@@ -30,6 +30,7 @@
     <Content Remove="wwwroot\img\edit.png" />
     <Content Remove="wwwroot\img\fondo.png" />
     <Content Remove="wwwroot\img\Historial.png" />
+    <Content Remove="wwwroot\img\logo2.png" />
     <Content Remove="wwwroot\img\lupa1.png" />
     <Content Remove="wwwroot\img\Menu.png" />
     <Content Remove="wwwroot\img\X.png" />
@@ -85,6 +86,7 @@
     <Resource Include="wwwroot\img\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="wwwroot\img\logo2.png" />
     <Resource Include="wwwroot\img\lupa1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

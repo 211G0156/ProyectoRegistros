@@ -261,5 +261,22 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
             return Json(new { success = true });
         }
+        [HttpGet]
+        public IActionResult GenerarRecibo(int idAlumno)
+        {
+            var alumno = _context.Alumnos.FirstOrDefault(a => a.Id == idAlumno);
+            var talleres = _context.Listatalleres.Where(l => l.IdAlumno == idAlumno).Select(l => l.IdTaller).ToList();
+
+            if (alumno == null)
+                return NotFound();
+
+            var viewModel = new MisTalleresViewModel
+            {
+                Alumno = alumno,
+                Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList()
+            };
+
+            return View(viewModel);
+        }
     }
 }
