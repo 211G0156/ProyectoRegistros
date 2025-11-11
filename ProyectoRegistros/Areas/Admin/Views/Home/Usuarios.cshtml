@@ -114,9 +114,8 @@
 </form>
 
 <div id="tabla-container">
-    @await Html.PartialAsync("_UsuariosTabla", Model)
+    @await Html.PartialAsync("~/Areas/Admin/Views/Home/_UsuariosTabla.cshtml", Model)
 </div>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
