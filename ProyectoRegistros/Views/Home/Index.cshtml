@@ -19,30 +19,14 @@
             <p class="alerta"></p>
             <input id="btnInicio" type="submit" value="Iniciar sesión" />
 
-@*             <p class="" style="margin:0;">
-                @Html.ValidationSummary()
-            </p>
- *@
             <a href="~/Home/TalleresDisponibles">Ver solo talleres disponibles</a>
+            <div asp-validation-summary="ModelOnly"
+                 style="color: red; font-size: 13px; font-style:italic; font-weight:bold; margin-left:-30px; list-style: none; margin-top: 15px; text-align: center;">
+            </div>
         </form>
 
     </div>
 
-@*     <!--<script>const user = document.querySelector("#uno");
-
-            const user = document.querySelector("#uno");
-    const btnInicio = document.querySelector("#btnInicio");
-    btnInicio.addEventListener("click", function(){
-        if(user.value == "administrador"){
-                window.location.href = "/Admin/Home/Index";
-        }
-        if(user.value == "profesor"){
-                window.location.href = "/Profe/Profe/Index";
-        }
-        if (user.value == "visitante") {
-                window.location.href = "/Visitante/Visitante/Index";
-        }
-        });  *@
 </body>
 
 
