@@ -7,6 +7,14 @@
     Layout = "LayoutProfe";
 }
 
+<header class="principal">
+    <div class="izq">
+        <img id="ig1" class="reg" src="~/img/arrow_back.png" />
+        <h2>Alumnos</h2>
+    </div>
+    <img id="ig2" src="~/img/Historial.png" />
+</header>
+
 
 <!--MODAL PARA EDITAR-->
 
@@ -87,59 +95,97 @@
 </div>
 
 
-<div class="tablita">
-    <div class="tabla-scroll">
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Tutor</th>
-                    <th>Teléfono</th>
-                    <th>Teléfono 2</th>
-                    <th>Padecimientos</th>
-                    <th>Talleres</th>
-                    <th>Opciones</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-                @foreach (var a in Model)
-                {
-                    <tr>
-                        <td>@a.Alumno.Nombre</td>
-                        <td>@a.Alumno.Tutor</td>
-                        <td>@a.Alumno.NumContacto</td>
-                        <td>@a.Alumno.NumSecundario</td>
-
-                        <td>@a.Alumno.Padecimientos</td>
-                        <td>
-                            @foreach (var t in a.Talleres)
-                            {
-                                <p>@t.Nombre</p>
-                            }
-                        </td>
-
-                        <td>
-                            <div class="botones">
-                                <img src="~/img/edit.png" class="btneditar" data-id="@a.Alumno.Id"
-                                     data-nombre="@a.Alumno.Nombre"
-                                     data-tutor="@a.Alumno.Tutor"
-                                     data-numcontacto="@a.Alumno.NumContacto"
-                                     data-numsecundario="@a.Alumno.NumSecundario"
-                                     data-padecimientos="@a.Alumno.Padecimientos" />
-
-                                <img class="btneliminar" src="~/img/X.png" data-id="@a.Alumno.Id"
-                                     data-nombre="@a.Alumno.Nombre" />
-                            </div>
-                        </td>
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    </div>
-
+<div id="tabla-container">
+    @await Html.PartialAsync("_ProfeAlumnosTabla", Model)
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const searchInput = document.getElementById('fil');
+        const tablaContainer = document.getElementById('tabla-container');
+        let debounceTimer;
+
+        function actualizarTabla() {
+            const searchTerm = searchInput.value;
+            const url = `@Url.Action("Alumnos", "Profe")?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => { tablaContainer.innerHTML = html; })
+            .catch(error => console.error('Error al actualizar la tabla:', error));
+        }
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(actualizarTabla, 300);
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
+            this.value = this.value.replace(regex, '');
+        });
+
+        tablaContainer.addEventListener('click', async function(event) {
+
+            const editButton = event.target.closest('.btneditar');
+            if (editButton) {
+                event.preventDefault();
+                const dataset = editButton.dataset;
+
+                document.getElementById("editID").value = dataset.id;
+                document.getElementById("editNombre").value = dataset.nombre;
+                document.getElementById("editTutor").value = dataset.tutor;
+                document.getElementById("editTel").value = dataset.numcontacto;
+                document.getElementById("editTel2").value = dataset.numsecundario;
+                document.getElementById("editPadecim").value = dataset.padecimientos;
+
+                document.getElementById("modal-EditAlumno").style.display = "block";
+            }
+
+            const deleteButton = event.target.closest('.btneliminar');
+            if (deleteButton) {
+                event.preventDefault();
+                const id = deleteButton.dataset.id;
+                const nombre = deleteButton.dataset.nombre;
+
+                document.getElementById("deleteID").value = id;
+                document.querySelector("#modal-DeleteAlumno h2").textContent = `¿Desea eliminar a "${nombre}" de sus talleres?`;
+
+                const tbody = document.getElementById("talleresAlumno");
+                tbody.innerHTML = "<tr><td colspan='2'>Cargando...</td></tr>"; // Feedback
+
+                try {
+                    const response = await fetch(`/Profe/FuncionTraerTalleres/${id}`);
+                    const talleres = await response.json();
+
+                    tbody.innerHTML = "";
+                    if (talleres.length > 0) {
+                        talleres.forEach(taller => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${taller.nombre}</td>
+                                    <td>
+                                        <input type="checkbox" name="TalleresEliminar" value="${taller.id}" />
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tbody.innerHTML = "<tr><td colspan='2'>No está inscrito en talleres.</td></tr>";
+                    }
+                } catch(err) {
+                    tbody.innerHTML = "<tr><td colspan='2'>Error al cargar talleres.</td></tr>";
+                }
+
+                document.getElementById("modal-DeleteAlumno").style.display = "block";
+            }
+        });
+
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('cerrar')) {
+                event.target.closest('.modal').style.display = 'none';
+            }
+        });
+    });
+</script>

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.TalleresViewModel>
+
+<div class="tablita">
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Días</th>
+                    <th>Espacios</th>
+                    <th>Horario</th>
+                    <th>Edad</th>
+                    <th>Profesor</th>
+                    <th>Donativo</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var taller in Model)
+                {
+                    <tr>
+                        <td>@taller.Nombre</td>
+                        <td>@taller.Dias</td>
+                        <td>@taller.Espacios</td>
+                        <td>@taller.Horario</td>
+                        <td>@taller.Edad</td>
+                        <td>@taller.Profesor</td>
+                        <td>$@taller.Costo</td>
+                        <td>
+                            <div class="botones">
+                                <button type="button" class="btneditar" data-id="@taller.Id">
+                                    <img src="~/img/edit.png" />
+                                </button>
+
+                                <button type="button" class="btneliminar" data-id="@taller.Id" data-nombre="@taller.Nombre">
+                                    <img src="~/img/X.png" />
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

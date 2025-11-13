@@ -25,59 +25,109 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [Route("/Admin/Admin/Index")]
         [Route("/Admin/Admin")]
         [Route("/Admin")]
-
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string searchTerm, bool recienAgregados = false)
         {
-            var talleres = _context.Tallers
-                .Where(t => t.Estado == 1)
+            ViewData["CurrentFilter"] = searchTerm;
+            ViewData["RecienAgregadosChecked"] = recienAgregados ? "checked" : "";
+
+            var query = _context.Tallers
                 .Include(t => t.IdUsuarioNavigation)
-                .OrderBy(t => t.Nombre)
-                .Select(t => new TalleresViewModel
-                {
-                    Id = t.Id,
-                    Nombre = t.Nombre,
-                    Dias = t.Dias,
-                    Espacios = t.LugaresDisp,
-                    Horario = t.HoraInicio.ToString("HH:mm") + " - " + t.HoraFinal.ToString("HH:mm"),
-                    Edad = t.EdadMax.HasValue
-                           ? $"{t.EdadMin} a {t.EdadMax.Value} años"
-                           : $"{t.EdadMin} en adelante",
-                    Profesor = t.IdUsuarioNavigation.Nombre,
-                    Costo = t.Costo
-                })
-                .ToList();
+                .Where(t => t.Estado == 1);
 
-            ViewBag.Profesores = _context.Usuarios
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                bool isNumeric = int.TryParse(searchTerm, out int edad);
+
+                query = query.Where(t =>
+                    t.Nombre.Contains(searchTerm) ||
+                    t.Dias.Contains(searchTerm) ||
+                    (isNumeric && edad >= t.EdadMin && (t.EdadMax == null || edad <= t.EdadMax))
+                );
+            }
+
+            if (recienAgregados)
+            {
+                query = query.OrderByDescending(t => t.Id);
+            }
+            else if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query
+                    .OrderBy(t => t.Nombre.StartsWith(searchTerm) ? 0 : 1)
+                    .ThenBy(t => t.Dias.StartsWith(searchTerm) ? 2 : 3)
+                    .ThenBy(t => t.Nombre);
+            }
+            else
+            {
+                query = query.OrderBy(t => t.Nombre);
+            }
+
+            var talleresVM = await query.Select(t => new TalleresViewModel
+            {
+                Id = t.Id,
+                Nombre = t.Nombre,
+                Dias = t.Dias,
+                Espacios = t.LugaresDisp,
+                Horario = t.HoraInicio.ToString("HH:mm") + " - " + t.HoraFinal.ToString("HH:mm"),
+                Edad = t.EdadMax.HasValue
+                    ? $"{t.EdadMin} a {t.EdadMax.Value} años"
+                    : $"{t.EdadMin} en adelante",
+                Profesor = t.IdUsuarioNavigation.Nombre,
+                Costo = t.Costo
+            })
+            .ToListAsync();
+
+            ViewBag.Profesores = await _context.Usuarios
                 .Where(u => u.IdRol == 2)
-                .ToList();
+                .ToListAsync();
 
-            return View(talleres);
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_TalleresTabla", talleresVM);
+            }
+
+            return View(talleresVM);
         }
-        public IActionResult Alumnos()
+        public async Task<IActionResult> Alumnos(string searchTerm)
         {
-            var alumnos = _context.Alumnos.
-                Where(a=>a.Estado==1)
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var query = _context.Alumnos
                 .Include(a => a.Listatalleres)
                     .ThenInclude(lt => lt.IdTallerNavigation)
-                        .ThenInclude(t => t.IdUsuarioNavigation)
-                .Select(a => new AlumnosViewModel
-                {
-                    Id = a.Id,
-                    Nombre = a.Nombre,
-                    Tutor = a.Tutor,
-                    NumContacto = a.NumContacto,
-                    NumSecundario = a.NumSecundario,
-                    Padecimientos = a.Padecimientos,
-                    Talleres = a.Listatalleres
-                        .Select(lt => lt.IdTallerNavigation.Nombre)
-                        .ToList()
-                })
-                .ToList();
+                .Where(a => a.Estado == 1);
 
-            return View(alumnos);
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(a => a.Nombre.Contains(searchTerm))
+                    .OrderBy(a => a.Nombre.StartsWith(searchTerm) ? 0 : 1)
+                    .ThenBy(a => a.Nombre);
+            }
+            else
+            {
+                query = query.OrderBy(a => a.Nombre);
+            }
+
+            var alumnosVM = await query.Select(a => new AlumnosViewModel
+            {
+                Id = a.Id,
+                Nombre = a.Nombre,
+                Tutor = a.Tutor,
+                NumContacto = a.NumContacto,
+                NumSecundario = a.NumSecundario,
+                Padecimientos = a.Padecimientos,
+                Talleres = a.Listatalleres
+                    .Select(lt => lt.IdTallerNavigation.Nombre)
+                    .ToList()
+            })
+            .ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_AlumnosTabla", alumnosVM);
+            }
+
+            return View(alumnosVM);
         }
-
         [HttpPost]
         public IActionResult AgregarTaller(NuevoTallerVM vm)
         {
@@ -207,7 +257,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             return Ok("Taller eliminado correctamente.");
         }
 
-
         [HttpGet]
         public IActionResult RegistroForm()
         {
@@ -222,24 +271,41 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         {
             return View();
         }
-        public IActionResult Usuarios()
+        public async Task<IActionResult> Usuarios(string searchTerm)
         {
-            var usuarios = _context.Usuarios
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var query = _context.Usuarios
                 .Include(u => u.IdRolNavigation)
-                .Where(u => u.Estado == 1)
-                .Select(u => new UsuariosViewModel
-                {
-                    Id = u.Id,
-                    Nombre = u.Nombre,
-                    Correo = u.Correo,
-                    NumTel = u.NumTel,
-                    RolNombre = u.IdRolNavigation.Rol1,
-                })
-                .ToList();
+                .Where(u => u.Estado == 1);
 
-            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuarios);
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(u => u.Nombre.Contains(searchTerm))
+                    .OrderBy(u => u.Nombre.StartsWith(searchTerm) ? 0 : 1)
+                    .ThenBy(u => u.Nombre);
+            }
+            else
+            {
+                query = query.OrderBy(u => u.Nombre);
+            }
+
+            var usuariosVM = await query.Select(u => new UsuariosViewModel
+            {
+                Id = u.Id,
+                Nombre = u.Nombre,
+                Correo = u.Correo,
+                NumTel = u.NumTel,
+                RolNombre = u.IdRolNavigation.Rol1,
+            })
+            .ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_UsuariosTabla", usuariosVM);
+            }
+
+            return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuariosVM);
         }
-
-
     }
 }

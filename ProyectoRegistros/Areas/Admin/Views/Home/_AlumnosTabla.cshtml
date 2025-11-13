@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.AlumnosViewModel>
+
+<div class="tablita">
+    <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tutor</th>
+                    <th>Teléfono</th>
+                    <th>Teléfono 2</th>
+                    <th>Padecimientos</th>
+                    <th>Talleres</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var alumno in Model)
+                {
+                    <tr>
+                        <td>@alumno.Nombre</td>
+                        <td>@alumno.Tutor</td>
+                        <td>@alumno.NumContacto</td>
+                        <td>@alumno.NumSecundario</td>
+                        <td>@alumno.Padecimientos</td>
+                        <td>@string.Join(", ", alumno.Talleres)</td>
+                        <td>
+                            <div class="botones">
+                                <a href="@Url.Action("Editar", "Home", new { id = alumno.Id, area = "Admin" })">
+                                    <img class="btneditar" src="~/img/edit.png" />
+                                </a>
+                                <a href="@Url.Action("Eliminar", "Home", new { id = alumno.Id, area = "Admin" })" class="btneliminar">
+                                    <img class="btneliminar" src="~/img/X.png" />
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

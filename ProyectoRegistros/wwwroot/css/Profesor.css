@@ -322,7 +322,10 @@ input[type=search] {
     color: white;
     font-size: 17px;
     display: flex;
+    width: auto;
     height: 40px;
+    padding:0px 8px;
+    align-items: center;
 }
 
 .botones {
