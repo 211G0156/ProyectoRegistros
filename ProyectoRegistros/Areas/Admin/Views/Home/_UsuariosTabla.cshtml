@@ -1,5 +1,10 @@
 ﻿@model IEnumerable<ProyectoRegistros.Areas.Admin.Models.ViewModels.UsuariosViewModel>
 
+@{
+    var usuarioActualId = int.Parse(User.FindFirst("Id").Value);
+}
+
+
 <div class="tablita">
     <div class="tabla-scroll">
         <table>
@@ -22,12 +27,24 @@
                         <td>@usuario.RolNombre</td>
                         <td>
                             <div class="botones">
-                                <button type="button" class="btneditar usuario" data-id="@usuario.Id">
-                                    <img src="~/img/edit.png" />
-                                </button>
-                                <button class="btneliminar usuario" type="button" data-id="@usuario.Id" data-nombre="@usuario.Nombre">
-                                    <img src="~/img/X.png" />
-                                </button>
+
+                                @if (usuario.Id != usuarioActualId)
+                                {
+                                    <button type="button" class="btneditar usuario" data-id="@usuario.Id">
+                                        <img src="~/img/edit.png" />
+                                    </button>
+
+                                    <button class="btneliminar usuario" type="button" data-id="@usuario.Id" data-nombre="@usuario.Nombre">
+                                        <img src="~/img/X.png" />
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span style="opacity:0.4; font-size: 1.8vh;">
+                                        (No disponible)
+                                    </span>
+                                }
+
                             </div>
                         </td>
                     </tr>

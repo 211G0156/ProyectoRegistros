@@ -4,11 +4,19 @@
 @{
     Layout = "LayoutAdmin";
 }
+@if (TempData["ExitoUsuario"] != null)
+{
+    <script>alert('@TempData["ExitoUsuario"]');</script>
+}
+@if (TempData["ErrorUsuario"] != null)
+{
+    <script>alert('@TempData["ErrorUsuario"]');</script>
+}
 
 
 <!--MODAL PARA AGREGAR-->
 <div class="modal" id="modal-AddUsuario">
-    <form asp-area="Admin" asp-controller="Usuarios" asp-action="AgregarUsuario" method="post" style="margin: 18vh auto;">
+    <form id="formAddUsuario" asp-area="Admin" asp-controller="Usuarios" asp-action="AgregarUsuario" method="post" style="margin: 18vh auto;">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
@@ -121,7 +129,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
+
         const searchInput = document.getElementById('search-usuarios');
         const tablaContainer = document.getElementById('tabla-container');
         let debounceTimer;
@@ -132,41 +140,42 @@
 
             fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())
-            .then(html => {
-                tablaContainer.innerHTML = html;
-            })
+            .then(html => tablaContainer.innerHTML = html)
             .catch(error => console.error('Error al actualizar la tabla:', error));
         }
 
         searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(actualizarTabla, 300); 
+            debounceTimer = setTimeout(actualizarTabla, 300);
         });
 
-        searchInput.addEventListener('input', function(e) {
+        searchInput.addEventListener('input', function() {
             const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
             this.value = this.value.replace(regex, '');
         });
 
         tablaContainer.addEventListener('click', async function(event) {
-            
+
             const editButton = event.target.closest('.btneditar.usuario');
             if (editButton) {
-                event.preventDefault(); 
+                event.preventDefault();
                 const id = editButton.dataset.id;
+
                 try {
-                    const response = await fetch(`/Admin/Usuarios/GetUsuario?id=${id}`); 
+                    const response = await fetch(`/Admin/Usuarios/GetUsuario?id=${id}`);
                     if (!response.ok) throw new Error("Error al obtener usuario");
+
                     const data = await response.json();
-                    
+
                     document.getElementById("EditUsuarioId").value = data.id;
                     document.getElementById("editNombreUsu").value = data.nombre;
                     document.getElementById("editCorreo").value = data.correo;
                     document.getElementById("editTel").value = data.numTel;
                     document.getElementById("editContraseña").value = "";
                     document.getElementById("editRol").value = data.idRol;
-                    
+
                     document.getElementById("modal-EditUsuario").style.display = "block";
+
                 } catch (err) {
                     console.error(err);
                     alert("Error al cargar datos del usuario");
@@ -178,7 +187,7 @@
                 event.preventDefault();
                 const id = deleteButton.dataset.id;
                 const nombre = deleteButton.dataset.nombre;
-                
+
                 document.getElementById("DeleteUsuarioId").value = id;
                 document.querySelector("#modal-DeleteUsuario label").textContent = nombre;
                 document.getElementById("modal-DeleteUsuario").style.display = "block";
@@ -188,11 +197,108 @@
         document.getElementById("aggUsuario")?.addEventListener("click", function () {
             document.getElementById("modal-AddUsuario").style.display = "block";
         });
-        
+
         document.body.addEventListener('click', function(event) {
             if (event.target.classList.contains('cerrar')) {
-                event.target.closest('.modal').style.display = 'none';
+                const modal = event.target.closest('.modal');
+                if (modal) modal.style.display = 'none';
             }
         });
+
+        const formAddUsuario = document.getElementById("formAddUsuario");
+
+        if (formAddUsuario) {
+    formAddUsuario.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(formAddUsuario);
+
+        try {
+            const response = await fetch("/Admin/Usuarios/AgregarUsuario", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success === "reactivar") {
+                const confirmar = confirm(data.message);
+
+                if (confirmar) {
+                    const formReactivar = new FormData();
+                    formReactivar.append("id", data.id);
+
+                    const respReactivar = await fetch("/Admin/Usuarios/ReactivarUsuario", {
+                        method: "POST",
+                        body: formReactivar
+                    });
+
+                    const dataReactivar = await respReactivar.json();
+                    alert(dataReactivar.message);
+
+                    if (dataReactivar.success) {
+                        window.location.reload();
+                    }
+
+                    return;
+                } else {
+                    return;
+                }
+            }
+
+            alert(data.message);
+
+            if (data.success) {
+                document.getElementById("modal-AddUsuario").style.display = "none";
+                formAddUsuario.reset();
+                window.location.reload();
+            }
+
+        } catch (error) {
+            console.error("Error al agregar usuario:", error);
+            alert("Ocurrió un error al intentar agregar el usuario.");
+        }
+    });
+            }
+
+        const formEditUsuario = document.querySelector("#modal-EditUsuario form");
+
+        if (formEditUsuario) {
+            formEditUsuario.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(formEditUsuario);
+
+                try {
+                    const response = await fetch("/Admin/Usuarios/EditarUsuario", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    alert(data.message);
+
+           if (data.success) {
+
+              alert(data.message);
+
+                 if (data.logout) {
+                    window.location.href = "/Login/Index";
+                    return;
+            }
+
+        document.getElementById("modal-EditUsuario").style.display = "none";
+        formEditUsuario.reset();
+        window.location.reload();
+    }
+
+
+                } catch (error) {
+                    console.error("Error editando usuario:", error);
+                    alert("Ocurrió un error al intentar editar el usuario.");
+                }
+            });
+        }
+
     });
 </script>

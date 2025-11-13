@@ -83,6 +83,30 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             return View("~/Areas/Admin/Views/Home/ExportarDatos.cshtml", new ExportarDatosVM());
         }
 
+        private bool RangoCoincide(TimeOnly inicioTaller, TimeOnly finTaller, TimeOnly inicioFiltro, TimeOnly finFiltro)
+        {
+            bool tallerCruzaMedianoche = inicioTaller > finTaller;
+            bool filtroCruzaMedianoche = inicioFiltro > finFiltro;
+
+            if (!tallerCruzaMedianoche && !filtroCruzaMedianoche)
+                return inicioTaller >= inicioFiltro && finTaller <= finFiltro;
+
+            if (tallerCruzaMedianoche && !filtroCruzaMedianoche)
+                return false;
+
+            if (!tallerCruzaMedianoche && filtroCruzaMedianoche)
+                return false;
+
+            TimeSpan inicioT = inicioTaller.ToTimeSpan();
+            TimeSpan finT = finTaller.ToTimeSpan() + TimeSpan.FromHours(24);
+
+            TimeSpan inicioF = inicioFiltro.ToTimeSpan();
+            TimeSpan finF = finFiltro.ToTimeSpan() + TimeSpan.FromHours(24);
+
+            return inicioT >= inicioF && finT <= finF;
+        }
+
+
         [HttpPost]
         public IActionResult DescargarDatos(ExportarDatosVM filtros)
         {
@@ -110,7 +134,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 .AsEnumerable();
 
             if (filtros.ProfesoresIds != null && filtros.ProfesoresIds.Any() && !filtros.ProfesoresIds.Contains(0))
-                query = query.Where(t => filtros.ProfesoresIds.Contains(t.IdUsuario));
+                query = query.Where(t => t.IdUsuario.HasValue && filtros.ProfesoresIds.Contains(t.IdUsuario.Value));
 
             if (filtros.TalleresIds != null && filtros.TalleresIds.Any() && !filtros.TalleresIds.Contains(0))
                 query = query.Where(t => filtros.TalleresIds.Contains(t.Id));
@@ -136,7 +160,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         if (partes.Length != 2) return false;
                         if (TimeOnly.TryParse(partes[0].Trim(), out var inicio) && TimeOnly.TryParse(partes[1].Trim(), out var fin))
                         {
-                            return t.HoraInicio >= inicio && t.HoraFinal <= fin;
+                            return RangoCoincide(t.HoraInicio, t.HoraFinal, inicio, fin);
                         }
                         return false;
                     })
