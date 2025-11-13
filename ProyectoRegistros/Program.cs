@@ -24,6 +24,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
+builder.Services.AddSignalR();
 
 builder.Services.AddSingleton<EmailService, SmtpEmailService>();
 
@@ -64,7 +65,7 @@ app.MapAreaControllerRoute(
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
+app.MapHub<ProyectoRegistros.Hubs.HistorialHub>("/historialHub");
 
 app.MapDefaultControllerRoute();
 app.MapRazorPages();

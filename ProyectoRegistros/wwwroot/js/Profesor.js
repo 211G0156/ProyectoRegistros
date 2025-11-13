@@ -244,11 +244,6 @@ document.querySelectorAll(".op-taller").forEach(op => {
     const nombre = limpiar(op.querySelector(".nombreTaller").textContent);
     const esAtencion = nombre.includes(limpiar(buscarTexto));
 
-    if (esAtencion && checkbox.checked) {
-      checkbox.checked = false; 
-      cerrarInputs();     
-      return;                 
-    }
     cerrarInputs();
 
     if (!esAtencion) {
@@ -257,19 +252,25 @@ document.querySelectorAll(".op-taller").forEach(op => {
     }
 
     checkbox.checked = true;
-
     ["dias", "horas"].forEach(tipo => {
-      const label = op.querySelector(`.label-${tipo}`);
+    const label = op.querySelector(`.label-${tipo}`);    
+    const inputHidden = op.querySelector(`input[name='${tipo.charAt(0).toUpperCase() + tipo.slice(1)}_${checkbox.value}']`);
+
       let input = document.createElement("input");
       input.type = "text";
       input.className = `input-${tipo}`;
-      input.value = label.textContent.trim() || `Sin ${tipo}`;
+      input.value = inputHidden ? inputHidden.value : label.textContent.trim() || `Sin ${tipo}`;
       label.style.display = "none";
       label.after(input);
-      input.focus();
+
       input.addEventListener("click", ev => ev.stopPropagation());
+      if (inputHidden) {
+        input.addEventListener("input", () => {
+            inputHidden.value = input.value;
+        });
+      }
     });
-  });
+});
 });
 
 document.addEventListener("click", cerrarInputs);
@@ -292,7 +293,7 @@ function cerrarInputs() {
 
 
 /*previsualizacion de datos en recibo*/
-    //$(document).ready(function() {
+    // $(document).ready(function() {
     //    // activar el txtarea de padecimientos
     //    $('#chbpadecimiento').change(function() {
     //        const textarea = $('#txtpadecimientos');
@@ -311,8 +312,8 @@ function cerrarInputs() {
     //        $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
     //    });
 
-    //    // enviar datos al recibo
-    //    $('#finalizar').off('click').on('click', function (e) {
+       // enviar datos al recibo
+    //    $('#finalizar').off('click').on('click', async function (e) {
     //        e.preventDefault();
     //        const form = document.getElementById('datos-alumno');
     //        if (!form.checkValidity()) {
@@ -346,8 +347,8 @@ function cerrarInputs() {
     //        $('#modal-recibo #donativo-total').text('Total: $' + total.toFixed(2)); 
     //    }); 
 
-    //    // LOL
-    //    // detectar cambios en los checkboxes de talleres
+       // LOL
+       // detectar cambios en los checkboxes de talleres
     //    $(document).on('change', '#seleccionados', function () {
     //        console.log("Cambio detectado");
     //        const seleccionados = [];
@@ -382,3 +383,4 @@ function cerrarInputs() {
     //            }
     //        });
     //    });
+//  });

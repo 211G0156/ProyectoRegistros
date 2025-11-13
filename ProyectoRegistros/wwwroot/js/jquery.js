@@ -1,44 +1,51 @@
-﻿$(document).ready(function () {
-    console.log("Script activo después de carga completa");
+﻿document.addEventListener("DOMContentLoaded", function () {
+    const Usuario = "@User.Identity.Name"; // da error
+    let talleres = [];
 
-    const $modalRecibo = $('#modal-recibo');
-    const $txtPadecimientos = $('#txtpadecimientos');
-    const $lblPadecimientos = $('#modal-recibo #padecimientos');
-    const $form = $('#datos-alumno');
+    const modalRecibo = document.getElementById("modal-recibo");
+    const txtPadecimientos = document.getElementById("txtpadecimientos");
+    const lblPadecimientos = modalRecibo.querySelector("#padecimientos");
+    const form = document.getElementById("datos-alumno");
 
+    // convierte hora a minutos 
     function aMinutos(hora) {
-        const [h, m] = hora.split(':').map(Number);
+        const [h, m] = hora.split(":").map(Number);
         return h * 60 + m;
     }
-    $('#chbpadecimiento').change(function () {
-        const isChecked = $(this).is(':checked');
-        $txtPadecimientos.toggle(isChecked).prop('disabled', !isChecked);
-        if (!isChecked) {
-            $txtPadecimientos.val('');
-            $lblPadecimientos.text('Ninguno');
-        }
-    });
 
-    $txtPadecimientos.on('input', function () {
-        $lblPadecimientos.text($(this).val().trim() || 'Ninguno');
+    // Checkbox de padecimientos
+    const chbPadecimiento = document.getElementById("chbpadecimiento");
+    if (chbPadecimiento) {
+        chbPadecimiento.addEventListener("change", function () {
+            const isChecked = this.checked;
+            txtPadecimientos.style.display = isChecked ? "block" : "none";
+            txtPadecimientos.disabled = !isChecked;
+            if (!isChecked) {
+                txtPadecimientos.value = "";
+                lblPadecimientos.textContent = "Ninguno";
+            }
+        });
+    }
+
+    txtPadecimientos.addEventListener("input", function () {
+        lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
     });
 
     function verificarHorarios(e) {
-        const $cambiado = $(e.target);
-        console.log("Checkbox clickeado:", $cambiado.val());
-        const seleccionados = [];
+        if (!e.target.matches('input[name="TalleresSeleccionados"]')) return;
 
-        $('input[name="TalleresSeleccionados"]:checked').each(function () {
-            const $taller = $(this).closest('.op-taller');
-            const dias = $taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
-            const [inicio, fin] = $taller.find('.label-horas').text().split('-').map(h => h.trim());
+        const seleccionados = [];
+        document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+            const taller = input.closest(".op-taller");
+            const dias = taller.querySelector(".label-dias").textContent.split(",").map(d => d.trim().toLowerCase());
+            const [inicio, fin] = taller.querySelector(".label-horas").textContent.split("-").map(h => h.trim());
             seleccionados.push({ dias, inicioMin: aMinutos(inicio), finMin: aMinutos(fin) });
         });
 
-        $('input[name="TalleresSeleccionados"]').each(function () {
-            const $taller = $(this).closest('.op-taller');
-            const diasTaller = $taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
-            const [inicio, fin] = $taller.find('.label-horas').text().split('-').map(h => h.trim());
+        document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(input => {
+            const taller = input.closest(".op-taller");
+            const diasTaller = taller.querySelector(".label-dias").textContent.split(",").map(d => d.trim().toLowerCase());
+            const [inicio, fin] = taller.querySelector(".label-horas").textContent.split("-").map(h => h.trim());
             const inicioMin = aMinutos(inicio);
             const finMin = aMinutos(fin);
 
@@ -47,97 +54,117 @@
                 return mismoDia && (inicioMin < s.finMin && finMin > s.inicioMin);
             });
 
-            const isChecked = $(this).is(':checked');
-            $(this).prop('disabled', choca && !isChecked);
-            $taller.css('opacity', choca && !isChecked ? '0.5' : '1');
+            const isChecked = input.checked;
+            input.disabled = choca && !isChecked;
+            taller.style.opacity = choca && !isChecked ? "0.5" : "1";
         });
     }
 
-    $(document).on('change', 'input[name="TalleresSeleccionados"]', verificarHorarios);
-    $('#finalizar').on('click', function (e) {
-        e.preventDefault();
+    document.addEventListener("change", verificarHorarios);
+    const btnFinalizar = document.getElementById("finalizar");
+    if (btnFinalizar) {
+        btnFinalizar.addEventListener("click", function (e) {
+            e.preventDefault();
 
-        if (!$form[0].checkValidity()) {
-            $form[0].reportValidity();
-            return;
-        }
-        $modalRecibo.show();
-        $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
-        $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
-        $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
-        $('#modal-recibo #numContacto').text($('#Alumno_NumContacto').val());
-        $('#modal-recibo #padecimientos').text($txtPadecimientos.val().trim() || 'Ninguno');
-        $('#modal-recibo #tutor').text($('#Alumno_Tutor').val());
-        $('#modal-recibo #email').text($('#Alumno_Email').val());
-        $('#modal-recibo #numSecundario').text($('#Alumno_NumSecundario').val());
-
-        let total = 0;
-        const talleres = [];
-        $('input[name="TalleresSeleccionados"]:checked').each(function () {
-            const $taller = $(this).closest('.op-taller');
-            const tallerNombre = $taller.find('.nombreTaller').text();
-            const tallerPrecio = $taller.find('.precioTaller').text();
-            const dias = $taller.find('.label-dias').text();
-            const hora = $taller.find('.label-horas').text();
-
-            const precioNumerico = parseFloat(tallerPrecio.replace(/[^0-9.-]+/g, ''));
-            total += precioNumerico;
-            talleres.push(`${tallerNombre} ${dias} - ${hora}`);
-        });
-
-        $('#modal-recibo #talleres').html(talleres.length > 0 ? talleres.join('<br>') : 'Ninguno');
-        $('#modal-recibo #donativo-total').text(`Total: $${total.toFixed(2)}`);
-    });
-
-
-    ////////////
-
-
-    $('#modal-recibo #cancelar').click(function () {
-        $('#modal-recibo').css('display', 'none');
-    });
-
-    // Marcar pago de donativo
-    $('#chkDonativo').off('change').on('change', function () {
-        const isPagado = $(this).is(':checked');
-        const idAlumno = $('#Alumno_Id').val();
-
-        $('#PagadoHidden').val(isPagado ? 'true' : 'false');
-        $('#chkDonativo').next('label').text(isPagado ? 'Pagado' : 'No pagado');
-        if (isPagado) {
-            $('#modal-recibo #fechaPago').text('Fecha de pago: ' + new Date().toLocaleDateString('es-MX'));
-        } else {
-            $('#modal-recibo #fechaPago').text('');
-        }
-    });
-    // si fue pagado o no el total
-    $('#aceptarRecibo').off('click').on('click', function () {
-        const isPagado = $('#chkDonativo').is(':checked');
-        $('#PagadoHidden').val(isPagado ? 'true' : 'false');
-        $('#modal-recibo').hide();
-        $('#datos-alumno')[0].submit();
-    });
-
-
-
-
-
-    $('#aceptarRecibo').on('click', function () {
-        const tutor = $('#Alumno_Tutor').val();
-        const total = $('#donativo-total').text().replace('Total: ', '');
-        const fecha = new Date().toLocaleDateString('es-MX');
-        const htmlRecibo = `
-            <html>
-            <head>
-            <style>
-            @media screen {
-                .recibo {
-                     width:60%;
-                }
-                .encabezado img {
-                        width:6vw !important;
-                    }
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
             }
+            const formData = new FormData(form);
+            fetch('/Profe/RegistroForm', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(result => {
+                    if (!result.ok) {
+                        alert(result.mensaje);
+                        return;
+                    }//CHECARR
+
+            alert(result.mensaje);
+            window.location.reload();
+
+            modalRecibo.style.display = "block";
+            modalRecibo.querySelector("#nombre").textContent = document.getElementById("Alumno_Nombre").value;
+            modalRecibo.querySelector("#fechaCumple").textContent = document.getElementById("Alumno_FechaCumple").value;
+            modalRecibo.querySelector("#direccion").textContent = document.getElementById("Alumno_Direccion").value;
+            modalRecibo.querySelector("#numContacto").textContent = document.getElementById("Alumno_NumContacto").value;
+            modalRecibo.querySelector("#padecimientos").textContent = txtPadecimientos.value.trim() || "Ninguno";
+            modalRecibo.querySelector("#tutor").textContent = document.getElementById("Alumno_Tutor").value;
+            modalRecibo.querySelector("#email").textContent = document.getElementById("Alumno_Email").value;
+            modalRecibo.querySelector("#numSecundario").textContent = document.getElementById("Alumno_NumSecundario").value;
+
+            let total = 0;
+            talleres = [];
+
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const taller = input.closest(".op-taller");
+                const nombre = taller.querySelector(".nombreTaller").textContent;
+                const precio = taller.querySelector(".precioTaller").textContent;
+
+                const inputDias = taller.querySelector("input[name^='Dias_']");
+                const inputHoraInicio = taller.querySelector("input[name^='HoraInicio_']");
+                const inputHoraFinal = taller.querySelector("input[name^='HoraFinal_']");
+                
+                            
+                const dias = inputDias ? inputDias.value : taller.querySelector(".label-dias").textContent;
+                const horaInicio = inputHoraInicio ? inputHoraInicio.value : "";
+                const horaFinal = inputHoraFinal ? inputHoraFinal.value : "";
+
+                const precioNum = parseFloat(precio.replace(/[^0-9.-]+/g, ""));
+                total += precioNum;
+                talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
+            });
+
+            modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
+        });
+    }
+
+    const btnCancelar = modalRecibo.querySelector("#cancelar");
+    if (btnCancelar) {
+        btnCancelar.addEventListener("click", function () {
+            modalRecibo.style.display = "none";
+        });
+    }
+
+    // Checkbox donativo
+    const chkDonativo = document.getElementById("chkDonativo");
+    if (chkDonativo) {
+        chkDonativo.addEventListener("change", function () {
+            const isPagado = this.checked;
+            document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            const label = this.nextElementSibling;
+            if (label) label.textContent = isPagado ? "Pagado" : "No pagado";
+
+            const fechaPago = modalRecibo.querySelector("#fechaPago");
+            fechaPago.textContent = isPagado ? "Fecha de pago: " + new Date().toLocaleDateString("es-MX") : "";
+        });
+    }
+
+    const btnAceptar = document.getElementById("aceptarRecibo");
+    if (btnAceptar) {
+        btnAceptar.addEventListener("click", function () {
+            const isPagado = chkDonativo.checked;
+            document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            modalRecibo.style.display = "none";
+
+            const nombre = document.getElementById("Alumno_Nombre").value;
+            const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
+            const fecha = new Date().toLocaleDateString("es-MX");
+            const talleresTexto = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+
+            const htmlRecibo = `
+                <html>
+                <head>
+                <style>
+                @media screen {
+                    .recibo {
+                        width:60%;
+                    }
+                    .encabezado img {
+                            width:6vw !important;
+                        }
+                }
             // esta parte es la que se ve al imprimir
                 .recibo {
                         color: lightslategray;
@@ -169,41 +196,43 @@
                     text-align: center;
                     margin-top: 5vh;
                 }
-            
-            </style>
-            </head>
-            <body>
-                <div class="recibo">
-                    <fieldset>
-                        <section class="encabezado">
-                            <img src="/img/logo2.png">
-                            <h2>RECIBO DE PAGO</h2>
-                            <img src="/img/logo.png">
-                        </section>
-                        <section class="cuerpo">
-                            <p>
-                                Recibimos de <strong>${tutor}</strong>, la cantidad de
-                                <strong>${total}</strong> por concepto de <strong>inscripción a talleres</strong>,
-                                recibido por <strong>Centro Cultural Lili y Edilberto Montemayor Seguy</strong>,
-                                con dirección en <strong>Amador Chapa 186, Zona Centro, 26700 Sabinas, Coahuila</strong>
-                                y teléfono <strong>861 612 1225</strong> con fecha de <strong>${fecha}</strong>.
-                            </p>
-                        </section>
-                        <section class="pie-pagina">
-                            <hr size="1" width="40%">
-                            <label>FIRMA</label>
-                        </section>
-                    </fieldset>
-                </div>
-            </body>
-            </html>`;
-        const nuevaVentana = window.open('', '_blank');
-        nuevaVentana.document.write(htmlRecibo);
-        nuevaVentana.document.close();
-        nuevaVentana.focus();
-        nuevaVentana.print();
-    });
+                </style>
+                </head>
+                <body>
+                    <div class="recibo">
+                        <fieldset>
+                            <section class="encabezado">
+                                <img src="/img/logo2.png">
+                                <h2>RECIBO DE PAGO</h2>
+                                <img src="/img/logo.png">
+                            </section>
+                            <section class="cuerpo">
+                                <p>
+                                    Recibimos de <strong>${nombre}</strong>, la cantidad de
+                                    <strong>${total}</strong> por concepto de inscripción a los siguientes talleres:<br>
+                                    ${talleresTexto}<br><br>
+                                    Registro realizado por: <strong>${Usuario}</strong><br>
+                                    Recibido por <strong>Centro Cultural Lili y Edilberto Montemayor Seguy</strong>,
+                                    con dirección en <strong>Amador Chapa 186, Zona Centro, 26700 Sabinas, Coahuila</strong>
+                                    y teléfono <strong>861 612 1225</strong> con fecha de <strong>${fecha}</strong>.
+                                </p>
+                            </section>
+                            <section class="pie-pagina">
+                                <hr size="1" width="40%">
+                                <label>FIRMA</label>
+                            </section>
+                        </fieldset>
+                    </div>
+                </body>
+                </html>`;
 
+            const nuevaVentana = window.open("", "_blank");
+            nuevaVentana.document.write(htmlRecibo);
+            nuevaVentana.document.close();
+            nuevaVentana.focus();
+            nuevaVentana.print();
 
-
+            form.submit();
+        });
+    }
 });
