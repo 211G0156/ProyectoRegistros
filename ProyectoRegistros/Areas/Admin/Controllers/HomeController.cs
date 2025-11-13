@@ -263,8 +263,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.LugaresDisp > 0 && x.Estado == 1).ToList()
+                Talleres = _context.Tallers.Where(x=> x.Estado == 1).ToList()
             };
+            if (viewModel.Talleres == null)
+            {
+                viewModel.Talleres = new List<Taller>();
+            }
             return View(viewModel);
         }
         public IActionResult ExportarDatos()

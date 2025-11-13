@@ -6,26 +6,12 @@
     const txtPadecimientos = document.getElementById("txtpadecimientos");
     const lblPadecimientos = modalRecibo.querySelector("#padecimientos");
     const form = document.getElementById("datos-alumno");
-
+    const chbPadecimiento = document.getElementById("chbpadecimiento");
     // convierte hora a minutos 
     function aMinutos(hora) {
         const [h, m] = hora.split(":").map(Number);
         return h * 60 + m;
     }
-
-    // Checkbox de padecimientos
-    // const chbPadecimiento = document.getElementById("chbpadecimiento");
-    // if (chbPadecimiento) {
-    //     chbPadecimiento.addEventListener("change", function () {
-    //         const isChecked = this.checked;
-    //         txtPadecimientos.style.display = isChecked ? "block" : "none";
-    //         txtPadecimientos.disabled = !isChecked;
-    //         if (!isChecked) {
-    //             txtPadecimientos.value = "";
-    //             lblPadecimientos.textContent = "Ninguno";
-    //         }
-    //     });
-    // }
 
     txtPadecimientos.addEventListener("input", function () {
         lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
@@ -90,7 +76,6 @@
             } catch (err) {
                 console.error("La respuesta NO era JSON válido:", err);
             }
-        })
 
             // modalRecibo.style.display = "block";
            
@@ -104,8 +89,9 @@
             modalRecibo.querySelector("#email").textContent = document.getElementById("Alumno_Email").value;
             modalRecibo.querySelector("#numSecundario").textContent = document.getElementById("Alumno_NumSecundario").value;
 
+
             const padecimientos = chbPadecimiento.checked ? (txtPadecimientos.value.trim() || "Ninguno") : "Ninguno";
-            modalRecibo.querySelector("#padecimientos").textContent = padecimientos;
+            lblPadecimientos.textContent = padecimientos;
             
             let total = 0;
             talleres = [];
@@ -123,7 +109,7 @@
                 const horaInicio = inputHoraInicio ? inputHoraInicio.value : "";
                 const horaFinal = inputHoraFinal ? inputHoraFinal.value : "";
 
-                const precioNum = parseFloat(precio.replace(/[^0-9.-]+/g, ""));
+                const precioNum = parseFloat(precio.replace(/[^0-9.-]+/g, "")) || 0;
                 total += precioNum;
                 talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
             });
@@ -131,7 +117,9 @@
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
         });
-    
+        
+        })
+    };
     // autorellenado
     const nombreInput = document.getElementById("Alumno_Nombre");
     if (nombreInput) {
@@ -279,5 +267,5 @@
     };
      
 
-    };
+    
 });

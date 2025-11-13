@@ -197,92 +197,94 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
         {
             try{
-            var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
-            if (alumnoExistente == null)
-            {
-                model.Alumno.Estado = 1;
-                _context.Alumnos.Add(model.Alumno);
-                _context.SaveChanges();
-            }
-            else
-            {
-                model.Alumno = alumnoExistente;
-            }
-            bool pagado = false;
-            var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
-            {
-                pagado = true;
-            }
-
-            List<string> talleresDuplicados = new();
-            if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
-            {
-                foreach (var tallerId in TalleresSeleccionados)
+                var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
+                if (alumnoExistente == null)
                 {
-                    var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
-                    if (taller == null) continue;
-
-                    bool yaInscrito = _context.Listatalleres.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerId);
-
-                    if (yaInscrito)
-                    {
-                        talleresDuplicados.Add(taller.Nombre);
-                        continue;
-                    }
-
-                    bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
-                    string fechaCita = null;
-
-                    if (esAtencion)
-                    {
-                        var dias = Request.Form[$"Dias_{tallerId}"];
-                        var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
-                        var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
-                        fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
-                        model.Alumno.AtencionPsico = 1;
-                    }
-                    var nuevoRegistro = new Listatalleres
-                    {
-                        IdAlumno = model.Alumno.Id,
-                        IdTaller = taller.Id,
-                        FechaRegistro = DateTime.Now,
-                        FechaCita = fechaCita,
-                        Pagado = (sbyte)(pagado ? 1 : 0),
-                        FechaPago = pagado ? DateTime.Now : null,
-                    };
-                    _context.Listatalleres.Add(nuevoRegistro);
-
+                    model.Alumno.Estado = 1;
+                    _context.Alumnos.Add(model.Alumno);
+                    _context.SaveChanges();
                 }
-                _context.SaveChanges();
-            }
-            model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
-            await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
+                else
+                {
+                    model.Alumno = alumnoExistente;
+                }
+                bool pagado = false;
+                var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
+                {
+                    pagado = true;
+                }
 
-            if (talleresDuplicados.Any())
+                List<string> talleresDuplicados = new();
+                if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+                {
+                    foreach (var tallerId in TalleresSeleccionados)
+                    {
+                        var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+                        if (taller == null) continue;
+
+                        bool yaInscrito = _context.Listatalleres.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerId);
+
+                        if (yaInscrito)
+                        {
+                            talleresDuplicados.Add(taller.Nombre);
+                            continue;
+                        }
+
+                        bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
+                        string fechaCita = null;
+
+                        if (esAtencion)
+                        {
+                            var dias = Request.Form[$"Dias_{tallerId}"];
+                            var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
+                            var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
+                            fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
+                            model.Alumno.AtencionPsico = 1;
+                        }
+                        var nuevoRegistro = new Listatalleres
+                        {
+                            IdAlumno = model.Alumno.Id,
+                            IdTaller = taller.Id,
+                            FechaRegistro = DateTime.Now,
+                            FechaCita = fechaCita,
+                            Pagado = (sbyte)(pagado ? 1 : 0),
+                            FechaPago = pagado ? DateTime.Now : null,
+                        };
+                        _context.Listatalleres.Add(nuevoRegistro);
+
+                    }
+                    _context.SaveChanges();
+                }
+                model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
+                await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
+
+                if (talleresDuplicados.Any())
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        ok = true,
+                        mensaje = "Registro guardado correctamente."
+                    });
+                }
+                
+            }
+            catch (Exception ex)
             {
                 return Json(new
                 {
                     ok = false,
-                    mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
+                    mensaje = "Error al registrar: " + ex.Message
                 });
             }
-            
-            return Json(new
-            {
-                ok = true,
-                mensaje = "Registro guardado correctamente."
-            });
-        }
-        catch (Exception ex)
-        {
-            return Json(new
-            {
-                ok = false,
-                mensaje = "Error al registrar: " + ex.Message
-            });
-        }
-           // return RedirectToAction("RegistroForm");
         }
 
         [HttpPost]
