@@ -14,18 +14,18 @@
     }
 
     // Checkbox de padecimientos
-    const chbPadecimiento = document.getElementById("chbpadecimiento");
-    if (chbPadecimiento) {
-        chbPadecimiento.addEventListener("change", function () {
-            const isChecked = this.checked;
-            txtPadecimientos.style.display = isChecked ? "block" : "none";
-            txtPadecimientos.disabled = !isChecked;
-            if (!isChecked) {
-                txtPadecimientos.value = "";
-                lblPadecimientos.textContent = "Ninguno";
-            }
-        });
-    }
+    // const chbPadecimiento = document.getElementById("chbpadecimiento");
+    // if (chbPadecimiento) {
+    //     chbPadecimiento.addEventListener("change", function () {
+    //         const isChecked = this.checked;
+    //         txtPadecimientos.style.display = isChecked ? "block" : "none";
+    //         txtPadecimientos.disabled = !isChecked;
+    //         if (!isChecked) {
+    //             txtPadecimientos.value = "";
+    //             lblPadecimientos.textContent = "Ninguno";
+    //         }
+    //     });
+    // }
 
     txtPadecimientos.addEventListener("input", function () {
         lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
@@ -71,19 +71,30 @@
                 return;
             }
             const formData = new FormData(form);
-            fetch('/Profe/RegistroForm', {
+            fetch('/Profe/Profe/RegistroForm', {
                 method: 'POST',
                 body: formData
-            }).then(response => response.json()).then(result => {
-                    if (!result.ok) {
-                        alert(result.mensaje);
-                        return;
-                    }//CHECARR
+            }).then(async response => {
+                const text = await response.text(); 
+                console.log("Respuesta del servidor:", text); 
 
-            alert(result.mensaje);
-            window.location.reload();
+            try {
+                const result = JSON.parse(text); 
+                if (!result.ok) {
+                    alert(result.mensaje);
+                    return; 
+                }
 
-            modalRecibo.style.display = "block";
+                alert(result.mensaje);
+                modalRecibo.style.display = "block";
+            } catch (err) {
+                console.error("La respuesta NO era JSON válido:", err);
+            }
+        })
+
+            // modalRecibo.style.display = "block";
+           
+
             modalRecibo.querySelector("#nombre").textContent = document.getElementById("Alumno_Nombre").value;
             modalRecibo.querySelector("#fechaCumple").textContent = document.getElementById("Alumno_FechaCumple").value;
             modalRecibo.querySelector("#direccion").textContent = document.getElementById("Alumno_Direccion").value;
@@ -93,6 +104,9 @@
             modalRecibo.querySelector("#email").textContent = document.getElementById("Alumno_Email").value;
             modalRecibo.querySelector("#numSecundario").textContent = document.getElementById("Alumno_NumSecundario").value;
 
+            const padecimientos = chbPadecimiento.checked ? (txtPadecimientos.value.trim() || "Ninguno") : "Ninguno";
+            modalRecibo.querySelector("#padecimientos").textContent = padecimientos;
+            
             let total = 0;
             talleres = [];
 
@@ -105,7 +119,6 @@
                 const inputHoraInicio = taller.querySelector("input[name^='HoraInicio_']");
                 const inputHoraFinal = taller.querySelector("input[name^='HoraFinal_']");
                 
-                            
                 const dias = inputDias ? inputDias.value : taller.querySelector(".label-dias").textContent;
                 const horaInicio = inputHoraInicio ? inputHoraInicio.value : "";
                 const horaFinal = inputHoraFinal ? inputHoraFinal.value : "";
@@ -118,7 +131,36 @@
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
         });
+    
+    // autorellenado
+    const nombreInput = document.getElementById("Alumno_Nombre");
+    if (nombreInput) {
+        nombreInput.addEventListener("blur", function () {
+            const nombre = nombreInput.value.trim();
+            if (nombre.length < 3) return; 
+
+            fetch(`/Profe/Profe/BuscarAlumno?nombre=${encodeURIComponent(nombre)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data) {
+                        console.log("Alumno encontrado:", data);
+                        document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
+                        document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
+                        document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
+                        document.querySelector('input[name="Alumno.NumContacto"]').value = data.numContacto || "";
+                        document.querySelector('input[name="Alumno.Tutor"]').value = data.tutor || "";
+                        document.querySelector('input[name="Alumno.Email"]').value = data.email || "";
+                        document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
+                        document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
+
+                    } else {
+                        console.log(" No se encontró alumno con ese nombre.");
+                    }
+                })
+                .catch(err => console.error("Error al buscar alumno:", err));
+        });
     }
+
 
     const btnCancelar = modalRecibo.querySelector("#cancelar");
     if (btnCancelar) {
@@ -234,5 +276,8 @@
 
             form.submit();
         });
-    }
+    };
+     
+
+    };
 });

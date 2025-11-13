@@ -15,7 +15,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
     [Area("Profe")]
     [Authorize(Roles = "Profesor")]
     public class ProfeController : Controller
-    {   
+    {
         // contexto para el historial
         private readonly IHubContext<HistorialHub> _hubContext;
         private readonly ProyectoregistroContext _context;
@@ -87,7 +87,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
             var misTalleres = _context.Tallers.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
 
-            IQueryable<Listatallere> query = _context.Listatalleres.AsQueryable();
+            IQueryable<Listatalleres> query = _context.Listatalleres.AsQueryable();
 
             query = query.Where(x => misTalleres.Contains(x.IdTaller));
 
@@ -132,11 +132,11 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var existAlumno = _context.Alumnos.Find(alumno.Id);
             if (existAlumno != null)
             {
-                existAlumno.Nombre=alumno.Nombre;
-                existAlumno.Tutor=alumno.Tutor;
-                existAlumno.NumContacto=alumno.NumContacto;
-                existAlumno.NumSecundario=alumno.NumSecundario;
-                existAlumno.Padecimientos=alumno.Padecimientos;
+                existAlumno.Nombre = alumno.Nombre;
+                existAlumno.Tutor = alumno.Tutor;
+                existAlumno.NumContacto = alumno.NumContacto;
+                existAlumno.NumSecundario = alumno.NumSecundario;
+                existAlumno.Padecimientos = alumno.Padecimientos;
 
                 _context.Update(existAlumno);
                 _context.SaveChanges();
@@ -196,6 +196,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         [HttpPost]
         public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
         {
+            try{
             var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
             if (alumnoExistente == null)
             {
@@ -227,7 +228,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                     if (yaInscrito)
                     {
                         talleresDuplicados.Add(taller.Nombre);
-                        continue; 
+                        continue;
                     }
 
                     bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
@@ -241,28 +242,47 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                         fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
                         model.Alumno.AtencionPsico = 1;
                     }
-                        var nuevoRegistro = new Listatalleres
-                        {
-                            IdAlumno = model.Alumno.Id,
-                            IdTaller = taller.Id,
-                            FechaRegistro = DateTime.Now,
-                            FechaCita = fechaCita,
-                            Pagado = (sbyte)(pagado ? 1 : 0),
-                            FechaPago = pagado ? DateTime.Now : null,
-                        };
-                        _context.Listatalleres.Add(nuevoRegistro);
-                    
+                    var nuevoRegistro = new Listatalleres
+                    {
+                        IdAlumno = model.Alumno.Id,
+                        IdTaller = taller.Id,
+                        FechaRegistro = DateTime.Now,
+                        FechaCita = fechaCita,
+                        Pagado = (sbyte)(pagado ? 1 : 0),
+                        FechaPago = pagado ? DateTime.Now : null,
+                    };
+                    _context.Listatalleres.Add(nuevoRegistro);
+
                 }
-                    _context.SaveChanges();
+                _context.SaveChanges();
             }
             model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
             await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
 
             if (talleresDuplicados.Any())
             {
-                return Json(new {ok =  false, mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados) });
+                return Json(new
+                {
+                    ok = false,
+                    mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
+                });
             }
-            return RedirectToAction("RegistroForm");
+            
+            return Json(new
+            {
+                ok = true,
+                mensaje = "Registro guardado correctamente."
+            });
+        }
+        catch (Exception ex)
+        {
+            return Json(new
+            {
+                ok = false,
+                mensaje = "Error al registrar: " + ex.Message
+            });
+        }
+           // return RedirectToAction("RegistroForm");
         }
 
         [HttpPost]
@@ -313,6 +333,32 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 Taller = string.Join(", ", talleres)
             };
             await _hubContext.Clients.All.SendAsync("RecibirHistorial", data);
+        }
+
+        [HttpGet]
+        public IActionResult BuscarAlumno(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                return Json(null);
+
+            var alumno = _context.Alumnos.FirstOrDefault(a => a.Nombre.Contains(nombre)); 
+
+            if (alumno == null)
+                return Json(null);
+
+            return Json(new
+            {
+                alumno.Id,
+                alumno.Nombre,
+                alumno.FechaCumple,
+                alumno.Direccion,
+                alumno.Edad,
+                alumno.NumContacto,
+                alumno.Padecimientos,
+                alumno.Tutor,
+                alumno.Email,
+                alumno.NumSecundario
+            });
         }
 
 
