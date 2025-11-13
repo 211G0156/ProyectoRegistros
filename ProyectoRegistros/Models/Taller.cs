@@ -31,5 +31,7 @@ public partial class Taller
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 
-    public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
+    public virtual ICollection<Listaespera> Listaespera { get; set; } = new List<Listaespera>();
+
+    public virtual ICollection<Listatalleres> Listatalleres { get; set; } = new List<Listatalleres>();
 }

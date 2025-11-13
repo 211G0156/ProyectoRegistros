@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Areas.Profe.Models;
 using ProyectoRegistros.Areas.Profe.Models.ViewModels;
+using ProyectoRegistros.Hubs;
 using ProyectoRegistros.Models;
 using System.Linq;
 using System.Security.Claims;
@@ -14,11 +16,14 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
     [Authorize(Roles = "Profesor")]
     public class ProfeController : Controller
     {
+        // contexto para el historial
+        private readonly IHubContext<HistorialHub> _hubContext;
         private readonly ProyectoregistroContext _context;
 
-        public ProfeController(ProyectoregistroContext context)
+        public ProfeController(ProyectoregistroContext context, IHubContext<HistorialHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
 
@@ -82,7 +87,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
             var misTalleres = _context.Tallers.Where(x => x.IdUsuario == int.Parse(user)).Select(x => x.Id).ToList();
 
-            IQueryable<Listatallere> query = _context.Listatalleres.AsQueryable();
+            IQueryable<Listatalleres> query = _context.Listatalleres.AsQueryable();
 
             query = query.Where(x => misTalleres.Contains(x.IdTaller));
 
@@ -127,11 +132,11 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var existAlumno = _context.Alumnos.Find(alumno.Id);
             if (existAlumno != null)
             {
-                existAlumno.Nombre=alumno.Nombre;
-                existAlumno.Tutor=alumno.Tutor;
-                existAlumno.NumContacto=alumno.NumContacto;
-                existAlumno.NumSecundario=alumno.NumSecundario;
-                existAlumno.Padecimientos=alumno.Padecimientos;
+                existAlumno.Nombre = alumno.Nombre;
+                existAlumno.Tutor = alumno.Tutor;
+                existAlumno.NumContacto = alumno.NumContacto;
+                existAlumno.NumSecundario = alumno.NumSecundario;
+                existAlumno.Padecimientos = alumno.Padecimientos;
 
                 _context.Update(existAlumno);
                 _context.SaveChanges();
@@ -144,7 +149,8 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         [HttpGet("Profe/FuncionTraerTalleres/{alumnoId}")]
         public IActionResult FuncionTraerTalleres(int alumnoId)
         {
-            var talleres = _context.Listatalleres.Where(x => x.IdAlumno == alumnoId).Select(t => new
+            var idUser = int.Parse(User.FindFirstValue("Id"));
+            var talleres = _context.Listatalleres.Where(x => x.IdAlumno == alumnoId && x.IdTallerNavigation.IdUsuario == idUser).Select(t => new
             {
                 id = t.IdTaller,
                 nombre = t.IdTallerNavigation.Nombre
@@ -172,10 +178,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             }
             return Ok(new { success = true });
         }
-        public IActionResult ExportarDatos()
-        {
-            return View();
-        }
+
         [HttpGet]
         public IActionResult RegistroForm()
         {
@@ -190,63 +193,100 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             }
             return View(viewModel);
         }
-
         [HttpPost]
-        public IActionResult RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
+        public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
         {
-            if (ModelState.IsValid)
-            {
-                var errores = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-
-                Console.WriteLine("ERRORES: " + string.Join(", ", errores));
-            }
-            var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre);
-
-            if (alumnoExistente == null)
-            {
-                model.Alumno.Estado = 1;
-                _context.Alumnos.Add(model.Alumno);
-                _context.SaveChanges();
-            }
-            else
-            {
-                model.Alumno = alumnoExistente;
-                _context.Update(alumnoExistente);
-                _context.SaveChanges();
-            }
-            bool pagado = false;
-            var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "True"))
-            {
-                pagado = true;
-            }
-
-            if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
-            {
-                var listaTalleres = new List<Listatallere>();
-                foreach (var tallerId in TalleresSeleccionados)
+            try{
+                var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
+                if (alumnoExistente == null)
                 {
-                    var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
-                    if (taller != null)
+                    model.Alumno.Estado = 1;
+                    _context.Alumnos.Add(model.Alumno);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    model.Alumno = alumnoExistente;
+                }
+                bool pagado = false;
+                var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
+                {
+                    pagado = true;
+                }
+
+                List<string> talleresDuplicados = new();
+                if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+                {
+                    foreach (var tallerId in TalleresSeleccionados)
                     {
-                        listaTalleres.Add(new Listatallere
+                        var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+                        if (taller == null) continue;
+
+                        bool yaInscrito = _context.Listatalleres.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerId);
+
+                        if (yaInscrito)
+                        {
+                            talleresDuplicados.Add(taller.Nombre);
+                            continue;
+                        }
+
+                        bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
+                        string fechaCita = null;
+
+                        if (esAtencion)
+                        {
+                            var dias = Request.Form[$"Dias_{tallerId}"];
+                            var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
+                            var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
+                            fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
+                            model.Alumno.AtencionPsico = 1;
+                        }
+                        var nuevoRegistro = new Listatalleres
                         {
                             IdAlumno = model.Alumno.Id,
                             IdTaller = taller.Id,
                             FechaRegistro = DateTime.Now,
-                            FechaCita = taller.Dias,
+                            FechaCita = fechaCita,
                             Pagado = (sbyte)(pagado ? 1 : 0),
                             FechaPago = pagado ? DateTime.Now : null,
-                        });
+                        };
+                        _context.Listatalleres.Add(nuevoRegistro);
+
                     }
+                    _context.SaveChanges();
                 }
-                _context.Listatalleres.AddRange(listaTalleres);
-                _context.SaveChanges();
+                model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
+                await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
+
+                if (talleresDuplicados.Any())
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        ok = true,
+                        mensaje = "Registro guardado correctamente."
+                    });
+                }
+                
             }
-            model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
-            return View(model);
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    ok = false,
+                    mensaje = "Error al registrar: " + ex.Message
+                });
+            }
         }
-        
+
         [HttpPost]
         public IActionResult ActualizarPago(int idAlumno, bool pagado)
         {
@@ -278,5 +318,51 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
             return View(viewModel);
         }
+
+
+        private async Task EnviarNotificacionHub(string nombreAlumno, List<int> talleresSeleccionados)
+        {
+            if (talleresSeleccionados == null || !talleresSeleccionados.Any()) return;
+
+            var usuario = User?.FindFirstValue("PrimerNombre") ?? "Desconocido";
+            var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).Select(t => t.Nombre).ToList();
+
+            var data = new
+            {
+                Fecha = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"),
+                Profe = usuario,
+                Alumno = nombreAlumno,
+                Taller = string.Join(", ", talleres)
+            };
+            await _hubContext.Clients.All.SendAsync("RecibirHistorial", data);
+        }
+
+        [HttpGet]
+        public IActionResult BuscarAlumno(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                return Json(null);
+
+            var alumno = _context.Alumnos.FirstOrDefault(a => a.Nombre.Contains(nombre)); 
+
+            if (alumno == null)
+                return Json(null);
+
+            return Json(new
+            {
+                alumno.Id,
+                alumno.Nombre,
+                alumno.FechaCumple,
+                alumno.Direccion,
+                alumno.Edad,
+                alumno.NumContacto,
+                alumno.Padecimientos,
+                alumno.Tutor,
+                alumno.Email,
+                alumno.NumSecundario
+            });
+        }
+
+
     }
 }

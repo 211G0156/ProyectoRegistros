@@ -324,3 +324,92 @@ if (recibo && finalizar) {
         console.log("pipippip");
     });
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // filtrado por edad, en registro
+    const edadInput = document.getElementById('edadAlumno');  //10
+    const contenedorTalleres = document.getElementById('contenedor-talleres');
+
+    edadInput.addEventListener('input', () => {
+        const edad = parseInt(edadInput.value);  //10
+
+        const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+        if (isNaN(edad) || edad === 0) {
+            talleres.forEach(taller => taller.style.display = 'none');
+            contenedorTalleres.style.display = 'none';
+            return; 
+        }
+        contenedorTalleres.style.display = 'block';
+        talleres.forEach(taller => {
+        const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+        const edadMaxAttr = taller.getAttribute('data-edadmax');
+        const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+        const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+        if (cumpleEdad) {
+            taller.style.display = '';
+        } else {
+            taller.style.display = 'none';
+        }
+        });
+    });
+
+    
+
+// para capturar datos del taller en atencion psic.
+    const buscarTexto = "atencion psicopedagogica";
+    const limpiar = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(); // para problemas con acentos
+
+    document.querySelectorAll(".op-taller").forEach(op => {
+        op.addEventListener("click", e => {
+            e.stopPropagation();
+            const checkbox = op.querySelector("input[type='checkbox']");
+            const nombre = limpiar(op.querySelector(".nombreTaller").textContent);
+            const esAtencion = nombre.includes(limpiar(buscarTexto));
+
+            cerrarInputs();
+
+            if (!esAtencion) {
+            checkbox.checked = !checkbox.checked;
+            return;
+            }
+
+            checkbox.checked = true;
+            ["dias", "horas"].forEach(tipo => {
+            const label = op.querySelector(`.label-${tipo}`);    
+            const inputHidden = op.querySelector(`input[name='${tipo.charAt(0).toUpperCase() + tipo.slice(1)}_${checkbox.value}']`);
+
+            let input = document.createElement("input");
+            input.type = "text";
+            input.className = `input-${tipo}`;
+            input.value = inputHidden ? inputHidden.value : label.textContent.trim() || `Sin ${tipo}`;
+            label.style.display = "none";
+            label.after(input);
+
+            input.addEventListener("click", ev => ev.stopPropagation());
+            if (inputHidden) {
+                input.addEventListener("input", () => {
+                    inputHidden.value = input.value;
+                });
+            }
+            });
+        });
+    });
+    document.addEventListener("click", cerrarInputs);       
+    function cerrarInputs() {
+        document.querySelectorAll(".op-taller").forEach(op => {
+            ["dias", "horas"].forEach(tipo => {
+            const input = op.querySelector(`.input-${tipo}`);
+            const label = op.querySelector(`.label-${tipo}`);
+            if (input) {
+                label.textContent = input.value.trim() || `Sin ${tipo}`;
+                input.remove();
+                label.style.display = "inline-block";
+            }
+            });
+        });
+    }
+
+
+});

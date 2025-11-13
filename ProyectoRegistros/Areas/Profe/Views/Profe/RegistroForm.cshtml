@@ -13,7 +13,6 @@
     <img id="ig2" src="~/img/Historial.png" />
 </header>
 
-
 <form id="datos-alumno" method="post" asp-action="RegistroForm" asp-controller="Profe">
     <h3>Datos del alumno</h3><br>
     <section>
@@ -74,8 +73,9 @@
 
                     <label>@taller.LugaresDisp</label>
 
-                    <input hidden name="Dias" value="@taller.Dias">
-                    <input hidden name="HoraInicio" value="@taller.HoraInicio">
+                    <input type="hidden" name="Dias_@taller.Id" value="@taller.Dias">
+                    <input type="hidden" hidden name="HoraInicio_@taller.Id" value="@taller.HoraInicio">
+                    <input type="hidden" hidden name="HoraFinal_@taller.Id" value="@taller.HoraFinal">
                 </div>
 
             }
@@ -101,7 +101,7 @@
 
     <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
         <button type="button" class="buttons">Limpiar</button>
-        <button id="finalizar" type="button" class="buttons">Finalizar</button>
+        <button id="finalizar" type="submit" class="buttons">Finalizar</button>
     </div>
 </form>
 
@@ -147,7 +147,8 @@
                 <input id="chkDonativo" type="checkbox">
             </section>
         <div style="display: inline-flex; justify-content: space-between; width: 100%;">
-            <button id="cancelar" type="button" class="buttons">Cancelar</button>
+            <button id="cancelar" type="button" class="buttons">Volver</button>
+            <button id="listaEspera" type="button" class="buttons">Lista de espera</button>
             <button id="aceptarRecibo" type="button" class="buttons" value="Aceptar">
                 Aceptar <br>
                 <small style="font-size:10px; color:gray; line-height: 3vh;">(Imprimir recibo)</small>
@@ -155,11 +156,3 @@
         </div>
     </div>
 </div>
-
-@* checar lo de agg alumno, que si selecciona un taller, se quiten 
-con los que serian a la misma hora
-
-
-que se guarde con cita, ya que no ,llegaa a la base
-
-en imprimir, hacerlo con un formato oficial de cclems *@
