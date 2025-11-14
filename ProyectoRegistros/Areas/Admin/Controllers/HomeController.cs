@@ -1,25 +1,31 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Areas.Admin.Models;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Areas.Profe.Models;
+using ProyectoRegistros.Hubs;
 using ProyectoRegistros.Models;
 using ProyectoRegistros.Models.ViewModels;
 using System.Linq;
+using System.Security.Claims;
 
 namespace ProyectoRegistros.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-    [Authorize(Roles ="Administrador")]
-    public class HomeController:Controller
+    [Authorize(Roles = "Administrador")]
+    public class HomeController : Controller
     {
+        // contexto para el historial
+        private readonly IHubContext<HistorialHub> _hubContext;
         private readonly ProyectoregistroContext _context;
 
-        public HomeController(ProyectoregistroContext context)
+        public HomeController(ProyectoregistroContext context, IHubContext<HistorialHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [Route("/Admin/Admin/Index")]
@@ -146,7 +152,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         EdadMax = vm.EdadMax,
                         Costo = vm.Costo,
                         IdUsuario = vm.IdUsuario,
-                        Estado = 1 
+                        Estado = 1
                     };
 
                     _context.Tallers.Add(taller);
@@ -185,7 +191,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         public IActionResult GetTaller(int id)
         {
             var taller = _context.Tallers.
-                Where(t=>t.Estado==1)
+                Where(t => t.Estado==1)
                 .Include(t => t.IdUsuarioNavigation)
                 .FirstOrDefault(t => t.Id == id);
 
@@ -263,7 +269,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             var viewModel = new MisTalleresViewModel
             {
                 Alumno = new Alumno(),
-                Talleres = _context.Tallers.Where(x=> x.Estado == 1).ToList()
+                Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList()
             };
             if (viewModel.Talleres == null)
             {
@@ -311,5 +317,200 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View("~/Areas/Admin/Views/Home/Usuarios.cshtml", usuariosVM);
         }
+
+        // m queda pendiente organizarlos bn 
+
+        //[HttpPost]
+        //public async Task<IActionResult> RegistrarListaEspera(MisTalleresViewModel model, int IdTallerListaEspera)
+        //{
+        //    try
+        //    {
+        //        var alumno = _context.Alumnos.FirstOrDefault(x => x.Nombre == model.Alumno.Nombre && x.Tutor == model.Alumno.Tutor);
+        //        if (alumno == null)
+        //        {
+        //            model.Alumno.Estado = 1;
+        //            _context.Alumnos.Add(model.Alumno);
+        //            _context.SaveChanges();
+        //            alumno = model.Alumno;
+        //        }
+        //        var nuevo = new Listaespera
+        //        {
+        //            IdAlumno = alumno.Id,
+        //            IdTaller = IdTallerListaEspera,
+        //            FechaRegistro = DateTime.Now,
+        //            Estado = "En espera"
+        //        };
+        //        _context.Listaesperas.Add(nuevo);
+        //        _context.SaveChanges();
+
+        //        return Json(new { ok = true, mensaje = "Alumno agregado a lista de espera." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { ok = false, mensaje = "Error: " + ex.Message });
+        //    }
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
+        //{
+        //    try
+        //    {
+        //        var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
+        //        if (alumnoExistente == null)
+        //        {
+        //            model.Alumno.Estado = 1;
+        //            _context.Alumnos.Add(model.Alumno);
+        //            _context.SaveChanges();
+        //        }
+        //        else
+        //        {
+        //            model.Alumno = alumnoExistente;
+        //        }
+        //        bool pagado = false;
+        //        var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
+        //        if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
+        //        {
+        //            pagado = true;
+        //        }
+
+        //        List<string> talleresDuplicados = new();
+        //        if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+        //        {
+        //            foreach (var tallerId in TalleresSeleccionados)
+        //            {
+        //                var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+        //                if (taller == null) continue;
+
+        //                bool yaInscrito = _context.Listatalleres.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerId);
+
+        //                if (yaInscrito)
+        //                {
+        //                    talleresDuplicados.Add(taller.Nombre);
+        //                    continue;
+        //                }
+
+        //                bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
+        //                string fechaCita = null;
+
+        //                if (esAtencion)
+        //                {
+        //                    var dias = Request.Form[$"Dias_{tallerId}"];
+        //                    var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
+        //                    var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
+        //                    fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
+        //                    model.Alumno.AtencionPsico = 1;
+        //                }
+        //                var nuevoRegistro = new Listatalleres
+        //                {
+        //                    IdAlumno = model.Alumno.Id,
+        //                    IdTaller = taller.Id,
+        //                    FechaRegistro = DateTime.Now,
+        //                    FechaCita = fechaCita,
+        //                    Pagado = (sbyte)(pagado ? 1 : 0),
+        //                    FechaPago = pagado ? DateTime.Now : null,
+        //                };
+        //                _context.Listatalleres.Add(nuevoRegistro);
+
+        //            }
+        //            _context.SaveChanges();
+        //        }
+        //        model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
+        //        await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
+
+        //        if (talleresDuplicados.Any())
+        //        {
+        //            return Json(new { ok = false, mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados) });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { ok = true, mensaje = "Registro guardado correctamente." });
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new
+        //        {
+        //            ok = false,
+        //            mensaje = "Error al registrar: " + ex.Message
+        //        });
+        //    }
+        //}
+
+        //[HttpPost]
+        //public IActionResult ActualizarPago(int idAlumno, bool pagado)
+        //{
+        //    var talleres = _context.Listatalleres.Where(l => l.IdAlumno == idAlumno).ToList();
+        //    foreach (var t in talleres)
+        //    {
+        //        t.Pagado = (sbyte)(pagado ? 1 : 0);
+        //        t.FechaPago = pagado ? DateTime.Now : null;
+        //    }
+
+        //    _context.SaveChanges();
+
+        //    return Json(new { success = true });
+        //}
+        //[HttpGet]
+        //public IActionResult GenerarRecibo(int idAlumno)
+        //{
+        //    var alumno = _context.Alumnos.FirstOrDefault(a => a.Id == idAlumno);
+        //    var talleres = _context.Listatalleres.Where(l => l.IdAlumno == idAlumno).Select(l => l.IdTaller).ToList();
+
+        //    if (alumno == null)
+        //        return NotFound();
+
+        //    var viewModel = new MisTalleresViewModel
+        //    {
+        //        Alumno = alumno,
+        //        Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList()
+        //    };
+
+        //    return View(viewModel);
+        //}
+
+
+        //private async Task EnviarNotificacionHub(string nombreAlumno, List<int> talleresSeleccionados)
+        //{
+        //    if (talleresSeleccionados == null || !talleresSeleccionados.Any()) return;
+
+        //    var usuario = User?.FindFirstValue("PrimerNombre") ?? "Desconocido";
+        //    var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).Select(t => t.Nombre).ToList();
+
+        //    var data = new
+        //    {
+        //        Fecha = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"),
+        //        Profe = usuario,
+        //        Alumno = nombreAlumno,
+        //        Taller = string.Join(", ", talleres)
+        //    };
+        //    await _hubContext.Clients.All.SendAsync("RecibirHistorial", data);
+        //}
+
+        //[HttpGet]
+        //public IActionResult BuscarAlumno(string nombre)
+        //{
+        //    if (string.IsNullOrWhiteSpace(nombre))
+        //        return Json(null);
+
+        //    var alumno = _context.Alumnos.FirstOrDefault(a => a.Nombre.Contains(nombre));
+
+        //    if (alumno == null)
+        //        return Json(null);
+
+        //    return Json(new
+        //    {
+        //        alumno.Id,
+        //        alumno.Nombre,
+        //        alumno.FechaCumple,
+        //        alumno.Direccion,
+        //        alumno.Edad,
+        //        alumno.NumContacto,
+        //        alumno.Padecimientos,
+        //        alumno.Tutor,
+        //        alumno.Email,
+        //        alumno.NumSecundario
+        //    });
+        //}
     }
 }

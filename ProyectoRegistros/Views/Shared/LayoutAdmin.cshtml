@@ -17,6 +17,17 @@
     </header>
  *@
 
+    <div class="historial">
+        <h2>Historial de registro</h2>
+
+        <div class="datosHistorial">
+            @*     <label><b>03/09/2025       02:08 P.M.</b></label> *@
+            @*     <hr /> *@
+            @*     <p> <b>Pepito J.</b> añadió al alumno/a <b>Juanito S.</b> a los talleres de: <b>AcuarelaKids</b></p> *@
+            @* </div> *@
+        </div>
+    </div>
+
     <aside id="menu-abierto">
         <img src="~/img/logo.png">
         <h3>@User.FindFirst("Rol")?.Value</h3>
@@ -44,23 +55,33 @@
     </aside>
 
 
-    <div class="historial">
-        <h2>Historial de registro</h2>
-
-        <div class="datosHistorial">
-            <label><b>03/09/2025       02:08 P.M.</b></label>
-            <hr />
-            <p> <b>Pepito J.</b> añadió al alumno/a <b>Juanito S.</b> a los talleres de: <b>AcuarelaKids</b></p>
-        </div>
-    </div>
-
 
 
     <main>
         @RenderBody()
     </main>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/Administrador.js"></script>
 
+    @* se va ajustar *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder().withUrl("/historialHub").build();
 
+            connection.on("RecibirHistorial", (data) => {
+            const contenedor = document.querySelector(".historial .datosHistorial");
+            const nuevo = `
+                <div class="registro-item">
+                    <label><b>${data.fecha}</b></label>
+                    <hr />
+                    <p><b>${data.profe}</b> añadió al alumno/a <b>${data.alumno}</b>
+                    a los talleres de: <b>${data.taller}</b></p>
+                </div>
+            `;
+            contenedor.insertAdjacentHTML("afterbegin", nuevo);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
 </body>
 </html>

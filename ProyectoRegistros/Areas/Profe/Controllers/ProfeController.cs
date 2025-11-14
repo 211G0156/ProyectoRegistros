@@ -50,19 +50,14 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             {
                 bool isNumeric = int.TryParse(searchTerm, out int edad);
 
-                query = query.Where(t =>
-                    t.Nombre.Contains(searchTerm) ||
-                    t.Dias.Contains(searchTerm) ||
+                query = query.Where(t => t.Nombre.Contains(searchTerm) || t.Dias.Contains(searchTerm) ||
                     (isNumeric && edad >= t.EdadMin && (t.EdadMax == null || edad <= t.EdadMax))
                 );
             }
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query
-                   .OrderBy(t => t.Nombre.StartsWith(searchTerm) ? 0 : 1)
-                   .ThenBy(t => t.Dias.StartsWith(searchTerm) ? 2 : 3)
-                   .ThenBy(t => t.Nombre);
+                query = query.OrderBy(t => t.Nombre.StartsWith(searchTerm) ? 0 : 1).ThenBy(t => t.Dias.StartsWith(searchTerm) ? 2 : 3).ThenBy(t => t.Nombre);
             }
             else
             {
@@ -179,6 +174,38 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             return Ok(new { success = true });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RegistrarListaEspera(MisTalleresViewModel model, int IdTallerListaEspera)
+        {
+            try
+            {
+                var alumno = _context.Alumnos.FirstOrDefault(x => x.Nombre == model.Alumno.Nombre && x.Tutor == model.Alumno.Tutor);
+                if (alumno == null)
+                {
+                    model.Alumno.Estado = 1;
+                    _context.Alumnos.Add(model.Alumno);
+                    _context.SaveChanges();
+                    alumno = model.Alumno;
+                }
+                var nuevo = new Listaespera
+                {
+                    IdAlumno = alumno.Id,
+                    IdTaller = IdTallerListaEspera,
+                    FechaRegistro = DateTime.Now,
+                    Estado = "En espera"
+                };
+                _context.Listaesperas.Add(nuevo);
+                _context.SaveChanges();
+
+                return Json(new { ok = true, mensaje = "Alumno agregado a lista de espera." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { ok = false, mensaje = "Error: " + ex.Message });
+            }
+        }
+
+
         [HttpGet]
         public IActionResult RegistroForm()
         {
@@ -196,7 +223,8 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
         [HttpPost]
         public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
         {
-            try{
+            try
+            {
                 var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
                 if (alumnoExistente == null)
                 {
@@ -209,7 +237,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                     model.Alumno = alumnoExistente;
                 }
                 bool pagado = false;
-                var pagadoForm = Request.Form["Pagado"].FirstOrDefault();
+                var pagadoForm = Request.Form["PagadoHidden"].FirstOrDefault();
                 if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
                 {
                     pagado = true;
@@ -261,21 +289,13 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
                 if (talleresDuplicados.Any())
                 {
-                    return Json(new
-                    {
-                        ok = false,
-                        mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
-                    });
+                    return Json(new { ok = false, mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados) });
                 }
                 else
                 {
-                    return Json(new
-                    {
-                        ok = true,
-                        mensaje = "Registro guardado correctamente."
-                    });
+                    return Json(new { ok = true, mensaje = "Registro guardado correctamente." });
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -343,7 +363,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             if (string.IsNullOrWhiteSpace(nombre))
                 return Json(null);
 
-            var alumno = _context.Alumnos.FirstOrDefault(a => a.Nombre.Contains(nombre)); 
+            var alumno = _context.Alumnos.FirstOrDefault(a => a.Nombre.Contains(nombre));
 
             if (alumno == null)
                 return Json(null);

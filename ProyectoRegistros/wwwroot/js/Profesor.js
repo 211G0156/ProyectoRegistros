@@ -29,9 +29,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // filtrado por edad, en registro
-    
-    const edadInput = document.getElementById('edadAlumno');  //10
     const contenedorTalleres = document.getElementById('contenedor-talleres');
+    const edadInput = document.getElementById('edadAlumno');
 
     edadInput.addEventListener('input', () => {
         const edad = parseInt(edadInput.value);  //10
@@ -40,21 +39,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isNaN(edad) || edad === 0) {
             talleres.forEach(taller => taller.style.display = 'none');
             contenedorTalleres.style.display = 'none';
-            return; 
+            return;
         }
         contenedorTalleres.style.display = 'block';
         talleres.forEach(taller => {
-        const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
-        const edadMaxAttr = taller.getAttribute('data-edadmax');
-        const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
-        const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
-        if (cumpleEdad) {
-            taller.style.display = '';
-        } else {
-            taller.style.display = 'none';
-        }
+            const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+            const edadMaxAttr = taller.getAttribute('data-edadmax');
+            const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+            const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+            if (cumpleEdad) {
+                taller.style.display = '';
+            } else {
+                taller.style.display = 'none';
+            }
         });
     });
+
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-//EDITAR
+    //EDITAR
 
     document.querySelectorAll('.btneditar').forEach(btnEditar => {
         btnEditar.addEventListener('click', function () {
@@ -230,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-});
 
 
 // para capturar datos del taller atencion psic.
@@ -238,149 +237,57 @@ const buscarTexto = "atencion psicopedagogica";
 const limpiar = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(); // para problemas con acentos
 
 document.querySelectorAll(".op-taller").forEach(op => {
-  op.addEventListener("click", e => {
-    e.stopPropagation();
-    const checkbox = op.querySelector("input[type='checkbox']");
-    const nombre = limpiar(op.querySelector(".nombreTaller").textContent);
-    const esAtencion = nombre.includes(limpiar(buscarTexto));
+    op.addEventListener("click", e => {
+        e.stopPropagation();
+        const checkbox = op.querySelector("input[type='checkbox']");
+        const nombre = limpiar(op.querySelector(".nombreTaller").textContent);
+        const esAtencion = nombre.includes(limpiar(buscarTexto));
 
-    cerrarInputs();
+        cerrarInputs();
 
-    if (!esAtencion) {
-      checkbox.checked = !checkbox.checked;
-      return;
-    }
+        if (!esAtencion) {
+            checkbox.checked = !checkbox.checked;
+            return;
+        }
 
-    checkbox.checked = true;
-    ["dias", "horas"].forEach(tipo => {
-    const label = op.querySelector(`.label-${tipo}`);    
-    const inputHidden = op.querySelector(`input[name='${tipo.charAt(0).toUpperCase() + tipo.slice(1)}_${checkbox.value}']`);
+        checkbox.checked = !checkbox.checked;
+        ["dias", "horas"].forEach(tipo => {
+            const label = op.querySelector(`.label-${tipo}`);
+            const inputHidden = op.querySelector(`input[name='${tipo.charAt(0).toUpperCase() + tipo.slice(1)}_${checkbox.value}']`);
 
-      let input = document.createElement("input");
-      input.type = "text";
-      input.className = `input-${tipo}`;
-      input.value = inputHidden ? inputHidden.value : label.textContent.trim() || `Sin ${tipo}`;
-      label.style.display = "none";
-      label.after(input);
+            let input = document.createElement("input");
+            input.type = "text";
+            input.className = `input-${tipo}`;
+            input.value = inputHidden ? inputHidden.value : label.textContent.trim() || `Sin ${tipo}`;
+            label.style.display = "none";
+            label.after(input);
 
-      input.addEventListener("click", ev => ev.stopPropagation());
-      if (inputHidden) {
-        input.addEventListener("input", () => {
-            inputHidden.value = input.value;
+            input.addEventListener("click", ev => ev.stopPropagation());
+            if (inputHidden) {
+                input.addEventListener("input", () => {
+                    inputHidden.value = input.value;
+                });
+            }
         });
-      }
     });
-});
 });
 
 document.addEventListener("click", cerrarInputs);
 
 function cerrarInputs() {
-  document.querySelectorAll(".op-taller").forEach(op => {
-    ["dias", "horas"].forEach(tipo => {
-      const input = op.querySelector(`.input-${tipo}`);
-      const label = op.querySelector(`.label-${tipo}`);
-      if (input) {
-        label.textContent = input.value.trim() || `Sin ${tipo}`;
-        input.remove();
-        label.style.display = "inline-block";
-      }
+    document.querySelectorAll(".op-taller").forEach(op => {
+        ["dias", "horas"].forEach(tipo => {
+            const input = op.querySelector(`.input-${tipo}`);
+            const label = op.querySelector(`.label-${tipo}`);
+            if (input) {
+                label.textContent = input.value.trim() || `Sin ${tipo}`;
+                input.remove();
+                label.style.display = "inline-block";
+            }
+        });
     });
-  });
 }
 
 
 
-
-/*previsualizacion de datos en recibo*/
-    // $(document).ready(function() {
-    //    // activar el txtarea de padecimientos
-    //    $('#chbpadecimiento').change(function() {
-    //        const textarea = $('#txtpadecimientos');
-    //        const lblPadecimientos = $('#modal-recibo #padecimientos');
-    //        if ($(this).is(':checked')) {
-    //            textarea.css('display', 'block');
-    //            textarea.prop('disabled', false);
-    //        } else {
-    //            textarea.css('display', 'none');
-    //            textarea.prop('disabled', true).val('');
-    //            lblPadecimientos.text('Ninguno');
-    //        }
-    //    });
-    //    $('#txtpadecimientos').on('input', function() {
-    //        const valor = $(this).val().trim();
-    //        $('#modal-recibo #padecimientos').text(valor || 'Ninguno');
-    //    });
-
-       // enviar datos al recibo
-    //    $('#finalizar').off('click').on('click', async function (e) {
-    //        e.preventDefault();
-    //        const form = document.getElementById('datos-alumno');
-    //        if (!form.checkValidity()) {
-    //            form.reportValidity();
-    //            return;
-    //        }
-    //        var talleres = [];
-    //        var total = 0;
-    //        $('#modal-recibo').show();
-    //        $('#modal-recibo #nombre').text($('#Alumno_Nombre').val());
-    //        $('#modal-recibo #fechaCumple').text($('#Alumno_FechaCumple').val());
-    //        $('#modal-recibo #direccion').text($('#Alumno_Direccion').val());
-    //        $('#modal-recibo #numContacto').text($('#Alumno_NumContacto').val());
-    //        $('#modal-recibo #padecimientos').text($('#txtpadecimientos').val().trim() || 'Ninguno');
-    //        $('#modal-recibo #tutor').text($('#Alumno_Tutor').val());
-    //        $('#modal-recibo #email').text($('#Alumno_Email').val());
-    //        $('#modal-recibo #numSecundario').text($('#Alumno_NumSecundario').val());
-       
-        
-    //        $('input[name="TalleresSeleccionados"]:checked').each(function() {
-    //            var tallerNombre = $(this).siblings('.nombreTaller').text();
-    //            var tallerPrecio = $(this).siblings('.precioTaller').text();
-    //            var dias = $(this).siblings('.label-dias').text();
-    //            var hora = $(this).siblings('.label-horas').text();
-
-    //            var precioNumerico = parseFloat(tallerPrecio.replace(/[^0-9.-]+/g, ""));
-    //            total += precioNumerico;
-    //            talleres.push(`<strong>${tallerNombre}</strong> ${dias} - ${hora}`);
-    //        });
-    //        $('#modal-recibo #talleres').empty().html(talleres.length > 0 ? talleres.join(' <br>') : 'Ninguno');
-    //        $('#modal-recibo #donativo-total').text('Total: $' + total.toFixed(2)); 
-    //    }); 
-
-       // LOL
-       // detectar cambios en los checkboxes de talleres
-    //    $(document).on('change', '#seleccionados', function () {
-    //        console.log("Cambio detectado");
-    //        const seleccionados = [];
-            
-    //        $('input[name="TalleresSeleccionados"]:checked').each(function () {
-    //            const taller = $(this).closest('.op-taller');
-    //            const dias = taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
-    //            const [inicio, fin] = taller.find('.label-horas').text().split('-').map(h => h.trim());
-    //            seleccionados.push({ dias, inicio, fin });
-    //        });
-
-    //        $('input[name="TalleresSeleccionados"]').each(function () {
-    //            const taller = $(this).closest('.op-taller');
-    //            const diasTaller = taller.find('.label-dias').text().split(',').map(d => d.trim().toLowerCase());
-    //            const [inicio, fin] = taller.find('.label-horas').text().split('-').map(h => h.trim());
-
-    //            let choca = false;
-    //            for (const s of seleccionados) {
-    //                const mismoDia = s.dias.some(d => diasTaller.includes(d));
-    //                if (mismoDia && (inicio < s.fin && fin > s.inicio)) {
-    //                    choca = true;
-    //                    break;
-    //                }
-    //            }
-
-    //            if (choca && !$(this).is(':checked')) {
-    //                $(this).prop('disabled', true);
-    //                taller.css('opacity', '0.5');
-    //            } else {
-    //                $(this).prop('disabled', false);
-    //                taller.css('opacity', '1');
-    //            }
-    //        });
-    //    });
-//  });
+});

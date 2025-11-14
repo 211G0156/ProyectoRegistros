@@ -13,11 +13,11 @@
     <img id="ig2" src="~/img/Historial.png" />
 </header>
 
-<form id="datos-alumno" method="post" asp-action="RegistroForm" asp-controller="Profe">
+<form id="datos-alumno" method="post">
     <h3>Datos del alumno</h3><br>
     <section>
         <input type="hidden" id="PagadoHidden" name="Pagado" value="false" />
-        <input asp-for="Alumno.Id" type="hidden" id="Alumno_Id" value="@Model.Alumno.Id"/>
+        <input asp-for="Alumno.Id" type="hidden" id="Alumno_Id" value="@Model.Alumno.Id" />
 
         <label>Nombre:</label><br>
         <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
@@ -64,7 +64,7 @@
             if (taller.LugaresDisp >= 1)
             {
                 <div class="op-taller" data-edadmin="@taller.EdadMin" data-edadmax="@taller.EdadMax">
-                    <input id="seleccionados" class="check" type="checkbox" name="TalleresSeleccionados" value="@taller.Id">
+                    <input class="check" type="checkbox" name="TalleresSeleccionados" value="@taller.Id">
                     <label class="nombreTaller">@taller.Nombre</label>
                     <label hidden class="precioTaller">@taller.Costo</label>
 
@@ -87,12 +87,12 @@
 
         <div class="tamaño">
             <label>Lista de espera</label>
-            <select>
+            <select name="ListaEsperaSeleccionada" id="ListaEsperaSeleccionada">
                 @foreach (var t in Model.Talleres)
                 {
                     if (t.LugaresDisp < 1)
                     {
-                        <option>@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
+                        <option value="@t.Id">@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
                     }
                 }
             </select>
@@ -100,8 +100,8 @@
     </div><br>
 
     <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
-        <button type="button" class="buttons">Limpiar</button>
-        <button id="finalizar" type="submit" class="buttons">Finalizar</button>
+        <button id="limpiar" type="button" class="buttons">Limpiar</button>
+        <button id="finalizar" type="button" class="buttons">Finalizar</button>
     </div>
 </form>
 
@@ -109,7 +109,7 @@
     <div>
         <section class="datos-alumno">
             <h2>Confirmación de datos</h2>
-            <img src="~/img/logo.png"/>
+            <img src="~/img/logo.png" />
         </section>
         <hr size="0" width="99%" style="margin-top:3vh; box-shadow:-1px 3px 6px 1px rgba(172, 172, 176, 0.426)"><br>
         <section class="datos-alumno">
@@ -138,14 +138,12 @@
             <label id="costo" name="Costo" class="precioTaller"></label>
         </section>
         <div id="talleres" name="talleres">
-            
-
         </div>
-            <hr size="2" width="99%"><br>
-            <section id="donativo">
-                <label for="chkDonativo" id="donativo-total"></label>
-                <input id="chkDonativo" type="checkbox">
-            </section>
+        <hr size="2" width="99%"><br>
+        <section id="donativo">
+            <label for="chkDonativo" id="donativo-total"></label>
+            <input id="chkDonativo" type="checkbox">
+        </section>
         <div style="display: inline-flex; justify-content: space-between; width: 100%;">
             <button id="cancelar" type="button" class="buttons">Volver</button>
             <button id="listaEspera" type="button" class="buttons">Lista de espera</button>
@@ -156,3 +154,31 @@
         </div>
     </div>
 </div>
+<script>
+    const Usuario = "@User.Identity.Name";
+</script>
+<script>
+    document.getElementById("listaEspera").addEventListener("click", function () {
+        const idTaller = document.getElementById("ListaEsperaSeleccionada").value;
+        const form = document.getElementById("datos-alumno");
+
+        let hidden = document.getElementById("hiddenListaEspera");
+        if (!hidden) {
+            hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.id = "hiddenListaEspera";
+            hidden.name = "IdTallerListaEspera";
+            form.appendChild(hidden);
+        }
+        hidden.value = idTaller;
+
+        const data = new FormData(form);
+        fetch("/Profe/Profe/RegistrarListaEspera", {
+            method: "POST",
+            body: data
+        })
+        .then(r => r.json())
+        .then(res => alert(res.mensaje))
+        .catch(err => console.error(err));
+    });
+</script>
