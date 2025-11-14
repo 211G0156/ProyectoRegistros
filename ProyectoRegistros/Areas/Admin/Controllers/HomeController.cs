@@ -134,6 +134,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(alumnosVM);
         }
+
         [HttpPost]
         public IActionResult AgregarTaller(NuevoTallerVM vm)
         {
@@ -161,7 +162,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         .ToList();
 
                     bool mismoDia = diasExistentes.Intersect(diasNuevo).Any();
-
                     bool traslapeHoras = vm.HoraInicio < t.HoraFinal && vm.HoraFinal > t.HoraInicio;
 
                     if (mismoDia && traslapeHoras)
@@ -169,7 +169,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         return Json(new
                         {
                             success = false,
-                            message = $"El profesor ya tiene un taller asignado en ese horario: \"{t.Nombre}\" ({t.HoraInicio:hh\\:mm} - {t.HoraFinal:hh\\:mm})."
+                            message = $"El profesor ya tiene un taller en ese horario: \"{t.Nombre}\" ({t.HoraInicio:hh\\:mm} - {t.HoraFinal:hh\\:mm})."
                         });
                     }
                 }
@@ -187,21 +187,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     IdUsuario = vm.IdUsuario,
                     Estado = 1
                 };
-                try
-                {
-                    var taller = new Taller
-                    {
-                        Nombre = vm.Nombre,
-                        Dias = vm.Dias,
-                        LugaresDisp = vm.LugaresDisp,
-                        HoraInicio = vm.HoraInicio,
-                        HoraFinal = vm.HoraFinal,
-                        EdadMin = vm.EdadMin,
-                        EdadMax = vm.EdadMax,
-                        Costo = vm.Costo,
-                        IdUsuario = vm.IdUsuario,
-                        Estado = 1
-                    };
 
                 _context.Tallers.Add(taller);
                 _context.SaveChanges();
@@ -213,6 +198,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error: " + ex.Message });
             }
         }
+
 
         [HttpGet]
         public IActionResult GetTaller(int id)
