@@ -100,4 +100,10 @@
     </Resource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\img\personas.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

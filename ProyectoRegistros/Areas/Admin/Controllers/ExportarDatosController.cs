@@ -244,7 +244,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     workbook.SaveAs(stream);
                     var content = stream.ToArray();
                     var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    var fileName = "ReporteDetalladoTalleres.xlsx";
+                    var fileName = "ReporteTalleres.xlsx";
 
                     return File(content, contentType, fileName);
                 }

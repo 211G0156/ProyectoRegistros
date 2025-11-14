@@ -11,6 +11,7 @@
                     <th>Horario</th>
                     <th>Edad</th>
                     <th>Donativo</th>
+                    <th>Lista alumnos</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,9 +35,35 @@
                         </td>
 
                         <td>$@taller.Costo</td>
+                        <td>
+                            <div class="botones">
+                                <img class="btnver" src="~/img/personas.png" style="border-radius:3px !important;" data-id="@taller.Id"
+                                     data-nombre="@taller.Dias" />
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.querySelectorAll('.btnver').forEach(btn => {
+            btn.addEventListener('click', function () {
+
+                let idTaller = this.dataset.id;
+
+                if (!idTaller) {
+                    alert("No se pudo obtener el ID del taller.");
+                    return;
+                }
+
+                window.location.href = `/Profe/Profe/Alumnos?idTaller=${idTaller}`;
+            });
+        });
+
+    });
+</script>

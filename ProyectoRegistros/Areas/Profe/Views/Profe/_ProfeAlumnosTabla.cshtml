@@ -10,7 +10,6 @@
                     <th>Teléfono</th>
                     <th>Teléfono 2</th>
                     <th>Padecimientos</th>
-                    <th>Talleres</th>
                     <th>Opciones</th>
                 </tr>
             </thead>
@@ -23,13 +22,14 @@
                         <td>@a.Alumno.NumContacto</td>
                         <td>@a.Alumno.NumSecundario</td>
                         <td>@a.Alumno.Padecimientos</td>
-                        <td>
+@*                         <td>
                             @foreach (var t in a.Talleres)
                             {
                                 <p>@t.Nombre</p>
                             }
                         </td>
-                        <td>
+ *@
+                           <td>
                             <div class="botones">
                                 <img src="~/img/edit.png" class="btneditar" data-id="@a.Alumno.Id"
                                      data-nombre="@a.Alumno.Nombre"

@@ -15,12 +15,13 @@
 <div class="filtros">
     <div class="buscador">
         <input type="search" id="search-talleres-profe" name="searchTerm"
-               placeholder="Nombre, edad, día..."
+               placeholder="Nombre, día y edad"
                value="@ViewData["CurrentFilter"]" />
     </div>
 
-    <a id="verAlumno" class="verLista"
+@*     <a id="verAlumno" class="verLista"
        href="@Url.Action("Alumnos", "Profe", new { area = "Profe" })">Lista de alumnos</a>
+ *@
 </div>
 
 <div id="tabla-container">
