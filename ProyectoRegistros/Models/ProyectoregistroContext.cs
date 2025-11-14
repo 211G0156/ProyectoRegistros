@@ -149,7 +149,6 @@ public partial class ProyectoregistroContext : DbContext
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Taller)
                 .HasForeignKey(d => d.IdUsuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fkTallerUsuario");
         });
 

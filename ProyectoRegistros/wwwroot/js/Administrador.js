@@ -78,12 +78,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /* -------------------- CERRAR MODALES -------------------- */
+// CERRAR Y LIMPIAR MODALES
 document.querySelectorAll(".cerrar").forEach(btnCerrar => {
     btnCerrar.addEventListener("click", function () {
         const modal = btnCerrar.closest(".modal");
-        if (modal) modal.style.display = "none";
+        if (modal) {
+            modal.style.display = "none";
+            const form = modal.querySelector("form");
+            if (form) form.reset();
+        }
     });
 });
+
 
 /* -------------------- TALLERES -------------------- */
 
@@ -125,11 +131,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".btneliminar").forEach(botonImg => {
         if (botonImg.classList.contains("usuario")) return;
-        botonImg.addEventListener("click", () => {
+
+        botonImg.addEventListener("click", async () => {
             const boton = botonImg.closest("button");
-            inputDeleteId.value = boton.dataset.id;
-            labelRojo.textContent = `${boton.dataset.nombre}`;
-            deleteModal.style.display = "block";
+            const id = boton.dataset.id;
+            const nombre = boton.dataset.nombre;
+
+            try {
+                const resp = await fetch(`/Admin/Home/VerificarTaller/${id}`);
+                const data = await resp.json();
+
+                if (data.tieneAlumnos) {
+                    const confirmacion = confirm(
+                        `El taller "${nombre}" tiene alumnos registrados.\n¿Deseas eliminarlo de todos modos?`
+                    );
+                    if (!confirmacion) {
+                        if (deleteModal) deleteModal.style.display = "none";
+                        return;
+                    }
+                }
+
+                inputDeleteId.value = id;
+                labelRojo.textContent = nombre;
+                deleteModal.style.display = "block";
+
+            } catch (err) {
+                console.error("Error al verificar taller:", err);
+                alert("Error al verificar si el taller tiene alumnos.");
+            }
         });
     });
 
@@ -229,8 +258,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert(text);
                     window.location.reload();
                 } else {
-                    alert(text || "No se pudo eliminar el usuario.");
+                    if (text.includes("No puedes eliminar tu propio usuario")) {
+                        alert("No puedes eliminar tu propio usuario.");
+                    } else {
+                        alert(text || "No se pudo eliminar el usuario.");
+                    }
                 }
+
             } catch (err) {
                 console.error(err);
                 alert("Error al eliminar el usuario.");
@@ -246,10 +280,40 @@ document.getElementById("aggUsuario")?.addEventListener("click", function () {
 });
 
 // AGREGAR TALLER
-document.getElementById("aggTaller")?.addEventListener("click", function () {
-    const modal = document.getElementById("modal-AddTaller");
-    if (modal) modal.style.display = "block";
+document.addEventListener("DOMContentLoaded", function () {
+    const formAdd = document.querySelector("#modal-AddTaller form");
+
+    if (formAdd) {
+        formAdd.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(formAdd);
+
+            try {
+                const resp = await fetch("/Admin/Home/AgregarTaller", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await resp.json();
+
+                alert(data.message);
+
+                if (data.success) {
+                    const modal = document.getElementById("modal-AddTaller");
+                    if (modal) modal.style.display = "none";
+                    formAdd.reset();
+                    window.location.reload();
+                }
+
+            } catch (error) {
+                console.error("Error al agregar taller:", error);
+                alert("Ocurrió un error al intentar guardar el taller.");
+            }
+        });
+    }
 });
+
 
 /* -------------------- RECIBO -------------------- */
 

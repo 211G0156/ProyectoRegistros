@@ -153,7 +153,7 @@
                 document.querySelector("#modal-DeleteAlumno h2").textContent = `¿Desea eliminar a "${nombre}" de sus talleres?`;
 
                 const tbody = document.getElementById("talleresAlumno");
-                tbody.innerHTML = "<tr><td colspan='2'>Cargando...</td></tr>"; // Feedback
+                tbody.innerHTML = "<tr><td colspan='2'>Cargando...</td></tr>";
 
                 try {
                     const response = await fetch(`/Profe/FuncionTraerTalleres/${id}`);

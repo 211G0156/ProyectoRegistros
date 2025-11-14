@@ -27,9 +27,9 @@ public partial class Taller
 
     public decimal Costo { get; set; }
 
-    public int IdUsuario { get; set; }
+    public int? IdUsuario { get; set; }
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 
     public virtual ICollection<Listaespera> Listaespera { get; set; } = new List<Listaespera>();
 

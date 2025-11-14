@@ -137,8 +137,56 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AgregarTaller(NuevoTallerVM vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                return Json(new { success = false, message = "Datos inválidos, revisa los campos del formulario." });
+            }
+
+            try
+            {
+                var talleresProfe = _context.Tallers
+                    .Where(t => t.IdUsuario == vm.IdUsuario && t.Estado == 1)
+                    .ToList();
+
+                foreach (var t in talleresProfe)
+                {
+                    var diasExistentes = t.Dias.ToLower()
+                        .Split(',')
+                        .Select(d => d.Trim())
+                        .ToList();
+
+                    var diasNuevo = vm.Dias.ToLower()
+                        .Split(',')
+                        .Select(d => d.Trim())
+                        .ToList();
+
+                    bool mismoDia = diasExistentes.Intersect(diasNuevo).Any();
+
+                    bool traslapeHoras = vm.HoraInicio < t.HoraFinal && vm.HoraFinal > t.HoraInicio;
+
+                    if (mismoDia && traslapeHoras)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = $"El profesor ya tiene un taller asignado en ese horario: \"{t.Nombre}\" ({t.HoraInicio:hh\\:mm} - {t.HoraFinal:hh\\:mm})."
+                        });
+                    }
+                }
+
+                var taller = new Taller
+                {
+                    Nombre = vm.Nombre,
+                    Dias = vm.Dias,
+                    LugaresDisp = vm.LugaresDisp,
+                    HoraInicio = vm.HoraInicio,
+                    HoraFinal = vm.HoraFinal,
+                    EdadMin = vm.EdadMin,
+                    EdadMax = vm.EdadMax,
+                    Costo = vm.Costo,
+                    IdUsuario = vm.IdUsuario,
+                    Estado = 1
+                };
                 try
                 {
                     var taller = new Taller
@@ -155,36 +203,15 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         Estado = 1
                     };
 
-                    _context.Tallers.Add(taller);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, "Error: " + ex.Message);
-                }
+                _context.Tallers.Add(taller);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "Taller agregado correctamente." });
             }
-
-            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
-            var talleres = _context.Tallers
-                .Include(t => t.IdUsuarioNavigation)
-                .Select(t => new TalleresViewModel
-                {
-                    Id = t.Id,
-                    Nombre = t.Nombre,
-                    Dias = t.Dias,
-                    Espacios = t.LugaresDisp,
-                    Horario = t.HoraInicio.ToString("HH:mm") + " - " + t.HoraFinal.ToString("HH:mm"),
-                    Edad = t.EdadMax.HasValue
-                           ? $"{t.EdadMin} a {t.EdadMax.Value} años"
-                           : $"{t.EdadMin} en adelante",
-                    Profesor = t.IdUsuarioNavigation.Nombre,
-                    Costo = t.Costo
-                })
-                .ToList();
-
-            ViewData["ShowAddModal"] = true;
-            return View("Index", talleres);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
         }
 
         [HttpGet]
@@ -241,6 +268,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             return View("Index");
         }
 
+        [HttpGet]
+        public IActionResult VerificarTaller(int id)
+        {
+            bool tieneAlumnos = _context.Listatalleres.Any(l => l.IdTaller == id);
+            return Json(new { tieneAlumnos });
+        }
 
         [HttpPost]
         public IActionResult EliminarTaller(int id)

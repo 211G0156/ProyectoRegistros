@@ -4,6 +4,19 @@
 @{
     Layout = "LayoutAdmin";
 }
+@if (TempData["ErrorHorario"] != null)
+{
+    <script>
+        alert("@TempData["ErrorHorario"]");
+    </script>
+}
+@if (TempData["Exito"] != null)
+{
+    <script>
+        alert("@TempData["Exito"]");
+    </script>
+}
+
 
 <div class="modal" id="modal-AddTaller">
     <form asp-area="Admin" asp-controller="Home" asp-action="AgregarTaller" method="post">
