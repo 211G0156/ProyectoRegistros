@@ -1,16 +1,9 @@
-﻿@{
+﻿@using ProyectoRegistros.Models
+@model ProyectoRegistros.Models.ViewModels.MisTalleresViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     Layout = "LayoutVisit";
 }
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="~/css/style.css">
-
-    <script src="~/js/code.js" defer></script>
-</head>
-
 
 <header class="principal">
     <div class="izq">
@@ -19,151 +12,144 @@
     </div>
 </header>
 
-<form id="datos-alumno">
+<form id="datos-alumno" method="post">
     <h3>Datos del alumno</h3><br>
     <section>
+        <input type="hidden" id="PagadoHidden" name="Pagado" value="false" />
+        <input asp-for="Alumno.Id" type="hidden" id="Alumno_Id" value="@Model.Alumno.Id" />
+
         <label>Nombre:</label><br>
-        <input type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Fecha de cumpleaños:</label><br>
-        <input type="date"><br>
+        <input asp-for="Alumno.FechaCumple" type="date" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Dirección:</label><br>
-        <input type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Edad:</label><br>
-        <input type="number" placeholder="Escribir..."><br>
+        <input id="edadAlumno" asp-for="Alumno.Edad" type="number" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Número de contacto:</label><br>
-        <input type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
 
     <section id="datAlum-padeci">
-        <span><label>Padecimientos</label><input style="width: 10vw; " type="checkbox"></span><br>
-        <textarea placeholder="Escribir..." disabled></textarea><br>
-    </section><br>
+        <span>
+            <label>Padecimientos</label>
+            <input id="chbpadecimiento" type="checkbox" />
+        </span><br>
+        <textarea id="txtpadecimientos" asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
+    </section>
 
 
     <section>
         <label>Tutor:</label><br>
-        <input type="text" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Email:</label><br>
-        <input type="email" placeholder="Escribir..."><br>
+        <input asp-for="Alumno.Email" type="email" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Teléfono:</label><br>
-        <input type="text" placeholder="Escribir..."><br>
-    </section>
+        <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+    </section><br>
 
 
-    <hr size="2" width="167%"><br>
-    <!---->
+    <hr size="2" width="100%" style="grid-column: span 2;">
+
+    <!--listaaaaaaaaaa-->
     <h3>Oferta de talleres</h3><br>
     <div id="contenedor-talleres">
-        <div class="op-taller">
-            <input type="checkbox">
-            <label>AcuarelaKids</label>
-            <b>|</b>
-            <label>Lunes Viernes</label>
-            <b>|</b>
-            <label>5:00 - 6:00 pm</label>
-            <b>|</b>
-            <label>5 espacios</label>
-        </div><br>
+        @foreach (var taller in Model.Talleres)
+        {
+            if (taller.LugaresDisp >= 1)
+            {
+                <div class="op-taller" data-edadmin="@taller.EdadMin" data-edadmax="@taller.EdadMax">
+                    <input class="check" type="checkbox" name="TalleresSeleccionados" value="@taller.Id">
+                    <label class="nombreTaller">@taller.Nombre</label>
+                    <label hidden class="precioTaller">@taller.Costo</label>
 
-        <div class="op-taller">
-            <input type="checkbox">
-            <label>AcuarelaKids</label>
-            <b>|</b>
-            <label>Lunes Viernes</label>
-            <b>|</b>
-            <label>5:00 - 6:00 pm</label>
-            <b>|</b>
-            <label>4 espacios</label>
-        </div><br>
+                    <label class="label-dias">@taller.Dias</label>
+                    <label class="label-horas">@taller.HoraInicio - @taller.HoraFinal</label>
 
-        <div class="op-taller">
-            <input type="checkbox">
-            <label>AcuarelaKids</label>
-            <b>|</b>
-            <label>Lunes Viernes</label>
-            <b>|</b>
-            <label>5:00 - 6:00 pm</label>
-            <b>|</b>
-            <label>8 espacios</label>
-        </div><br>
+                    <label>@taller.LugaresDisp</label>
 
-        <div class="op-taller">
-            <input type="checkbox">
-            <label>AcuarelaKids</label>
-            <b>|</b>
-            <label>Lunes Viernes</label>
-            <b>|</b>
-            <label>5:00 - 6:00 pm</label>
-            <b>|</b>
-            <label>2 espacios</label>
-        </div><br>
+                    <input type="hidden" name="Dias_@taller.Id" value="@taller.Dias">
+                    <input type="hidden" hidden name="HoraInicio_@taller.Id" value="@taller.HoraInicio">
+                    <input type="hidden" hidden name="HoraFinal_@taller.Id" value="@taller.HoraFinal">
+                </div>
+
+            }
+        }
+
+
     </div><br>
     <div id="contenedor-abajo">
-        <div class="tamaño">
-            <div>
-                <label>Atención psicopedagogica</label>
-                <input type="checkbox">
-            </div>
-            <input type="text" placeholder="Escribir...">
-        </div><br>
 
         <div class="tamaño">
             <label>Lista de espera</label>
-            <select>
-                <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
-                <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
-                <option>AcuarelaKids<span> Lunes y Viernes</span> <span>5:00 - 6:00 pm</span></option>
+            <select name="ListaEsperaSeleccionada" id="ListaEsperaSeleccionada">
+                @foreach (var t in Model.Talleres)
+                {
+                    if (t.LugaresDisp < 1)
+                    {
+                        <option value="@t.Id">@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
+                    }
+                }
             </select>
         </div><br>
     </div><br>
 
-    <div style="display: inline-flex; justify-content: space-between; width: 170%;">
-        <button type="button" class="buttons">Limpiar</button>
-        <button type="submit" class="buttons">Finalizar</button>
+    <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
+        <button id="limpiar" type="button" class="buttons">Limpiar</button>
+        <button id="finalizar" type="button" class="buttons">Finalizar</button>
     </div>
 </form>
 
-
 <div class="modal" id="modal-recibo">
-    <form>
-        <h2>Confirmación de datos</h2>
-        <section id="donativo">
-            <label>Pagado</label>
-            <input type="checkbox">
-            <label>$300</label>
+    <div>
+        <section class="datos-alumno">
+            <h2>Confirmación de datos</h2>
+            <img src="~/img/logo.png" />
         </section>
+        <hr size="0" width="99%" style="margin-top:3vh; box-shadow:-1px 3px 6px 1px rgba(172, 172, 176, 0.426)"><br>
+        <section class="datos-alumno">
+            <label>NOMBRE: </label><br>
+            <label>CUMPLEAÑOS: </label><br>
+            <label>DIRECCION: </label><br>
+            <label>NÚMERO DE CONTACTO: </label><br>
+            <label>PADECIMIENTOS: </label><br>
+            <label>TUTOR: </label><br>
+            <label>EMAIL: </label><br>
+            <label>TELÉFONO: </label><br>
+            <label>TALLERES REGISTRADOS: </label><br>
+        </section>
+        <section class="datos-alumno">
+            <label id="nombre" name="Nombre">@Model.Alumno.Nombre</label><br>
+            <label id="fechaCumple" name="FechaCumple">@Model.Alumno.FechaCumple</label><br>
+            <label id="direccion" name="Direccion">@Model.Alumno.Direccion</label><br>
+            <label id="numContacto" name="NumContacto">@Model.Alumno.NumContacto</label><br>
+            <label id="padecimientos" name="Padecimientos">@Model.Alumno.Padecimientos</label><br>
+            <label id="tutor" name="Tutor">@Model.Alumno.Tutor</label><br>
+            <label id="email" name="Email">@Model.Alumno.Email</label><br>
+            <label id="numSecundario" name="NumSecundario">@Model.Alumno.NumSecundario</label><br>
+            <label> </label><br>
 
-        <hr size="2" width="99%" style="margin-top: -25px;"><br>
-        <section>
-            <label>Nombre: </label><br>
-            <label>Cumpleaños: </label><br>
-            <label>Dirección: </label><br>
-            <label>Número de contacto: </label><br>
-            <label>Padecimientos: </label><br>
-            <label>Tutor: </label><br>
-            <label>Email: </label><br>
-            <label>Telefono: </label><br>
-            <label>Talleres registrados: </label><br>
+            <label class="nombreTaller"></label>
+            <label id="costo" name="Costo" class="precioTaller"></label>
         </section>
-        <section>
-            <label>Myriam Ramirez Carreño</label><br>
-            <label>31/07/03</label><br>
-            <label>Madero</label><br>
-            <label>862125555</label><br>
-            <label>No</label><br>
-            <label>Selena Garcia</label><br>
-            <label>Selena@gmail.com</label><br>
-            <label>862125555</label><br>
-            <label> AcuarelaKids, Teatro, Fotografía.</label><br>
-        </section>
-
-        <div style="display: inline-flex; justify-content: space-between; width: 100%;">
-            <button type="button" class="buttons">Cancelar</button>
-            <button type="submit" class="buttons">Aceptar</button>
+        <div id="talleres" name="talleres">
         </div>
-    </form>
+        <hr size="2" width="99%"><br>
+        <section id="donativo">
+            <label for="chkDonativo" id="donativo-total"></label>
+            <input id="chkDonativo" type="checkbox">
+        </section>
+        <div style="display: inline-flex; justify-content: space-between; width: 100%;">
+            <button id="cancelar" type="button" class="buttons">Volver</button>
+            <button id="listaEspera" type="button" class="buttons">Lista de espera</button>
+            <button id="aceptarRecibo" type="button" class="buttons" value="Aceptar">
+                Aceptar <br>
+                <small style="font-size:10px; color:gray; line-height: 3vh;">(Imprimir recibo)</small>
+            </button>
+        </div>
+    </div>
 </div>
