@@ -12,7 +12,6 @@ namespace ProyectoRegistros.Controllers
 {
     public class HomeController:Controller
     {
-        //Debe de ir lo de la autenticacion del correo electronico y contraseña, verificar que existan
         public ProyectoregistroContext Context { get; set; }
 
         public HomeController(ProyectoregistroContext context)
@@ -34,11 +33,19 @@ namespace ProyectoRegistros.Controllers
 
             if (edad.HasValue)
             {
-                query = query.Where(t =>
-                    edad.Value >= t.EdadMin &&
-                    (t.EdadMax == null || edad.Value <= t.EdadMax)
-                );
+                int e = edad.Value;
+
+                query = query
+                    .Where(t => e >= t.EdadMin && (t.EdadMax == null || e <= t.EdadMax))
+                    .OrderBy(t => Math.Abs(e - t.EdadMin))
+                    .ThenBy(t => t.EdadMin)
+                    .ThenBy(t => t.Nombre);
             }
+            else
+            {
+                query = query.OrderBy(t => t.EdadMin).ThenBy(t => t.Nombre);
+            }
+
 
             var talleres = await query
                 .Include(t => t.IdUsuarioNavigation)
@@ -100,17 +107,14 @@ namespace ProyectoRegistros.Controllers
 
                 if (usuario.IdRol == 1)
                 {
-                    // Redirigir al área de Administrador
                     return RedirectToAction("Index", "Admin" , new {area = "Admin"});
                 }
                 else if (usuario.IdRol == 2)
                 {
-                    // Redirigir al área de Profesor
                     return RedirectToAction("Index", "Profe", new { area = "Profe" });
                 }
                 else
                 {
-                    // Redirigir al área de Visitante
                     return RedirectToAction("Index", "Visitante", new { area = "Visitante" });
                 }
             }
