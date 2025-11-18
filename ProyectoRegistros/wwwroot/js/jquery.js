@@ -213,6 +213,7 @@
 
             let total = 0;
             let talleres = [];
+            let listaEspera = [];
 
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
                 const taller = input.closest(".op-taller");
@@ -227,9 +228,23 @@
 
                 talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
             });
-            modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
-            modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
+            document.querySelectorAll('input[name="ListaEsperaSeleccionada"]:checked').forEach(input => {
+                const label = input.closest("label.opciones").textContent.trim();
+                listaEspera.push(label);
+            });
 
+            //ajustar
+
+            modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+
+            const lblListaEspera = modalRecibo.querySelector("#talleres");
+            if (lblListaEspera) {
+                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno"; 
+                modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
+            }
+
+            modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
+            
 
             txtPadecimientos.addEventListener("input", function () {
                 lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
@@ -249,6 +264,7 @@
             fetch(`/Profe/Profe/BuscarAlumno?nombre=${encodeURIComponent(nombre)}`).then(r => r.json()).then(data => {
                 if (data) {
                     console.log("Alumno encontrado:", data);
+                    document.querySelector('input[name="Alumno.Nombre"]').value = data.nombre || "";
                     document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
                     document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
                     document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
@@ -306,7 +322,8 @@
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const talleresTexto = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `
                 <html>
@@ -390,7 +407,6 @@
             //form.submit();
         });
     };
-
     /* LIMPIAR DATOS DEL FORM */
     btnLimpiar.addEventListener("click", () => {
         form.reset(); 

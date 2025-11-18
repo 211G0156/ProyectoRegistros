@@ -481,6 +481,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let total = 0;
             let talleres = [];
+            let listaEspera = [];
 
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
                 const taller = input.closest(".op-taller");
@@ -495,7 +496,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
             });
+            // con lista de espera
+            document.querySelectorAll('input[name="ListaEsperaSeleccionada"]:checked').forEach(input => {
+                const label = input.closest("label.opciones").textContent.trim();
+                listaEspera.push(label);
+            });
+
+
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+
+            const lblListaEspera = modalRecibo.querySelector("#talleres");
+            if (lblListaEspera) {
+                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno"; 
+                modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
+            }
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
 
@@ -611,7 +625,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const talleresTexto = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `
                 <html>
@@ -692,7 +707,6 @@ document.addEventListener('DOMContentLoaded', function () {
             nuevaVentana.focus();
             nuevaVentana.print();
 
-            //form.submit();
         });
     };
     /* LIMPIAR DATOS DEL FORM */
