@@ -124,6 +124,29 @@ namespace ProyectoRegistros.Controllers
         }
 
         [HttpGet]
+        public IActionResult VerificarSesionRol()
+        {
+            var idSesion = int.Parse(User.FindFirst("Id").Value);
+
+            var usuarioBD = Context.Usuarios.FirstOrDefault(u => u.Id == idSesion);
+
+            if (usuarioBD == null || usuarioBD.Estado == 0)
+            {
+                return Json(new { valido = false });
+            }
+
+            var rolSesion = User.FindFirst("Rol").Value;
+            var rolActualBD = usuarioBD.IdRol == 1 ? "Administrador" :
+                              usuarioBD.IdRol == 2 ? "Profesor" : "Visitante";
+
+            if (rolSesion != rolActualBD)
+                return Json(new { valido = false });
+
+            return Json(new { valido = true });
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1282,3 +1282,14 @@ aside {
         #modal-DeleteUsuario #acomodar i {
             font-size: 8vh;
         }
+.filtros #filtro-taller {
+    height: 37px;
+    border-radius: 20px;
+    border: 1px solid black;
+    padding-left: 10px;
+    font-size: 17px;
+    background-color: white;
+    margin: 0 0 0 15px;
+    width: auto
+    min-width: 200px;
+}

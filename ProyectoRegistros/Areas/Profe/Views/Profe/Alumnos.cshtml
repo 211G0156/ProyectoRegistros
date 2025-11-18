@@ -5,6 +5,7 @@
 
 @{
     Layout = "LayoutProfe";
+    var tallerIdFiltrado = ViewData["TallerFiltrado"] as int?;
 }
 
 <header class="principal">
@@ -87,7 +88,7 @@
 
 <div class="filtros">
     <div class="buscador">
-        <input type="search" id="fil" placeholder="Nombre, padecimientos, tutor y taller" />
+        <input type="search" id="fil" placeholder="Buscar" />
 
     </div>
 
@@ -108,7 +109,10 @@
 
         function actualizarTabla() {
             const searchTerm = searchInput.value;
-            const url = `@Url.Action("Alumnos", "Profe")?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+            const tallerId = @(tallerIdFiltrado ?? 0);
+
+            const url = `@Url.Action("Alumnos", "Profe")?searchTerm=${encodeURIComponent(searchTerm)}&idTaller=${tallerId}`;
 
             fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())

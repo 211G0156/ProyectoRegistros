@@ -66,5 +66,18 @@
 
         connection.start().catch(err => console.error(err.toString()));
     </script>
+    <script>
+        setInterval(() => {
+            fetch("/Home/VerificarSesionRol")
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.valido) {
+                        alert("Tu rol ha sido modificados. Debes iniciar sesión nuevamente.");
+                        window.location.href = "/Home/Index";
+                    }
+                });
+        }, 5000);
+    </script>
+
 </body>
 </html>
