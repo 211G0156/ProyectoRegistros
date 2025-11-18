@@ -141,7 +141,6 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             }
             return View(alumno);
         }
-        // traerme los talleres en los que esta registrado el alumno
         [HttpGet("Profe/FuncionTraerTalleres/{alumnoId}")]
         public IActionResult FuncionTraerTalleres(int alumnoId)
         {
@@ -166,7 +165,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
                     if (buscar != null)
                     {
-                        lugares.LugaresDisp++;  // si se elimina se libera el espacio
+                        lugares.LugaresDisp++;
                         _context.Listatalleres.Remove(buscar);
                     }
                 }

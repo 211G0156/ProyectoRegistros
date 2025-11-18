@@ -40,7 +40,7 @@
         </select>
 
         <div style="display: flex; justify-content: center;">
-            <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
+            <button id="btnGuardarUsuario" style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
@@ -117,7 +117,7 @@
     <div class="filtros2">
         <div class="buscador2">
             <input id="search-usuarios" name="searchTerm" type="search"
-                   placeholder="Buscar..." value="@ViewData["CurrentFilter"]" />
+                   placeholder="Buscar" value="@ViewData["CurrentFilter"]" />
         </div>
         <input id="aggUsuario" type="button" value="Crear usuario" />
     </div>
@@ -206,10 +206,15 @@
         });
 
         const formAddUsuario = document.getElementById("formAddUsuario");
+        const btnGuardarUsuario = document.getElementById("btnGuardarUsuario");
+
 
         if (formAddUsuario) {
     formAddUsuario.addEventListener("submit", async function (e) {
         e.preventDefault();
+
+            btnGuardarUsuario.disabled = true;
+            btnGuardarUsuario.textContent = "Guardando...";
 
         const formData = new FormData(formAddUsuario);
 
@@ -222,6 +227,10 @@
             const data = await response.json();
 
             if (data.success === "reactivar") {
+
+                btnGuardarUsuario.disabled = false;
+                btnGuardarUsuario.textContent = "Guardar";
+
                 const confirmar = confirm(data.message);
 
                 if (confirmar) {
@@ -258,6 +267,8 @@
             console.error("Error al agregar usuario:", error);
             alert("Ocurrió un error al intentar agregar el usuario.");
         }
+            btnGuardarUsuario.disabled = false;
+            btnGuardarUsuario.textContent = "Guardar";
     });
             }
 

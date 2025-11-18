@@ -2,6 +2,7 @@
 
 @{
     Layout = "LayoutAdmin";
+    var tallerIdSeleccionado = ViewData["CurrentTallerId"] as int?;
 }
 
 <!--MODAL PARA EDITAR-->
@@ -119,44 +120,62 @@
 <div class="filtros">
     <div class="buscador3">
         <input type="search" id="fil" name="searchTerm"
-               placeholder="Nombre..." value="@ViewData["CurrentFilter"]" />
+               placeholder="Buscar" value="@ViewData["CurrentFilter"]" />
     </div>
+
+    <select id="filtro-taller"
+            style="height: 37px; box-shadow:0px 0px 0px 0px rgba(128, 128, 128, 0.555) !important; width: 250px; border-radius: 20px; border: 1px solid black; padding-left: 10px; font-size: 17px; background-color: white; margin-left: 15px;">
+        <option value="0">Todos los talleres</option>
+        @if (ViewBag.Talleres != null)
+        {
+            foreach (var taller in ViewBag.Talleres)
+            {
+                <option value="@taller.Id" selected="@(taller.Id == tallerIdSeleccionado)">@taller.Nombre</option>
+            }
+        }
+    </select>
 </div>
 
 <div id="tabla-container">
     @await Html.PartialAsync("_AlumnosTabla", Model)
 </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-            const searchInput = document.getElementById('fil');
-            const tablaContainer = document.getElementById('tabla-container');
-            let debounceTimer;
+        const searchInput = document.getElementById('fil');
+        const tallerSelect = document.getElementById('filtro-taller');
+        const tablaContainer = document.getElementById('tabla-container');
+        let debounceTimer;
 
-            searchInput.addEventListener('input', function() {
-                clearTimeout(debounceTimer);
+        function actualizarTabla() {
+            const searchTerm = searchInput.value;
+            const tallerId = tallerSelect.value;
 
-                debounceTimer = setTimeout(() => {
-                    const searchTerm = searchInput.value;
-                    const url = `@Url.Action("Alumnos", "Home")?searchTerm=${encodeURIComponent(searchTerm)}`;
+            const url = `@Url.Action("Alumnos", "Home")?searchTerm=${encodeURIComponent(searchTerm)}&tallerId=${tallerId}`;
 
-                    fetch(url, {
-                        method: 'GET',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        tablaContainer.innerHTML = html;
-                    })
-                    .catch(error => console.error('Error al actualizar la tabla:', error));
+            fetch(url, {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.text())
+            .then(html => {
+                tablaContainer.innerHTML = html;
+            })
+            .catch(error => console.error('Error al actualizar la tabla:', error));
+        }
 
-                }, 300);
-            });
-            searchInput.addEventListener('input', function(e) {
-                const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
-
-                this.value = this.value.replace(regex, '');
-            });
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(actualizarTabla, 300);
         });
-    </script>
+
+        tallerSelect.addEventListener('change', actualizarTabla);
+
+
+        searchInput.addEventListener('input', function(e) {
+            const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
+            this.value = this.value.replace(regex, '');
+        });
+    });
+</script>

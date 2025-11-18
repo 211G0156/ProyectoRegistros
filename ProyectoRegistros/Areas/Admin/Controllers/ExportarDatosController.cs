@@ -168,6 +168,11 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             }
 
             var talleres = query.ToList();
+            if (!talleres.Any())
+            {
+                TempData["ErrorExportar"] = "No se encontraron talleres que coincidan con los filtros seleccionados.";
+                return RedirectToAction("Index");
+            }
 
             using (var workbook = new XLWorkbook())
             {

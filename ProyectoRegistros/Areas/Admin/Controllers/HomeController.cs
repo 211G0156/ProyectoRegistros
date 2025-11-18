@@ -93,20 +93,39 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             return View(talleresVM);
         }
-        public async Task<IActionResult> Alumnos(string searchTerm)
+        public async Task<IActionResult> Alumnos(string searchTerm, int? tallerId)
         {
             ViewData["CurrentFilter"] = searchTerm;
+            ViewData["CurrentTallerId"] = tallerId;
+
+            ViewBag.Talleres = await _context.Tallers
+              .Where(t => t.Estado == 1)
+              .OrderBy(t => t.Nombre)
+              .Select(t => new { t.Id, t.Nombre })
+              .ToListAsync();
 
             var query = _context.Alumnos
-                .Include(a => a.Listatalleres)
-                    .ThenInclude(lt => lt.IdTallerNavigation)
-                .Where(a => a.Estado == 1);
+              .Include(a => a.Listatalleres)
+                .ThenInclude(lt => lt.IdTallerNavigation)
+              .Where(a => a.Estado == 1);
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(a => a.Nombre.Contains(searchTerm))
-                    .OrderBy(a => a.Nombre.StartsWith(searchTerm) ? 0 : 1)
-                    .ThenBy(a => a.Nombre);
+                query = query.Where(a =>
+                    a.Nombre.Contains(searchTerm) ||
+                    a.Tutor.Contains(searchTerm) ||
+                    a.Padecimientos.Contains(searchTerm)
+                );
+            }
+
+            if (tallerId.HasValue && tallerId > 0)
+            {
+                query = query.Where(a => a.Listatalleres.Any(lt => lt.IdTaller == tallerId.Value));
+            }
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.OrderBy(a => a.Nombre.StartsWith(searchTerm) ? 0 : 1).ThenBy(a => a.Nombre);
             }
             else
             {
@@ -122,19 +141,23 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 NumSecundario = a.NumSecundario,
                 Padecimientos = a.Padecimientos,
                 Talleres = a.Listatalleres
-                    .Select(lt => lt.IdTallerNavigation.Nombre)
-                    .ToList()
+                .Select(lt => lt.IdTallerNavigation.Nombre)
+                .ToList()
             })
             .ToListAsync();
 
+            var alumnosUnicos = alumnosVM
+              .GroupBy(a => new { a.Nombre, a.Tutor })
+              .Select(g => g.First())
+              .ToList();
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("_AlumnosTabla", alumnosVM);
+                return PartialView("_AlumnosTabla", alumnosUnicos);
             }
 
-            return View(alumnosVM);
+            return View("~/Areas/Admin/Views/Home/Alumnos.cshtml", alumnosUnicos);
         }
-
         [HttpPost]
         public IActionResult AgregarTaller(NuevoTallerVM vm)
         {
