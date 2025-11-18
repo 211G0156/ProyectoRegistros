@@ -29,31 +29,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // filtrado por edad, en registro
-    const contenedorTalleres = document.getElementById('contenedor-talleres');
-    const edadInput = document.getElementById('edadAlumno');
+    //const contenedorTalleres = document.getElementById('contenedor-talleres');
+    //const edadInput = document.getElementById('edadAlumno');
 
-    edadInput.addEventListener('input', () => {
-        const edad = parseInt(edadInput.value);  //10
+    //edadInput.addEventListener('input', () => {
+    //    const edad = parseInt(edadInput.value);  //10
 
-        const talleres = contenedorTalleres.querySelectorAll('.op-taller');
-        if (isNaN(edad) || edad === 0) {
-            talleres.forEach(taller => taller.style.display = 'none');
-            contenedorTalleres.style.display = 'none';
-            return;
-        }
-        contenedorTalleres.style.display = 'block';
-        talleres.forEach(taller => {
-            const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
-            const edadMaxAttr = taller.getAttribute('data-edadmax');
-            const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
-            const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
-            if (cumpleEdad) {
-                taller.style.display = '';
-            } else {
-                taller.style.display = 'none';
-            }
-        });
-    });
+    //    const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+    //    if (isNaN(edad) || edad === 0) {
+    //        talleres.forEach(taller => taller.style.display = 'none');
+    //        contenedorTalleres.style.display = 'none';
+    //        return;
+    //    }
+    //    contenedorTalleres.style.display = 'block';
+    //    talleres.forEach(taller => {
+    //        const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+    //        const edadMaxAttr = taller.getAttribute('data-edadmax');
+    //        const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+    //        const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+    //        if (cumpleEdad) {
+    //            taller.style.display = '';
+    //        } else {
+    //            taller.style.display = 'none';
+    //        }
+    //    });
+    //});
 
 });
 
