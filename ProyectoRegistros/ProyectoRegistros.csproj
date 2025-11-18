@@ -106,4 +106,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Profe\Models\ViewModels\" />
+  </ItemGroup>
+
 </Project>

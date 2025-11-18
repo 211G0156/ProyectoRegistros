@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProyectoRegistros.Areas.Profe.Models;
-using ProyectoRegistros.Areas.Profe.Models.ViewModels;
 using ProyectoRegistros.Hubs;
 using ProyectoRegistros.Models;
+using ProyectoRegistros.Models.ViewModels;
 using System.Linq;
 using System.Security.Claims;
 
