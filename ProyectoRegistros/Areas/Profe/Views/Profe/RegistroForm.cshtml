@@ -85,18 +85,27 @@
     </div><br>
     <div id="contenedor-abajo">
 
+        <label style="font-size:20px; width: 50%;">Lista de espera</label><br />
         <div class="tamaño">
-            <label>Lista de espera</label>
-            <select name="ListaEsperaSeleccionada" id="ListaEsperaSeleccionada">
+            <div class="seleccionar"> Seleccionar talleres </div>
+
+            <div class="seleccionar-opciones">
                 @foreach (var t in Model.Talleres)
                 {
                     if (t.LugaresDisp < 1)
                     {
-                        <option value="@t.Id">@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
+                        <label class="opciones" data-edadmin="@t.EdadMin" data-edadmax="@t.EdadMax">
+                            <input type="checkbox" name="ListaEsperaSeleccionada" value="@t.Id">
+                            @t.Nombre (@t.Dias @t.HoraInicio - @t.HoraFinal)
+                        </label>
                     }
                 }
-            </select>
-        </div><br>
+            </div>
+        </div>
+
+
+
+
     </div><br>
 
     <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
@@ -146,7 +155,6 @@
         </section>
         <div style="display: inline-flex; justify-content: space-between; width: 100%;">
             <button id="cancelar" type="button" class="buttons">Volver</button>
-            <button id="listaEspera" type="button" class="buttons">Lista de espera</button>
             <button id="aceptarRecibo" type="button" class="buttons" value="Aceptar">
                 Aceptar <br>
                 <small style="font-size:10px; color:gray; line-height: 3vh;">(Imprimir recibo)</small>
@@ -156,29 +164,4 @@
 </div>
 <script>
     const Usuario = "@User.Identity.Name";
-</script>
-<script>
-    document.getElementById("listaEspera").addEventListener("click", function () {
-        const idTaller = document.getElementById("ListaEsperaSeleccionada").value;
-        const form = document.getElementById("datos-alumno");
-
-        let hidden = document.getElementById("hiddenListaEspera");
-        if (!hidden) {
-            hidden = document.createElement("input");
-            hidden.type = "hidden";
-            hidden.id = "hiddenListaEspera";
-            hidden.name = "IdTallerListaEspera";
-            form.appendChild(hidden);
-        }
-        hidden.value = idTaller;
-
-        const data = new FormData(form);
-        fetch("/Profe/Profe/RegistrarListaEspera", {
-            method: "POST",
-            body: data
-        })
-        .then(r => r.json())
-        .then(res => alert(res.mensaje))
-        .catch(err => console.error(err));
-    });
 </script>

@@ -16,32 +16,42 @@
     //    const [h, m] = hora.split(":").map(Number);
     //    return h * 60 + m;
     //}
-    const contenedorTalleres = document.getElementById('contenedor-talleres');
-    const edadInput = document.getElementById('edadAlumno');
+    try {
+        const contenedorTalleres = document.getElementById('contenedor-talleres');
+        const listaEsperaOpciones = document.querySelectorAll(".seleccionar-opciones .opciones");
+        const edadInput = document.getElementById('edadAlumno');
+        if (edadInput && contenedorTalleres) {
+            edadInput.addEventListener('input', () => {
+                const edad = parseInt(edadInput.value);  //10
 
-    edadInput.addEventListener('input', () => {
-        const edad = parseInt(edadInput.value);  //10
+                const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+                if (isNaN(edad) || edad === 0) {
+                    talleres.forEach(taller => taller.style.display = 'none');
+                    listaEsperaOpciones.forEach(op => op.style.display = 'none');
+                    contenedorTalleres.style.display = 'none';
+                    return;
+                }
+                contenedorTalleres.style.display = 'block';
+                talleres.forEach(taller => {
+                    const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
+                    const edadMaxAttr = taller.getAttribute('data-edadmax');
+                    const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
+                    const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+                    taller.style.display = cumpleEdad ? '' : 'none';
+                });
+                listaEsperaOpciones.forEach(op => {
+                    const edadMin = parseInt(op.getAttribute('data-edadmin')) || 0;
+                    const edadMaxAttr = op.getAttribute('data-edadmax');
+                    const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
 
-        const talleres = contenedorTalleres.querySelectorAll('.op-taller');
-        if (isNaN(edad) || edad === 0) {
-            talleres.forEach(taller => taller.style.display = 'none');
-            contenedorTalleres.style.display = 'none';
-            return;
+                    const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
+                    op.style.display = cumpleEdad ? '' : 'none';
+                });
+            });
         }
-        contenedorTalleres.style.display = 'block';
-        talleres.forEach(taller => {
-            const edadMin = parseInt(taller.getAttribute('data-edadmin')) || 0;
-            const edadMaxAttr = taller.getAttribute('data-edadmax');
-            const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
-            const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
-            if (cumpleEdad) {
-                taller.style.display = '';
-            } else {
-                taller.style.display = 'none';
-            }
-        });
-    });
-
+    } catch {
+        console.log("Error");
+    }
     /* ES PARA FILTRAR TALLERES EN BASE A LOS QUE YA ESCOGIO, EVITAR CHOQUE ENTRE HORAS no funciona */
     //function aplicarBloqueoPorHorario() {
     //    const checkboxes = document.querySelectorAll('input[name="TalleresSeleccionados"]');
@@ -80,6 +90,25 @@
     //const checkboxes = document.querySelectorAll('input[name="TalleresSeleccionados"]');
     //checkboxes.forEach(c => c.addEventListener("change", aplicarBloqueoPorHorario));
 
+    const selectDisplay = document.querySelector(".seleccionar");
+    const contOpciones = document.querySelector(".seleccionar-opciones");
+    contOpciones.style.display = "none";
+    selectDisplay.addEventListener("click", () => {
+        contOpciones.style.display = contOpciones.style.display === "block" ? "none" : "block";
+    });
+    //cerrar
+    document.addEventListener("click", (e) => {
+        if (!selectDisplay.contains(e.target) && !contOpciones.contains(e.target)) {
+            contOpciones.style.display = "none";
+        }
+    });
+
+    document.querySelectorAll(".opciones input[type='checkbox']").forEach(chk => {
+        chk.addEventListener("change", () => {
+            const seleccionados = [...document.querySelectorAll(".opciones input:checked")].map(x => x.parentElement.textContent.trim());
+            selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
+        });
+    });
 
 
 
@@ -87,23 +116,25 @@
 
     const modalRecibo = document.getElementById("modal-recibo");
     const txtPadecimientos = document.getElementById("txtpadecimientos");
-    const lblPadecimientos = document.getElementById("padecimientos");
+    const lblPadecimientos = document.getElementById("padecimientos");   // del recibo
     const form = document.getElementById("datos-alumno");
     const chbPadecimiento = document.getElementById("chbpadecimiento");
     const btnFinalizar = document.getElementById("finalizar");
 
-    chbPadecimiento.addEventListener("change", () => {
-        if (chbPadecimiento.checked) {
-            txtPadecimientos.disabled = false;  
-            txtPadecimientos.style.display = "block"; 
-            txtPadecimientos.focus(); 
-        } else {
-            txtPadecimientos.disabled = true;  
-            txtPadecimientos.value = "";
-            txtPadecimientos.style.display = "none";
-        }
-    });
 
+    if (chbPadecimiento) {
+        chbPadecimiento.addEventListener("change", () => {
+            if (chbPadecimiento.checked) {
+                txtPadecimientos.disabled = false;
+                txtPadecimientos.classList.add("mostrar");
+                txtPadecimientos.focus();
+            } else {
+                txtPadecimientos.disabled = true;
+                txtPadecimientos.value = "";
+                txtPadecimientos.classList.remove("mostrar");
+            }
+        });
+    };
 
     if (btnFinalizar) {
         btnFinalizar.addEventListener("click", async function (e) {
@@ -118,6 +149,25 @@
 
 
             const formData = new FormData(form);
+
+            const talleresSeleccionados = [];
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(chk => talleresSeleccionados.push(chk.value));
+
+            //talleresSeleccionados.forEach(val => {
+            //    formData.append("TalleresSeleccionados", val);
+            //});
+
+            const listaEspera = [];
+            const selectEspera = document.getElementById("ListaEsperaSeleccionada");
+
+            if (selectEspera) {
+                for (const option of selectEspera.options) {
+                    if (option.selected) {
+                        listaEspera.push(option.value);
+                    }
+                }
+            }
+
             try {
                 const response = await fetch('/Profe/Profe/RegistroForm', {
                     method: 'POST',
@@ -149,41 +199,45 @@
 
 
     function llenarModalRecibo() {
-        modalRecibo.querySelector("#nombre").textContent = Alumno_Nombre.value;
-        modalRecibo.querySelector("#fechaCumple").textContent = Alumno_FechaCumple.value;
-        modalRecibo.querySelector("#direccion").textContent = Alumno_Direccion.value;
-        modalRecibo.querySelector("#numContacto").textContent = Alumno_NumContacto.value;
-        modalRecibo.querySelector("#tutor").textContent = Alumno_Tutor.value;
-        modalRecibo.querySelector("#email").textContent = Alumno_Email.value;
-        modalRecibo.querySelector("#numSecundario").textContent = Alumno_NumSecundario.value;
+        try {
+            modalRecibo.querySelector("#nombre").textContent = Alumno_Nombre.value;
+            modalRecibo.querySelector("#fechaCumple").textContent = Alumno_FechaCumple.value;
+            modalRecibo.querySelector("#direccion").textContent = Alumno_Direccion.value;
+            modalRecibo.querySelector("#numContacto").textContent = Alumno_NumContacto.value;
+            modalRecibo.querySelector("#tutor").textContent = Alumno_Tutor.value;
+            modalRecibo.querySelector("#email").textContent = Alumno_Email.value;
+            modalRecibo.querySelector("#numSecundario").textContent = Alumno_NumSecundario.value;
 
-        const padecimientos = chbPadecimiento.checked ? (txtPadecimientos.value.trim() || "Ninguno") : "Ninguno";
-        lblPadecimientos.textContent = padecimientos;
+            const padecimientos = chbPadecimiento.checked ? (txtPadecimientos.value.trim() || "Ninguno") : "Ninguno";
+            lblPadecimientos.textContent = padecimientos;
 
-        let total = 0;
-        let talleres = [];
+            let total = 0;
+            let talleres = [];
 
-        document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
-            const taller = input.closest(".op-taller");
-            const nombre = taller.querySelector(".nombreTaller").textContent;
-            const precio = (taller.querySelector(".precioTaller")?.textContent || "0");
-            const precioNum = parseFloat(precio.replace(/[^0-9.-]+/g, "")) || 0;
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const taller = input.closest(".op-taller");
+                const nombre = taller.querySelector(".nombreTaller").textContent;
+                const precio = (taller.querySelector(".precioTaller")?.textContent || "0");
+                const precioNum = parseFloat(precio.replace(/[^0-9.-]+/g, "")) || 0;
 
-            const dias = (taller.querySelector("input[name^='Dias_']")?.value) || taller.querySelector(".label-dias").textContent;
-            const horaInicio = taller.querySelector("input[name^='HoraInicio_']")?.value || "";
-            const horaFinal = taller.querySelector("input[name^='HoraFinal_']")?.value || "";
-            total += precioNum;
+                const dias = (taller.querySelector("input[name^='Dias_']")?.value) || taller.querySelector(".label-dias").textContent;
+                const horaInicio = taller.querySelector("input[name^='HoraInicio_']")?.value || "";
+                const horaFinal = taller.querySelector("input[name^='HoraFinal_']")?.value || "";
+                total += precioNum;
 
-            talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
-        });
-        modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
-        modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
-    }
+                talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
+            });
+            modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
-    txtPadecimientos.addEventListener("input", function () {
-        lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
-    });
 
+            txtPadecimientos.addEventListener("input", function () {
+                lblPadecimientos.textContent = txtPadecimientos.value.trim() || "Ninguno";
+            });
+        } catch {
+            console.log("puaj");
+        }
+    };
 
     // autorellenado
     const nombreInput = document.getElementById("Alumno_Nombre");
@@ -193,24 +247,23 @@
             if (nombre.length < 3) return;
 
             fetch(`/Profe/Profe/BuscarAlumno?nombre=${encodeURIComponent(nombre)}`).then(r => r.json()).then(data => {
-                    if (data) {
-                        console.log("Alumno encontrado:", data);
-                        document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
-                        document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
-                        document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
-                        document.querySelector('input[name="Alumno.NumContacto"]').value = data.numContacto || "";
-                        document.querySelector('input[name="Alumno.Tutor"]').value = data.tutor || "";
-                        document.querySelector('input[name="Alumno.Email"]').value = data.email || "";
-                        document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
-                        document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
+                if (data) {
+                    console.log("Alumno encontrado:", data);
+                    document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
+                    document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
+                    document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
+                    document.querySelector('input[name="Alumno.NumContacto"]').value = data.numContacto || "";
+                    document.querySelector('input[name="Alumno.Tutor"]').value = data.tutor || "";
+                    document.querySelector('input[name="Alumno.Email"]').value = data.email || "";
+                    document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
+                    document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
 
-                    } else {
-                        console.log(" No se encontró alumno con ese nombre.");
-                    }
-                }).catch(err => console.error("Error al buscar alumno:", err));
+                } else {
+                    console.log(" No se encontró alumno con ese nombre.");
+                }
+            }).catch(err => console.error("Error al buscar alumno:", err));
         });
     }
-
 
     const btnCancelar = modalRecibo.querySelector("#cancelar");
     if (btnCancelar) {
@@ -243,10 +296,13 @@
     /* RECIBO PARA IMPRIMIR */
     if (btnAceptar) {
         btnAceptar.addEventListener("click", function () {
-            const isPagado = chkDonativo.checked;
-            document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
             modalRecibo.style.display = "none";
 
+            const isPagado = chkDonativo.checked;
+            document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            if (!isPagado) {
+                return;
+            }
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
@@ -337,9 +393,10 @@
 
     /* LIMPIAR DATOS DEL FORM */
     btnLimpiar.addEventListener("click", () => {
-        form.reset();
+        form.reset(); 
         //reset a lista talleres
         document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+        document.querySelector('.seleccionar').textContent = "";
 
         chbPadecimiento.checked = false;
         txtPadecimientos.disabled = true;
@@ -349,6 +406,7 @@
             modalRecibo.querySelector("#talleres").innerHTML = "";
             modalRecibo.querySelector("#donativo-total").textContent = "Total: $0.00";
         }
+
     });
 
 });

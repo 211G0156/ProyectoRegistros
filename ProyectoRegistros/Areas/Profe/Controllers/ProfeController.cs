@@ -174,36 +174,36 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             return Ok(new { success = true });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RegistrarListaEspera(MisTalleresViewModel model, int IdTallerListaEspera)
-        {
-            try
-            {
-                var alumno = _context.Alumnos.FirstOrDefault(x => x.Nombre == model.Alumno.Nombre && x.Tutor == model.Alumno.Tutor);
-                if (alumno == null)
-                {
-                    model.Alumno.Estado = 1;
-                    _context.Alumnos.Add(model.Alumno);
-                    _context.SaveChanges();
-                    alumno = model.Alumno;
-                }
-                var nuevo = new Listaespera
-                {
-                    IdAlumno = alumno.Id,
-                    IdTaller = IdTallerListaEspera,
-                    FechaRegistro = DateTime.Now,
-                    Estado = "En espera"
-                };
-                _context.Listaesperas.Add(nuevo);
-                _context.SaveChanges();
+        //[HttpPost]
+        //public async Task<IActionResult> RegistrarListaEspera(MisTalleresViewModel model, int IdTallerListaEspera)
+        //{
+        //    try
+        //    {
+        //        var alumno = _context.Alumnos.FirstOrDefault(x => x.Nombre == model.Alumno.Nombre && x.Tutor == model.Alumno.Tutor);
+        //        if (alumno == null)
+        //        {
+        //            model.Alumno.Estado = 1;
+        //            _context.Alumnos.Add(model.Alumno);
+        //            _context.SaveChanges();
+        //            alumno = model.Alumno;
+        //        }
+        //        var nuevo = new Listaespera
+        //        {
+        //            IdAlumno = alumno.Id,
+        //            IdTaller = IdTallerListaEspera,
+        //            FechaRegistro = DateTime.Now,
+        //            Estado = "En espera"
+        //        };
+        //        _context.Listaesperas.Add(nuevo);
+        //        _context.SaveChanges();
 
-                return Json(new { ok = true, mensaje = "Alumno agregado a lista de espera." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { ok = false, mensaje = "Error: " + ex.Message });
-            }
-        }
+        //        return Json(new { ok = true, mensaje = "Alumno agregado a lista de espera." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { ok = false, mensaje = "Error: " + ex.Message });
+        //    }
+        //}
 
 
         [HttpGet]
@@ -221,11 +221,12 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados)
+        public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados, List<int> ListaEsperaSeleccionada)
         {
             try
             {
                 var alumnoExistente = _context.Alumnos.FirstOrDefault(a => a.Nombre == model.Alumno.Nombre && a.Tutor == model.Alumno.Tutor);
+
                 if (alumnoExistente == null)
                 {
                     model.Alumno.Estado = 1;
@@ -236,15 +237,19 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 {
                     model.Alumno = alumnoExistente;
                 }
+
                 bool pagado = false;
                 var pagadoForm = Request.Form["PagadoHidden"].FirstOrDefault();
-                if (!string.IsNullOrEmpty(pagadoForm) && (pagadoForm == "true" || pagadoForm == "true"))
-                {
+                if (!string.IsNullOrEmpty(pagadoForm) && pagadoForm == "true")
                     pagado = true;
-                }
 
-                List<string> talleresDuplicados = new();
-                if (TalleresSeleccionados != null && TalleresSeleccionados.Any())
+                bool seleccionoAlgo = (TalleresSeleccionados != null && TalleresSeleccionados.Any()) || (ListaEsperaSeleccionada != null && ListaEsperaSeleccionada.Any());
+
+                if (!seleccionoAlgo)
+                    return Json(new { ok = false, mensaje = "No se seleccionaron talleres." });
+
+                HashSet<string> talleresDuplicados = new();
+                if (TalleresSeleccionados != null)
                 {
                     foreach (var tallerId in TalleresSeleccionados)
                     {
@@ -270,7 +275,8 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                             fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
                             model.Alumno.AtencionPsico = 1;
                         }
-                        var nuevoRegistro = new Listatalleres
+
+                        _context.Listatalleres.Add(new Listatalleres
                         {
                             IdAlumno = model.Alumno.Id,
                             IdTaller = taller.Id,
@@ -278,32 +284,42 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                             FechaCita = fechaCita,
                             Pagado = (sbyte)(pagado ? 1 : 0),
                             FechaPago = pagado ? DateTime.Now : null,
-                        };
-                        _context.Listatalleres.Add(nuevoRegistro);
-
+                        });
+                        taller.LugaresDisp -= 1; // disminuir uno al registrar
                     }
-                    _context.SaveChanges();
                 }
-                model.Talleres = _context.Tallers.Where(x => x.Estado == 1).ToList();
+
+
+                if (ListaEsperaSeleccionada != null && ListaEsperaSeleccionada.Any())
+                {
+                    foreach (var tallerEsperaId in ListaEsperaSeleccionada)
+                    {
+                        bool yaEnLista = _context.Listaesperas.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerEsperaId);
+
+                        if (!yaEnLista) 
+                        {
+                            _context.Listaesperas.Add(new Listaespera
+                            {
+                                IdAlumno = model.Alumno.Id,
+                                IdTaller = tallerEsperaId,
+                                FechaRegistro = DateTime.Now,
+                                Estado = "En espera"
+                            });
+                        }
+                    }
+                }
+
+                _context.SaveChanges();
                 await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
 
                 if (talleresDuplicados.Any())
-                {
                     return Json(new { ok = false, mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados) });
-                }
-                else
-                {
-                    return Json(new { ok = true, mensaje = "Registro guardado correctamente." });
-                }
 
+                return Json(new { ok = true, mensaje = "Registro guardado correctamente." });
             }
             catch (Exception ex)
             {
-                return Json(new
-                {
-                    ok = false,
-                    mensaje = "Error al registrar: " + ex.Message
-                });
+                return Json(new { ok = false, mensaje = "Error al registrar: " + ex.Message });
             }
         }
 
