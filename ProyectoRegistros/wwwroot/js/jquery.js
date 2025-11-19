@@ -292,6 +292,10 @@
     if (btnCancelar) {
         btnCancelar.addEventListener("click", function () {
             modalRecibo.style.display = "none";
+            
+            const chkDonativo = document.getElementById("chkDonativo");
+            if (chkDonativo) chkDonativo.checked = false;
+            document.getElementById("PagadoHidden").value = "false";
         });
     }
  
@@ -325,6 +329,7 @@
 
             const isPagado = chkDonativo.checked;
             document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+             chkDonativo.checked = false; 
             if (!isPagado) {
                 return;
             }

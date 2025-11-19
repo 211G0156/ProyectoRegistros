@@ -534,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/Admin/Home/BuscarAlumno?nombre=${encodeURIComponent(nombre)}`).then(r => r.json()).then(data => {
                 if (data) {
                     console.log("Alumno encontrado:", data);
+                    document.querySelector('input[name="Alumno.Nombre"]').value = data.nombre || "";
                     document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
                     document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
                     document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
@@ -549,11 +550,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }).catch(err => console.error("Error al buscar alumno:", err));
         });
     }
-
+    // me falta limpiar el check cuando cancelo o cierro el modal y lo abro de niu
     const btnCancelar = modalRecibo.querySelector("#cancelar");
     if (btnCancelar) {
         btnCancelar.addEventListener("click", function () {
             modalRecibo.style.display = "none";
+            
+            
+            const chkDonativo = document.getElementById("chkDonativo");
+            if (chkDonativo) chkDonativo.checked = false;
+            document.getElementById("PagadoHidden").value = "false";
         });
     }
 
@@ -642,6 +648,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const isPagado = chkDonativo.checked;
             document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            chkDonativo.checked = false; 
             if (!isPagado) {
                 return;
             }
@@ -729,6 +736,8 @@ document.addEventListener('DOMContentLoaded', function () {
             nuevaVentana.document.close();
             nuevaVentana.focus();
             nuevaVentana.print();
+
+         
 
         });
     };
