@@ -19,17 +19,17 @@
         <input asp-for="Alumno.Id" type="hidden" id="Alumno_Id" value="@Model.Alumno.Id" />
 
         <label>Nombre:</label><br>
-        <input asp-for="Alumno.Nombre" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.Nombre" type="text" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Fecha de cumpleaños:</label><br>
         <input asp-for="Alumno.FechaCumple" type="date" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Dirección:</label><br>
-        <input asp-for="Alumno.Direccion" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.Direccion" type="text" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Edad:</label><br>
-        <input id="edadAlumno" asp-for="Alumno.Edad" type="number" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input id="edadAlumno" asp-for="Alumno.Edad" type="number" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Número de contacto:</label><br>
-        <input asp-for="Alumno.NumContacto" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.NumContacto" type="text" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
 
     <section id="datAlum-padeci">
@@ -37,19 +37,19 @@
             <label>Padecimientos</label>
             <input id="chbpadecimiento" type="checkbox" />
         </span><br>
-        <textarea id="txtpadecimientos" asp-for="Alumno.Padecimientos" placeholder="Escribir..." disabled></textarea><br>
+        <textarea id="txtpadecimientos" asp-for="Alumno.Padecimientos" placeholder="" disabled></textarea><br>
     </section>
 
 
     <section>
         <label>Tutor:</label><br>
-        <input asp-for="Alumno.Tutor" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.Tutor" type="text" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
         <label>Email:</label><br>
-        <input asp-for="Alumno.Email" type="email" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.Email" type="email" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section>
     <section>
         <label>Teléfono:</label><br>
-        <input asp-for="Alumno.NumSecundario" type="text" placeholder="Escribir..." required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
+        <input asp-for="Alumno.NumSecundario" type="text" placeholder="" required oninvalid="this.setCustomValidity('Llena este campo')" oninput="this.setCustomValidity('')"><br>
     </section><br>
 
 
@@ -84,18 +84,27 @@
     </div><br>
     <div id="contenedor-abajo">
 
+        <label style="font-size:20px; width: 50%;">Lista de espera</label><br />
         <div class="tamaño">
-            <label>Lista de espera</label>
-            <select name="ListaEsperaSeleccionada" id="ListaEsperaSeleccionada">
+            <div class="seleccionar"> Seleccionar talleres </div>
+
+            <div class="seleccionar-opciones">
                 @foreach (var t in Model.Talleres)
                 {
                     if (t.LugaresDisp < 1)
                     {
-                        <option value="@t.Id">@t.Nombre<span>  @t.Dias</span> <span>  @t.HoraInicio - @t.HoraFinal</span></option>
+                        <label class="opciones" data-edadmin="@t.EdadMin" data-edadmax="@t.EdadMax">
+                            <input type="checkbox" name="ListaEsperaSeleccionada" value="@t.Id">
+                            @t.Nombre (@t.Dias @t.HoraInicio - @t.HoraFinal)
+                        </label>
                     }
                 }
-            </select>
-        </div><br>
+            </div>
+        </div>
+
+
+
+
     </div><br>
 
     <div style="display: inline-flex; justify-content: space-between; width: 100%; grid-column: span 2;">
@@ -145,7 +154,6 @@
         </section>
         <div style="display: inline-flex; justify-content: space-between; width: 100%;">
             <button id="cancelar" type="button" class="buttons">Volver</button>
-            <button id="listaEspera" type="button" class="buttons">Lista de espera</button>
             <button id="aceptarRecibo" type="button" class="buttons" value="Aceptar">
                 Aceptar <br>
                 <small style="font-size:10px; color:gray; line-height: 3vh;">(Imprimir recibo)</small>
@@ -153,3 +161,6 @@
         </div>
     </div>
 </div>
+<script>
+    const Usuario = "@User.Identity.Name";
+</script>

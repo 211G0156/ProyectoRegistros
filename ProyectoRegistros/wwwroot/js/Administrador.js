@@ -328,8 +328,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (edadInput && contenedorTalleres) {
             edadInput.addEventListener('input', () => {
                 const edad = parseInt(edadInput.value);  //10
-
-                const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+                // pa limpiar cada q cambie el valor
+                const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
+                document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
+                document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -450,6 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 try {
                     result = JSON.parse(text);
+                    document.getElementById("Alumno_Id").value = result.idAlumno; 
                 } catch {
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
@@ -496,7 +500,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 talleres.push(`${nombre} ${dias} - ${horaInicio} a ${horaFinal}`);
             });
-            // con lista de espera
+           // con lista de espera
             document.querySelectorAll('input[name="ListaEsperaSeleccionada"]:checked').forEach(input => {
                 const label = input.closest("label.opciones").textContent.trim();
                 listaEspera.push(label);
@@ -507,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const lblListaEspera = modalRecibo.querySelector("#talleres");
             if (lblListaEspera) {
-                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno"; 
+                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : talleres; 
                 modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
             }
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
@@ -607,6 +611,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+
+
+       // Checkbox donativo
+    chkDonativo.addEventListener("change", async function () {
+    const isPagado = this.checked;
+    const idAlumno = document.getElementById("Alumno_Id").value;
+
+    if (!idAlumno) {
+        return;
+    }
+
+    try {
+        await fetch(`/Profe/Profe/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
+            method: 'POST'
+        });
+    } catch (err) {
+        console.error("Error al actualizar pago:", err);
+    }
+});
 
 
     const btnAceptar = document.getElementById("aceptarRecibo");
@@ -727,5 +750,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 });
-    ///* FALTA AJUSTAR A PARTIR DE AAAAAAAAAAAAAAAAAAAAAAAAAAAQUI PA ABAJO */
 

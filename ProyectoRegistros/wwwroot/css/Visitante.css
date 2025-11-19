@@ -380,21 +380,6 @@ aside {
     display: inline-block;
 }
 
-.material-symbols-outlined {
-    font-family: 'Material Symbols Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    cursor: pointer;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-smoothing: antialiased;
-}
 
 /*modaal recibo*/
 .modal {
@@ -407,43 +392,62 @@ aside {
     background-color: #9a9797d5;
 }
 
-    .modal form {
+  .modal form, #modal-recibo div:nth-child(1) {
         width: 40%;
         padding: 3vw;
-        margin: 8vh auto;
+        font-size: 14px;
+        color: #000000ab;
         border-radius: 20px;
-        height: calc(100vh - 25vh);
+        height: calc(100vh - auto);
         background-color: #D9D9D9;
-    }
-
-#modal-recibo {
-    display: none;
-}
-
-
-    #modal-recibo section:nth-of-type(2) {
-        font-weight: bold;
-    }
-
-    #modal-recibo form {
+        margin: calc(0vh + 5vh) auto;
         justify-content: space-around;
     }
 
-    #modal-recibo section {
-        width: 40%;
-        line-height: 5vh;
-        display: inline-block;
-        background-color: transparent;
+    #modal-recibo div:nth-of-type(1) {
+        width: 70%;
+        padding: 3vh 0vw;
     }
 
-    #modal-recibo #donativo {
-        width: 30%;
-        color: red;
-        font-weight: bold;
-        translate: 25vw -7vh;
-        display: inline-flex;
-        justify-content: space-between;
+.datos-alumno {
+    width: auto;
+    margin: 0vh 5vw;
+    flex-wrap: wrap;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+    .datos-alumno img {
+        width: 6vw;
+        height: 8vh;
+        opacity: 50%;
+        margin: -9vh 0 0 55vw;
     }
+
+
+   #donativo {
+    gap: 3vw;
+    width: 95%;
+    columns: 2;
+    display: flex;
+    font-size: 16px;
+    font-weight: bold;
+    justify-content: flex-end;
+}
+
+#donativo-total {
+    color: #c02b2b;
+    cursor: pointer;
+}
+#modal-recibo #talleres {
+    height: 5vh;
+    width: 90%;
+    font-size: 13px;
+    margin: 0vh 3vw;
+    overflow-y: auto;
+    font-style: italic;
+    text-align: center;
+}
 
 /*modales de taller*/
 #modal-AddTaller {
@@ -537,3 +541,150 @@ aside {
 #acomodar i, #acomodar h2 {
     cursor: default;
 }
+/*estilo para vista registrar alumno*/
+#datos-alumno {
+    gap: 30px;
+    height: 200vh;
+    display: grid;
+    font-size: 120%;
+    padding: 5vh 10vw;
+    color: #000000ab;
+    font-weight: bold;
+    background-color: #EDEDED;
+    grid-template-columns: 1fr 1fr;
+}
+
+    #datos-alumno section label {
+        height: 1vh;
+        margin: 0vh 5vw 0 0;
+    }
+
+    #datos-alumno section {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+        #datos-alumno section input {
+            margin: 3vh 0 7vh 0;
+        }
+
+#contenedor-talleres {
+    width: 100%;
+    grid-column: span 2;
+    overflow-y: auto;
+    min-height: 50vh;
+    font-weight: normal;
+    overflow-x: hidden;
+    display: none;
+}
+
+#datos-alumno input, select, textarea {
+    width: 60%;
+    height: 3vh;
+    padding: 5px;
+    border: none;
+    margin: 2vh auto 0 0;
+    border-radius: 5px;
+    box-shadow: 1px 1px 20px 0px rgba(128, 128, 128, 0.555);
+}
+
+.op-taller {
+    height: 7vh;
+    display: flex;
+    padding: 2vh 1vw;
+    color: #000000ab;
+    border-radius: 5px;
+    background-color: #D9D9D9;
+    justify-content: space-around;
+    box-sizing: content-box;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+    .op-taller:hover {
+        background-color: #d9d9d989;
+    }
+
+    .op-taller label {
+        margin: auto;
+    }
+/*para padecimientos*/
+#datAlum-padeci {
+    grid-column: span 2;
+}
+
+#datos-alumno input[type ="checkbox"] { /*checkbox*/
+    width: 2.5vh;
+    box-shadow: none;
+    background-color: #4c4545;
+}
+
+#datAlum-padeci textarea {
+    /*    padding: 10px;*/
+    margin-bottom: -100px;
+    min-width: 95%;
+    max-width: 95%;
+    min-height: 50%;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all .4s ease;
+}
+
+#datAlum-padeci #txtpadecimientos.mostrar {
+    max-height: 300px;
+    opacity: 1;
+    margin-bottom: 15vh;
+}
+
+.input-dias {
+    max-width: 10%;
+}
+
+.input-horas {
+    max-width: 20%;
+}
+
+.op-taller.bloqueado {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+#contenedor-abajo {
+    columns: 1;
+    width: 100%;
+    grid-column: span 2;
+    display: flex;
+    font-size: 12px;
+}
+
+.seleccionar {
+    width:50vw;
+    padding: 10px 5px 0;
+    height: 2em;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.seleccionar-opciones {
+    background: white;
+    border: 1px solid rgba(128, 128, 128, 0.555);
+    border-radius: 0 0 4px 4px;
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.opciones {
+    display: block; /*ocultar*/
+    cursor: pointer;
+    height: 6vh;
+}
+
+    .opciones input[type ="checkbox"] {
+        height: 1.5vh !important;
+    }
+
+    .opciones:hover {
+        background: #f1f1f1;
+    }

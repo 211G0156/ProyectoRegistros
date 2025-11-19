@@ -23,8 +23,11 @@
         if (edadInput && contenedorTalleres) {
             edadInput.addEventListener('input', () => {
                 const edad = parseInt(edadInput.value);  //10
-
-                const talleres = contenedorTalleres.querySelectorAll('.op-taller');
+                // pa limpiar cada q cambie el valor
+                const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
+                document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
+                document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -43,7 +46,6 @@
                     const edadMin = parseInt(op.getAttribute('data-edadmin')) || 0;
                     const edadMaxAttr = op.getAttribute('data-edadmax');
                     const edadMax = edadMaxAttr && !isNaN(parseInt(edadMaxAttr)) ? parseInt(edadMaxAttr) : null;
-
                     const cumpleEdad = edad >= edadMin && (edadMax === null || edad <= edadMax);
                     op.style.display = cumpleEdad ? '' : 'none';
                 });
@@ -52,6 +54,10 @@
     } catch {
         console.log("Error");
     }
+    /* como hago para que no se haga el registro si por decir, selecciono varios y uno de ellos ya estaba registrado, me salta el anuncio
+    de que ya se estaba registrado en tal, pero de igual manera me registra en los demas que seleccione, y no quiero que pase eso, porque ni siquiera he confirmado la inscripcion, solo estoy 
+    seleccionando los talleres que quiero */
+
     /* ES PARA FILTRAR TALLERES EN BASE A LOS QUE YA ESCOGIO, EVITAR CHOQUE ENTRE HORAS no funciona */
     //function aplicarBloqueoPorHorario() {
     //    const checkboxes = document.querySelectorAll('input[name="TalleresSeleccionados"]');
@@ -181,6 +187,8 @@
 
                 try {
                     result = JSON.parse(text);
+                    document.getElementById("Alumno_Id").value = result.idAlumno;  // ESTO
+
                 } catch {
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
@@ -239,8 +247,7 @@
 
             const lblListaEspera = modalRecibo.querySelector("#talleres");
             if (lblListaEspera) {
-                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno"; 
-                modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
+                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : talleres; 
             }
 
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
@@ -287,23 +294,25 @@
             modalRecibo.style.display = "none";
         });
     }
-
+ 
     // Checkbox donativo
-    //const chkDonativo = document.getElementById("chkDonativo");
-    //const lblDonativo = document.getElementById("donativo-total");
+    chkDonativo.addEventListener("change", async function () {
+    const isPagado = this.checked;
+    const idAlumno = document.getElementById("Alumno_Id").value;
 
-    //chkDonativo.addEventListener("change", async function () {
-    //    const isPagado = this.checked;
-    //    lblDonativo.textContent = isPagado ? "Pagado" : "No pagado";
-    //    const idAlumno = document.getElementById("Alumno_Id").value;
-    //    try {
-    //        await fetch(`/Profe/Profe/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
-    //            method: 'POST'
-    //        });
-    //    } catch (err) {
-    //        console.error("Error al actualizar pago:", err);
-    //    }
-    //});
+    if (!idAlumno) {
+        return;
+    }
+
+    try {
+        await fetch(`/Profe/Profe/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
+            method: 'POST'
+        });
+    } catch (err) {
+        console.error("Error al actualizar pago:", err);
+    }
+});
+
 
 
     const btnAceptar = document.getElementById("aceptarRecibo");
@@ -404,7 +413,7 @@
             nuevaVentana.focus();
             nuevaVentana.print();
 
-            //form.submit();
+            // form.submit();
         });
     };
     /* LIMPIAR DATOS DEL FORM */
