@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     try {
-        await fetch(`/Profe/Profe/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
+        await fetch(`/Admin/Home/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
             method: 'POST'
         });
     } catch (err) {
