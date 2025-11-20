@@ -52,7 +52,7 @@
                 <option value="@profesor.Id">@profesor.Nombre</option>
             }
         </select><br>
-        <label>Costo:</label><br>
+        <label>Donativo:</label><br>
         <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
         <div class="error">
         </div>
@@ -90,13 +90,13 @@
         </div>
         <label>Profesor:</label><br>
         <select class="inputForms" id="editProfesor" name="IdUsuario" style="height: 3.5vh;">
-            <option value="">Seleccione un profesor...</option>
-            @foreach (var profesor in ViewBag.Profesores)
+@*             <option value="">Seleccione un profesor...</option>
+ *@            @foreach (var profesor in ViewBag.Profesores)
             {
                 <option value="@profesor.Id">@profesor.Nombre</option>
             }
         </select><br>
-        <label>Costo:</label><br>
+        <label>Donativo:</label><br>
         <input name="Costo" class="inputForms" id="editCosto" step="1.00" min="0" max="10000" type="number" placeholder="Escribir..."><br>
         <input type="hidden" name="Estado" value="1" />
 @*         <div asp-validation-summary="All" class="error">
@@ -107,7 +107,7 @@
     </form>
 </div>
 <div class="modal" id="modal-DeleteTaller">
-    <form asp-area="Admin" asp-action="EliminarTaller" asp-controller="Home" method="post">
+    <form asp-area="Admin" asp-action="EliminarTaller" style="height:25% !important;" asp-controller="Home" method="post">
         <input type="hidden" id="DeleteId" name="id" />
         <button class="cerrar" type="button">X</button><br>
         <fieldset>

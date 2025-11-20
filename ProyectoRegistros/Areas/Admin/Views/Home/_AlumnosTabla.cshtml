@@ -10,8 +10,7 @@
                     <th>Teléfono</th>
                     <th>Teléfono 2</th>
                     <th>Padecimientos</th>
-@*                     <th>Talleres</th>
- *@                    <th>Opciones</th>
+                    <th>Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,15 +22,15 @@
                         <td>@alumno.NumContacto</td>
                         <td>@alumno.NumSecundario</td>
                         <td>@alumno.Padecimientos</td>
-@*                         <td>@string.Join(", ", alumno.Talleres)</td>
- *@                        <td>
+                        <td>
                             <div class="botones">
-                                <a href="@Url.Action("Editar", "Home", new { id = alumno.Id, area = "Admin" })">
-                                    <img class="btneditar" src="~/img/edit.png" />
-                                </a>
-                                <a href="@Url.Action("Eliminar", "Home", new { id = alumno.Id, area = "Admin" })" class="btneliminar">
-                                    <img class="btneliminar" src="~/img/X.png" />
-                                </a>
+                                <button type="button" class="btneditar" data-id="@alumno.Id" style="background:none; border:none; cursor:pointer;">
+                                    <img src="~/img/edit.png" />
+                                </button>
+
+                                <button type="button" class="btneliminar" data-id="@alumno.Id" data-nombre="@alumno.Nombre" style="background:none; border:none; cursor:pointer;">
+                                    <img src="~/img/X.png" />
+                                </button>
                             </div>
                         </td>
                     </tr>

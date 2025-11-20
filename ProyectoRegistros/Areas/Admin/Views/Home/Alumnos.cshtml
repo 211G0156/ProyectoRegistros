@@ -5,100 +5,59 @@
     var tallerIdSeleccionado = ViewData["CurrentTallerId"] as int?;
 }
 
-<!--MODAL PARA EDITAR-->
-
-<div class="modal" id="modal-EditTaller">
-    <form>
+<div class="modal" id="modal-EditAlumno">
+    <form asp-area="Admin" asp-controller="Alumnos" asp-action="EditarAlumno" method="post">
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
             <i class="material-symbols-outlined">person</i>
             <h2>Editar alumno</h2>
         </div><br>
 
+        <input type="hidden" name="Id" id="editId" />
+
         <label>Nombre:</label><br>
-        <input class="inputForms" type="text" placeholder="Mariana...."><br>
+        <input class="inputForms" name="Nombre" id="editNombre" type="text" placeholder="Nombre completo" required><br>
+
         <label>Tutor:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="Tutor" id="editTutor" type="text" placeholder="Nombre del tutor" required><br>
+
         <label>Teléfono:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="NumContacto" id="editNumContacto" type="text" placeholder="555..." required><br>
+
         <label>Teléfono 2:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
+        <input class="inputForms" name="NumSecundario" id="editNumSecundario" type="text" placeholder="Opcional"><br>
 
         <label>Padecimientos:</label><br>
-        <input class="inputForms" type="text" placeholder="Escribir..."><br>
-        <label>Talleres:</label><br>
-        <div class="custom-select">
-            <div class="select-header">
-                <span>Selecciona opciones</span>
-                <i class="fa fa-caret-down"></i>
-            </div>
-            <div class="select-content">
-                <label><input type="checkbox" /> Opción 1</label>
-                <label><input type="checkbox" /> Opción 2</label>
-                <label><input type="checkbox" /> Opción 3</label>
-            </div>
-        </div>
-        <div class="error" style=" margin-top: 5px; margin-bottom:5px; ">
-            <p>El nombre ya existe!</p>
-            <p>El nombre del taller ya existe!</p>
-        </div>
+        <input class="inputForms" name="Padecimientos" id="editPadecimientos" type="text" placeholder="Ninguno"><br>
+
         <div style="display: flex; justify-content: center;">
-            <button style="display: flex; justify-content: center;" type="submit" class="buttons">Guardar</button>
+            <button type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
 
-<!--MODAL PARA ELIMINAR-->
-<div class="modal" id="modal-DeleteTaller">
-    <form style="margin-top:140px;">
+<div class="modal" id="modal-DeleteAlumno">
+    <form id="formDeleteAlumno" style="margin-top:140px;">
+        <input type="hidden" id="deleteId" name="id" />
         <button class="cerrar" type="button">X</button><br>
         <fieldset style="border:none;">
             <legend>
-                <h2>¿Desea eliminar al alumno en alguno de estos talleres?</h2>
+                <h2>¿Desea eliminar a este alumno?</h2>
+                <h3 id="deleteNombreAlumno" style="color:red; text-align:center; margin-bottom:10px;"></h3>
+
+                <p style="text-align:center; font-size:0.9rem;">Talleres inscritos actualmente:</p>
+
                 <div class="scroll-eliminar">
                     <table>
                         <thead>
                             <tr>
                                 <th>Taller</th>
-                                <th>Eliminar</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>AcuarelaKids</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Pintura</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
-                            <tr>
-                                <td>Violin</td>
-                                <td><button class="eliminar-taller">x</button></td>
-                            </tr>
-
+                        <tbody id="tablaTalleresBaja">
                         </tbody>
                     </table>
-
                 </div>
             </legend>
         </fieldset>
@@ -120,7 +79,7 @@
 <div class="filtros">
     <div class="buscador3">
         <input type="search" id="fil" name="searchTerm"
-               placeholder="Buscar" value="@ViewData["CurrentFilter"]" />
+               placeholder="Buscar por alumno, tutor..." value="@ViewData["CurrentFilter"]" />
     </div>
 
     <select id="filtro-taller"
@@ -148,34 +107,120 @@
         const tablaContainer = document.getElementById('tabla-container');
         let debounceTimer;
 
-        function actualizarTabla() {
++        function actualizarTabla() {
             const searchTerm = searchInput.value;
             const tallerId = tallerSelect.value;
+            const url = `@Url.Action("Index", "Alumnos", new { Area = "Admin" })?searchTerm=${encodeURIComponent(searchTerm)}&tallerId=${tallerId}`;
 
-            const url = `@Url.Action("Alumnos", "Home")?searchTerm=${encodeURIComponent(searchTerm)}&tallerId=${tallerId}`;
-
-            fetch(url, {
-                method: 'GET',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())
-            .then(html => {
-                tablaContainer.innerHTML = html;
-            })
+            .then(html => { tablaContainer.innerHTML = html; })
             .catch(error => console.error('Error al actualizar la tabla:', error));
         }
 
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', () => {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(actualizarTabla, 300);
         });
 
         tallerSelect.addEventListener('change', actualizarTabla);
 
-
         searchInput.addEventListener('input', function(e) {
             const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
             this.value = this.value.replace(regex, '');
+        });
+
+
+        tablaContainer.addEventListener('click', async function(event) {
+
+            const editBtn = event.target.closest('.btneditar');
+            if (editBtn) {
+                event.preventDefault();
+                const id = editBtn.dataset.id;
+
+                try {
+                    const response = await fetch(`/Admin/Alumnos/GetAlumno/${id}`);
+                    if (!response.ok) throw new Error("Error al cargar");
+                    const data = await response.json();
+
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editNombre').value = data.nombre;
+                    document.getElementById('editTutor').value = data.tutor;
+                    document.getElementById('editNumContacto').value = data.numContacto;
+                    document.getElementById('editNumSecundario').value = data.numSecundario;
+                    document.getElementById('editPadecimientos').value = data.padecimientos;
+
+                    document.getElementById('modal-EditAlumno').style.display = 'block';
+
+                } catch (error) {
+                    console.error(error);
+                    alert("No se pudo cargar la información del alumno.");
+                }
+            }
+
+            const deleteBtn = event.target.closest('.btneliminar');
+            if (deleteBtn) {
+                event.preventDefault();
+                const id = deleteBtn.dataset.id;
+                const nombre = deleteBtn.dataset.nombre;
+
+                document.getElementById('deleteId').value = id;
+                document.getElementById('deleteNombreAlumno').textContent = nombre;
+
+                const tbody = document.getElementById('tablaTalleresBaja');
+                tbody.innerHTML = "<tr><td colspan='2'>Cargando talleres...</td></tr>";
+
+                try {
+                    const response = await fetch(`/Admin/Alumnos/GetTalleresAlumno/${id}`);
+                    const talleres = await response.json();
+
+                    tbody.innerHTML = "";
+                    if (talleres.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='2' style='color:gray;'>No está inscrito en talleres activos.</td></tr>";
+                    } else {
+                        talleres.forEach(t => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${t.nombre}</td>
+                                    <td style="color:red; font-size:0.8rem;">Se dará de baja</td>
+                                </tr>`;
+                        });
+                    }
+                } catch (err) {
+                    tbody.innerHTML = "<tr><td colspan='2'>Error al cargar información.</td></tr>";
+                }
+
+                document.getElementById('modal-DeleteAlumno').style.display = 'block';
+            }
+        });
+
+        const formDelete = document.getElementById('formDeleteAlumno');
+        if(formDelete){
+            formDelete.addEventListener('submit', async function(e){
+                e.preventDefault();
+                const id = document.getElementById('deleteId').value;
+
+                try {
+                    const response = await fetch(`/Admin/Alumnos/EliminarAlumno/${id}`, { method: 'POST' });
+
+                    if(response.ok){
+                        alert("Alumno eliminado correctamente.");
+                        window.location.reload();
+                    } else {
+                        alert("Ocurrió un error al eliminar.");
+                    }
+                } catch(error){
+                    console.error(error);
+                    alert("Error de conexión.");
+                }
+            });
+        }
+
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('cerrar')) {
+                const modal = event.target.closest('.modal');
+                if (modal) modal.style.display = 'none';
+            }
         });
     });
 </script>
