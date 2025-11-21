@@ -165,6 +165,10 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "Datos inválidos, revisa los campos del formulario." });
             }
+            if (vm.EdadMax.HasValue && vm.EdadMin >= vm.EdadMax.Value)
+            {
+                return Json(new { success = false, message = "La edad máxima debe ser mayor que la edad mínima." });
+            }
 
             try
             {
@@ -252,6 +256,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult EditarTaller(NuevoTallerVM vm)
         {
+            ModelState.Remove("IdUsuario");
+            if (vm.EdadMax.HasValue && vm.EdadMin >= vm.EdadMax.Value)
+            {
+                ModelState.AddModelError("EdadMax", "La edad máxima debe ser mayor a la mínima.");
+            }
+
             if (ModelState.IsValid)
             {
                 var taller = _context.Tallers.Find(vm.Id);
@@ -265,6 +275,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     taller.EdadMin = vm.EdadMin;
                     taller.EdadMax = vm.EdadMax;
                     taller.Costo = vm.Costo;
+
                     taller.IdUsuario = vm.IdUsuario;
 
                     _context.Update(taller);
@@ -276,7 +287,6 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
             return View("Index");
         }
-
         [HttpGet]
         public IActionResult VerificarTaller(int id)
         {

@@ -121,6 +121,39 @@ document.querySelectorAll(".btneditar").forEach(boton => {
         }
     });
 });
+// VALIDACIÓN AL GUARDAR (EDITAR TALLER)
+const formEdit = document.getElementById("formEditTaller");
+
+if (formEdit) {
+    formEdit.addEventListener("submit", function (e) {
+        const edadMin = parseInt(document.getElementById("editEdadMin").value);
+        const edadMaxInput = document.getElementById("editEdadMax").value;
+        const edadMax = edadMaxInput ? parseInt(edadMaxInput) : null;
+
+        if (edadMax !== null && edadMin >= edadMax) {
+            e.preventDefault();
+            alert("La edad mínima no puede ser igual o mayor a la edad máxima.");
+            return;
+        }
+
+        const horaInicioVal = document.getElementById("editHoraInicio").value;
+        const horaFinalVal = document.getElementById("editHoraFinal").value;
+
+        if (horaInicioVal && horaFinalVal) {
+            const fechaInicio = new Date(`2000-01-01T${horaInicioVal}`);
+            const fechaFinal = new Date(`2000-01-01T${horaFinalVal}`);
+
+            const diferenciaMs = fechaFinal - fechaInicio;
+            const diferenciaMinutos = diferenciaMs / 1000 / 60;
+
+            if (diferenciaMinutos < 20) {
+                e.preventDefault();
+                alert("El horario no es válido. Debe haber al menos 20 minutos de diferencia y la hora final debe ser posterior a la de inicio.");
+                return;
+            }
+        }
+    });
+}
 
 // ELIMINAR TALLER
 document.addEventListener("DOMContentLoaded", function () {
@@ -193,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
 /* -------------------- USUARIOS -------------------- */
 
 document.addEventListener('DOMContentLoaded', function () {
+
     // EDITAR USUARIO
     document.querySelectorAll(".btneditar.usuario").forEach(boton => {
         boton.addEventListener("click", async () => {
@@ -285,10 +319,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (formAdd) {
         formAdd.addEventListener("submit", async function (e) {
+
+            const edadMin = parseInt(formAdd.querySelector("input[name='EdadMin']").value);
+            const edadMaxInput = formAdd.querySelector("input[name='EdadMax']").value;
+            const edadMax = edadMaxInput ? parseInt(edadMaxInput) : null;
+
+            if (edadMax !== null && edadMin >= edadMax) {
+                e.preventDefault();
+                alert("La edad máxima debe ser mayor que la mínima y no pueden ser iguales.");
+                return;
+            }
+
+            const horaInicioVal = formAdd.querySelector("input[name='HoraInicio']").value;
+            const horaFinalVal = formAdd.querySelector("input[name='HoraFinal']").value;
+
+            if (horaInicioVal && horaFinalVal) {
+                const fechaInicio = new Date(`2000-01-01T${horaInicioVal}`);
+                const fechaFinal = new Date(`2000-01-01T${horaFinalVal}`);
+                const diferenciaMinutos = (fechaFinal - fechaInicio) / 1000 / 60;
+
+                if (diferenciaMinutos < 20) {
+                    e.preventDefault();
+                    alert("El horario no es válido. Debe haber al menos 20 minutos de duración.");
+                    return;
+                }
+            }
             e.preventDefault();
-
             const formData = new FormData(formAdd);
-
             try {
                 const resp = await fetch("/Admin/Home/AgregarTaller", {
                     method: "POST",

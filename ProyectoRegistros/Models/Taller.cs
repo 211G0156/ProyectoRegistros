@@ -29,9 +29,9 @@ public partial class Taller
 
     public int? IdUsuario { get; set; }
 
+    public int Inscritos { get; set; }
+
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 
-    public virtual ICollection<Listaespera> Listaespera { get; set; } = new List<Listaespera>();
-
-    public virtual ICollection<Listatalleres> Listatalleres { get; set; } = new List<Listatalleres>();
+    public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
 }
