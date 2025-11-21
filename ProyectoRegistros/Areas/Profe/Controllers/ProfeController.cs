@@ -85,7 +85,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                 .Select(x => x.Id)
                 .ToList();
 
-            IQueryable<Listatalleres> query = _context.Listatalleres
+            IQueryable<Listatallere> query = _context.Listatalleres
                 .Include(a => a.IdAlumnoNavigation)
                 .Include(t => t.IdTallerNavigation)
                 .Where(x => misTalleres.Contains(x.IdTaller));
@@ -263,7 +263,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                                 model.Alumno.AtencionPsico = 1;
                             }
 
-                            _context.Listatalleres.Add(new Listatalleres
+                            _context.Listatalleres.Add(new Listatallere
                             {
                                 IdAlumno = model.Alumno.Id,
                                 IdTaller = taller.Id,

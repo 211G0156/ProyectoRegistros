@@ -256,7 +256,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             }
 
             var usuario = await _context.Usuarios
-                .Include(u => u.Taller)
+                .Include(u => u.Tallers)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (usuario == null)
