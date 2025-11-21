@@ -510,10 +510,12 @@ document.addEventListener('DOMContentLoaded', function () {
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
 
             const lblListaEspera = modalRecibo.querySelector("#talleres");
-            if (lblListaEspera) {
-                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : talleres; 
-                modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
-            }
+            // revisar que se muestren separados
+    
+            // if (lblListaEspera) {
+                lblListaEspera.innerHTML = talleres.length > 0 ? talleres.join("<br>") : lblListaEspera;  // modifique
+               // modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
+            // }
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
 
