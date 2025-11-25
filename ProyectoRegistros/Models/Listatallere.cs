@@ -19,8 +19,6 @@ public partial class Listatallere
 
     public DateTime? FechaPago { get; set; }
 
-    public string Estado { get; set; } = null!;
-
     public virtual Alumno IdAlumnoNavigation { get; set; } = null!;
 
     public virtual Taller IdTallerNavigation { get; set; } = null!;

@@ -73,54 +73,54 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
 
             return View(talleres);
         }
-        public async Task<IActionResult> Alumnos(string searchTerm, int? idTaller)
-        {
-            var user = User.FindFirstValue("Id");
-            if (user == null) return RedirectToAction("Index", "Login");
+        //public async Task<IActionResult> Alumnos(string searchTerm, int? idTaller)
+        //{
+        //    var user = User.FindFirstValue("Id");
+        //    if (user == null) return RedirectToAction("Index", "Login");
 
-            ViewData["CurrentFilter"] = searchTerm;
+        //    ViewData["CurrentFilter"] = searchTerm;
 
-            var misTalleres = _context.Tallers
-                .Where(x => x.IdUsuario == int.Parse(user))
-                .Select(x => x.Id)
-                .ToList();
+        //    var misTalleres = _context.Tallers
+        //        .Where(x => x.IdUsuario == int.Parse(user))
+        //        .Select(x => x.Id)
+        //        .ToList();
 
-            IQueryable<Listatalleres> query = _context.Listatalleres
-                .Include(a => a.IdAlumnoNavigation)
-                .Include(t => t.IdTallerNavigation)
-                .Where(x => misTalleres.Contains(x.IdTaller));
+        //    IQueryable<Listatalleres> query = _context.Listatalleres
+        //        .Include(a => a.IdAlumnoNavigation)
+        //        .Include(t => t.IdTallerNavigation)
+        //        .Where(x => misTalleres.Contains(x.IdTaller));
 
-            if (idTaller.HasValue)
-            {
-                query = query.Where(x => x.IdTaller == idTaller);
-                ViewData["TallerFiltrado"] = idTaller;
-            }
+        //    if (idTaller.HasValue)
+        //    {
+        //        query = query.Where(x => x.IdTaller == idTaller);
+        //        ViewData["TallerFiltrado"] = idTaller;
+        //    }
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(x =>
-                    x.IdAlumnoNavigation.Nombre.Contains(searchTerm) ||
-                    x.IdAlumnoNavigation.Padecimientos.Contains(searchTerm) ||
-                    x.IdAlumnoNavigation.Tutor.Contains(searchTerm)
-                );
-            }
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        query = query.Where(x =>
+        //            x.IdAlumnoNavigation.Nombre.Contains(searchTerm) ||
+        //            x.IdAlumnoNavigation.Padecimientos.Contains(searchTerm) ||
+        //            x.IdAlumnoNavigation.Tutor.Contains(searchTerm)
+        //        );
+        //    }
 
-            var alumnosConTalleres = query
-                .AsEnumerable()
-                .GroupBy(a => a.IdAlumnoNavigation.Id)
-                .Select(g => new
-                {
-                    Alumno = g.First().IdAlumnoNavigation,
-                    Talleres = g.Select(t => t.IdTallerNavigation).ToList()
-                })
-                .OrderBy(x => x.Alumno.Nombre)
-                .ToList();
+        //    var alumnosConTalleres = query
+        //        .AsEnumerable()
+        //        .GroupBy(a => a.IdAlumnoNavigation.Id)
+        //        .Select(g => new
+        //        {
+        //            Alumno = g.First().IdAlumnoNavigation,
+        //            Talleres = g.Select(t => t.IdTallerNavigation).ToList()
+        //        })
+        //        .OrderBy(x => x.Alumno.Nombre)
+        //        .ToList();
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                return PartialView("_ProfeAlumnosTabla", alumnosConTalleres);
+        //    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //        return PartialView("_ProfeAlumnosTabla", alumnosConTalleres);
 
-            return View(alumnosConTalleres);
-        }
+        //    return View(alumnosConTalleres);
+        //}
 
         [HttpPost]
         public IActionResult EditarAlumno(Alumno alumno)
@@ -263,7 +263,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
                                 model.Alumno.AtencionPsico = 1;
                             }
 
-                            _context.Listatalleres.Add(new Listatalleres
+                            _context.Listatalleres.Add(new Listatallere
                             {
                                 IdAlumno = model.Alumno.Id,
                                 IdTaller = taller.Id,

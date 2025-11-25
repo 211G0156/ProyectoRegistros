@@ -157,7 +157,7 @@ namespace ProyectoRegistros.Areas.Visitante.Controllers
                             model.Alumno.AtencionPsico = 1;
                         }
 
-                        _context.Listatalleres.Add(new Listatalleres
+                        _context.Listatalleres.Add(new Listatallere
                         {
                             IdAlumno = model.Alumno.Id,
                             IdTaller = taller.Id,

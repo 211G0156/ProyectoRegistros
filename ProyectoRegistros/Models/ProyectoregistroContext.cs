@@ -18,6 +18,8 @@ public partial class ProyectoregistroContext : DbContext
 
     public virtual DbSet<Alumno> Alumnos { get; set; }
 
+    public virtual DbSet<Listaespera> Listaesperas { get; set; }
+
     public virtual DbSet<Listatallere> Listatalleres { get; set; }
 
     public virtual DbSet<Rol> Rols { get; set; }
@@ -25,7 +27,6 @@ public partial class ProyectoregistroContext : DbContext
     public virtual DbSet<Taller> Tallers { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +52,34 @@ public partial class ProyectoregistroContext : DbContext
             entity.Property(e => e.Tutor).HasMaxLength(30);
         });
 
+        modelBuilder.Entity<Listaespera>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("listaespera");
+
+            entity.HasIndex(e => e.IdAlumno, "FK_ListaEspera_Alumno");
+
+            entity.HasIndex(e => e.IdTaller, "FK_ListaEspera_Taller");
+
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'En espera'");
+            entity.Property(e => e.FechaRegistro)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.Listaesperas)
+                .HasForeignKey(d => d.IdAlumno)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ListaEspera_Alumno");
+
+            entity.HasOne(d => d.IdTallerNavigation).WithMany(p => p.Listaesperas)
+                .HasForeignKey(d => d.IdTaller)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ListaEspera_Taller");
+        });
+
         modelBuilder.Entity<Listatallere>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -61,7 +90,6 @@ public partial class ProyectoregistroContext : DbContext
 
             entity.HasIndex(e => e.IdTaller, "fkListaTaller_idx");
 
-            entity.Property(e => e.Estado).HasMaxLength(20);
             entity.Property(e => e.FechaCita)
                 .HasMaxLength(50)
                 .HasColumnName("fechaCita");

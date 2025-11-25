@@ -29,5 +29,7 @@ public partial class Alumno
 
     public sbyte Estado { get; set; }
 
+    public virtual ICollection<Listaespera> Listaesperas { get; set; } = new List<Listaespera>();
+
     public virtual ICollection<Listatallere> Listatalleres { get; set; } = new List<Listatallere>();
 }
