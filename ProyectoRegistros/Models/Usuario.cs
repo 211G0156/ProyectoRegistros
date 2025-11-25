@@ -19,6 +19,8 @@ public partial class Usuario
 
     public sbyte Estado { get; set; }
 
+    public virtual ICollection<Historial> Historials { get; set; } = new List<Historial>();
+
     public virtual Rol IdRolNavigation { get; set; } = null!;
 
     public virtual ICollection<Taller> Tallers { get; set; } = new List<Taller>();

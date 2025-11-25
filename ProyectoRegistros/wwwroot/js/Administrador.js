@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
                 document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
                 document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
-                document.querySelector('.seleccionar').textContent = "Seleccionar";
+                //document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll(".opciones input[type='checkbox']").forEach(chk => {
         chk.addEventListener("change", () => {
             const seleccionados = [...document.querySelectorAll(".opciones input:checked")].map(x => x.parentElement.textContent.trim());
-            selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
+            //selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
         });
     });
 
@@ -481,13 +481,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const talleresSeleccionados = [];
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(chk => talleresSeleccionados.push(chk.value));
-
-            //talleresSeleccionados.forEach(val => {
-            //    formData.append("TalleresSeleccionados", val);
-            //});
-
             const listaEspera = [];
             const selectEspera = document.getElementById("ListaEsperaSeleccionada");
+
+            talleresSeleccionados.forEach(val => {
+                formData.append("TalleresSeleccionados", val);
+            });
+
 
             if (selectEspera) {
                 for (const option of selectEspera.options) {
@@ -496,6 +496,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
+            listaEspera.forEach(val => {
+                formData.append("ListaEsperaSeleccionada", val);
+            });
+
 
             try {
                 const response = await fetch('/Admin/Home/RegistroForm', {
@@ -515,9 +519,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
                 }
-                alert(result.mensaje);
+                if (result.listaEsperaDuplicada) {
+                    alert(result.mensaje);
+                }
+
+                if (result.listaEspera) {
+                    alert(result.mensaje);
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
+
+
+                if (result.listaEspera) {
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
 
                 if (!result.ok) return;
+                alert(result.mensaje);
                 modalRecibo.style.display = "block";
                 llenarModalRecibo();
 
@@ -565,12 +586,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            modalRecibo.querySelector("#lista-espera").innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno";
 
-            const lblListaEspera = modalRecibo.querySelector("#talleres");
-            if (lblListaEspera) {
-                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : talleres; 
-                modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
-            }
+           
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
 
@@ -591,6 +609,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/Admin/Home/BuscarAlumno?nombre=${encodeURIComponent(nombre)}`).then(r => r.json()).then(data => {
                 if (data) {
                     console.log("Alumno encontrado:", data);
+                    document.querySelector('input[name="Alumno.Nombre"]').value = data.nombre || "";
                     document.querySelector('input[name="Alumno.FechaCumple"]').value = data.fechaCumple?.split('T')[0] || "";
                     document.querySelector('input[name="Alumno.Direccion"]').value = data.direccion || "";
                     document.querySelector('input[name="Alumno.Edad"]').value = data.edad || "";
@@ -600,17 +619,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
                     document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
 
+                    // para que se limpie cada que cambia el nombre
+                    document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                    document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
                 } else {
                     console.log(" No se encontró alumno con ese nombre.");
                 }
             }).catch(err => console.error("Error al buscar alumno:", err));
         });
     }
-
+    // me falta limpiar el check cuando cancelo o cierro el modal y lo abro de niu
     const btnCancelar = modalRecibo.querySelector("#cancelar");
     if (btnCancelar) {
         btnCancelar.addEventListener("click", function () {
             modalRecibo.style.display = "none";
+            
+            
+            const chkDonativo = document.getElementById("chkDonativo");
+            if (chkDonativo) chkDonativo.checked = false;
+            document.getElementById("PagadoHidden").value = "false";
         });
     }
 
@@ -680,7 +707,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     try {
-        await fetch(`/Profe/Profe/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
+        await fetch(`/Admin/Home/ActualizarPago?idAlumno=${idAlumno}&pagado=${isPagado}`, {
             method: 'POST'
         });
     } catch (err) {
@@ -699,13 +726,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const isPagado = chkDonativo.checked;
             document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            chkDonativo.checked = false; 
             if (!isPagado) {
                 return;
             }
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            
+            const tal = [];
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const id = parseInt(input.value);
+
+                const card = input.closest(".op-taller");
+                const nombre = card.querySelector(".nombreTaller").textContent;
+                const dias = card.querySelector("input[name^='Dias_']")?.value || card.querySelector(".label-dias").textContent;
+                const horaInicio = card.querySelector("input[name^='HoraInicio_']")?.value || "";
+                const horaFinal = card.querySelector("input[name^='HoraFinal_']")?.value || "";
+
+                tal.push(`${nombre} — ${dias} de ${horaInicio} a ${horaFinal}`);
+            });
             const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `
@@ -787,6 +827,8 @@ document.addEventListener('DOMContentLoaded', function () {
             nuevaVentana.focus();
             nuevaVentana.print();
 
+         
+
         });
     };
     /* LIMPIAR DATOS DEL FORM */
@@ -794,7 +836,6 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         //reset a lista talleres
         document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
-        document.querySelector('.seleccionar').textContent = "";
 
         chbPadecimiento.checked = false;
         txtPadecimientos.disabled = true;

@@ -27,7 +27,7 @@
                 const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
                 document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
                 document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
-                document.querySelector('.seleccionar').textContent = "Seleccionar";
+                //document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -54,10 +54,6 @@
     } catch {
         console.log("Error");
     }
-    /* como hago para que no se haga el registro si por decir, selecciono varios y uno de ellos ya estaba registrado, me salta el anuncio
-    de que ya se estaba registrado en tal, pero de igual manera me registra en los demas que seleccione, y no quiero que pase eso, porque ni siquiera he confirmado la inscripcion, solo estoy 
-    seleccionando los talleres que quiero */
-
     /* ES PARA FILTRAR TALLERES EN BASE A LOS QUE YA ESCOGIO, EVITAR CHOQUE ENTRE HORAS no funciona */
     //function aplicarBloqueoPorHorario() {
     //    const checkboxes = document.querySelectorAll('input[name="TalleresSeleccionados"]');
@@ -112,7 +108,7 @@
     document.querySelectorAll(".opciones input[type='checkbox']").forEach(chk => {
         chk.addEventListener("change", () => {
             const seleccionados = [...document.querySelectorAll(".opciones input:checked")].map(x => x.parentElement.textContent.trim());
-            selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
+            //selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
         });
     });
 
@@ -158,13 +154,12 @@
 
             const talleresSeleccionados = [];
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(chk => talleresSeleccionados.push(chk.value));
-
-            //talleresSeleccionados.forEach(val => {
-            //    formData.append("TalleresSeleccionados", val);
-            //});
-
             const listaEspera = [];
             const selectEspera = document.getElementById("ListaEsperaSeleccionada");
+
+            talleresSeleccionados.forEach(val => {
+                formData.append("TalleresSeleccionados", val);
+            });
 
             if (selectEspera) {
                 for (const option of selectEspera.options) {
@@ -173,6 +168,9 @@
                     }
                 }
             }
+            listaEspera.forEach(val => {
+                formData.append("ListaEsperaSeleccionada", val);
+            });
 
             try {
                 const response = await fetch('/Profe/Profe/RegistroForm', {
@@ -193,9 +191,26 @@
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
                 }
-                alert(result.mensaje);
+                if (result.listaEsperaDuplicada) {
+                    alert(result.mensaje);
+                }
+
+                if (result.listaEspera) {
+                    alert(result.mensaje);
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
+                
+
+                if (result.listaEspera) {
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
 
                 if (!result.ok) return;
+                // alert(result.mensaje);
                 modalRecibo.style.display = "block";
                 llenarModalRecibo();
 
@@ -244,11 +259,7 @@
             //ajustar
 
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
-
-            const lblListaEspera = modalRecibo.querySelector("#talleres");
-            if (lblListaEspera) {
-                lblListaEspera.innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : talleres; 
-            }
+            modalRecibo.querySelector("#lista-espera").innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno";
 
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
             
@@ -281,6 +292,10 @@
                     document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
                     document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
 
+                    // para que se limpie cada que cambia el nombre
+
+                    document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                    document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
                 } else {
                     console.log(" No se encontró alumno con ese nombre.");
                 }
@@ -292,6 +307,10 @@
     if (btnCancelar) {
         btnCancelar.addEventListener("click", function () {
             modalRecibo.style.display = "none";
+            
+            const chkDonativo = document.getElementById("chkDonativo");
+            if (chkDonativo) chkDonativo.checked = false;
+            document.getElementById("PagadoHidden").value = "false";
         });
     }
  
@@ -325,13 +344,28 @@
 
             const isPagado = chkDonativo.checked;
             document.getElementById("PagadoHidden").value = isPagado ? "true" : "false";
+            chkDonativo.checked = false; 
             if (!isPagado) {
                 return;
             }
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            // const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            // const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
+
+            const tal = [];
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const id = parseInt(input.value);
+
+                const card = input.closest(".op-taller");
+                const nombre = card.querySelector(".nombreTaller").textContent;
+                const dias = card.querySelector("input[name^='Dias_']")?.value || card.querySelector(".label-dias").textContent;
+                const horaInicio = card.querySelector("input[name^='HoraInicio_']")?.value || "";
+                const horaFinal = card.querySelector("input[name^='HoraFinal_']")?.value || "";
+
+                tal.push(`${nombre} — ${dias} de ${horaInicio} a ${horaFinal}`);
+            });
             const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `
@@ -421,8 +455,6 @@
         form.reset(); 
         //reset a lista talleres
         document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
-        document.querySelector('.seleccionar').textContent = "";
-
         chbPadecimiento.checked = false;
         txtPadecimientos.disabled = true;
         txtPadecimientos.value = "";
