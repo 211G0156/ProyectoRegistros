@@ -54,9 +54,9 @@
         </select><br>
         <label>Donativo:</label><br>
         <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
-        <div class="error">
+@*         <div class="error">
         </div>
-        <div style="display: flex; justify-content: center;">
+ *@        <div style="display: flex; justify-content: center;">
             <button type="submit" class="buttons">Guardar</button>
         </div>
     </form>
@@ -148,6 +148,8 @@
 
     <div class="BotonesTaller" style="margin-left: auto; display: flex; gap: 15px;">
         <input id="aggTaller" type="button" value="Crear taller" />
+        <input id="aggTaller" type="button" value="Terminar periodo" />
+
 
         <a id="verAlumno" class="verLista"
            href="@Url.Action("Alumnos", "Home", new { area = "Admin" })"
