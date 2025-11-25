@@ -128,6 +128,26 @@
                     </div>
                 </div>
 
+                <hr>
+
+
+                <h3>Periodos:</h3>
+                <div class="custom-select">
+                    <div class="select-header">
+                        <span>Selecciona opciones</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="select-content">
+                        @foreach (var rango in (ViewBag.Horas ?? new List<string>()))
+                        {
+                            <label>
+                                <input type="checkbox" name="Horas" value="@rango" />
+                                @rango
+                            </label>
+                        }
+                    </div>
+                </div>
+
 
                 <div style="text-align:center;grid-column: 2; margin-left: -170px; margin-top:5px; margin-bottom:5px;">
                     <button class="verArchivo" type="submit">Ver archivo</button>
