@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
                 document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
                 document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
-                document.querySelector('.seleccionar').textContent = "Seleccionar";
+                //document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll(".opciones input[type='checkbox']").forEach(chk => {
         chk.addEventListener("change", () => {
             const seleccionados = [...document.querySelectorAll(".opciones input:checked")].map(x => x.parentElement.textContent.trim());
-            selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
+            //selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
         });
     });
 
@@ -481,13 +481,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const talleresSeleccionados = [];
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(chk => talleresSeleccionados.push(chk.value));
-
-            //talleresSeleccionados.forEach(val => {
-            //    formData.append("TalleresSeleccionados", val);
-            //});
-
             const listaEspera = [];
             const selectEspera = document.getElementById("ListaEsperaSeleccionada");
+
+            talleresSeleccionados.forEach(val => {
+                formData.append("TalleresSeleccionados", val);
+            });
+
 
             if (selectEspera) {
                 for (const option of selectEspera.options) {
@@ -496,6 +496,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
+            listaEspera.forEach(val => {
+                formData.append("ListaEsperaSeleccionada", val);
+            });
+
 
             try {
                 const response = await fetch('/Admin/Home/RegistroForm', {
@@ -515,9 +519,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
                 }
-                alert(result.mensaje);
+                if (result.listaEsperaDuplicada) {
+                    alert(result.mensaje);
+                }
+
+                if (result.listaEspera) {
+                    alert(result.mensaje);
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
+
+
+                if (result.listaEspera) {
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
 
                 if (!result.ok) return;
+                alert(result.mensaje);
                 modalRecibo.style.display = "block";
                 llenarModalRecibo();
 
@@ -565,14 +586,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            modalRecibo.querySelector("#lista-espera").innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno";
 
-            const lblListaEspera = modalRecibo.querySelector("#talleres");
-            // revisar que se muestren separados
-    
-            // if (lblListaEspera) {
-                lblListaEspera.innerHTML = talleres.length > 0 ? talleres.join("<br>") : lblListaEspera;  // modifique
-               // modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
-            // }
+           
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
 
@@ -603,6 +619,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
                     document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
 
+                    // para que se limpie cada que cambia el nombre
+                    document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                    document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
                 } else {
                     console.log(" No se encontró alumno con ese nombre.");
                 }
@@ -714,7 +733,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            
+            const tal = [];
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const id = parseInt(input.value);
+
+                const card = input.closest(".op-taller");
+                const nombre = card.querySelector(".nombreTaller").textContent;
+                const dias = card.querySelector("input[name^='Dias_']")?.value || card.querySelector(".label-dias").textContent;
+                const horaInicio = card.querySelector("input[name^='HoraInicio_']")?.value || "";
+                const horaFinal = card.querySelector("input[name^='HoraFinal_']")?.value || "";
+
+                tal.push(`${nombre} — ${dias} de ${horaInicio} a ${horaFinal}`);
+            });
             const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `
@@ -805,7 +836,6 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         //reset a lista talleres
         document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
-        document.querySelector('.seleccionar').textContent = "";
 
         chbPadecimiento.checked = false;
         txtPadecimientos.disabled = true;

@@ -895,7 +895,7 @@ aside {
     cursor: pointer;
 }
 
-#modal-recibo #talleres {
+#modal-recibo #talleres, #lista-espera {
     height: 5vh;
     width: 90%;
     font-size: 13px;
