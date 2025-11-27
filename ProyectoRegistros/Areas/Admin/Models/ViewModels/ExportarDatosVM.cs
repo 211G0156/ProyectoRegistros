@@ -8,5 +8,8 @@
         public string? Dia { get; set; }
         public string? HoraInicio { get; set; }
         public string? HoraFinal { get; set; }
+        public List<string>? Dias { get; set; }
+        public int? AñoSeleccionado { get; set; }
+        public string? PeriodoSeleccionado { get; set; }
     }
 }

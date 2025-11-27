@@ -31,6 +31,9 @@ public partial class Taller
 
     public int Inscritos { get; set; }
 
+    public string? Periodo { get; set; }
+    public int? Año { get; set; }
+
     public virtual ICollection<Historial> Historials { get; set; } = new List<Historial>();
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }

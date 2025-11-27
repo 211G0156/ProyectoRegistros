@@ -212,7 +212,11 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     EdadMax = vm.EdadMax,
                     Costo = vm.Costo,
                     IdUsuario = vm.IdUsuario,
-                    Estado = 1
+                    Estado = 1,
+
+                    Inscritos = 0,
+                    Año = DateTime.Now.Year,
+                    Periodo = vm.Periodo
                 };
 
                 _context.Tallers.Add(taller);
@@ -249,7 +253,9 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 edadMin = taller.EdadMin,
                 edadMax = taller.EdadMax,
                 costo = taller.Costo,
-                idUsuario = taller.IdUsuario
+                idUsuario = taller.IdUsuario,
+
+                periodo = taller.Periodo
             });
         }
 
@@ -275,7 +281,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                     taller.EdadMin = vm.EdadMin;
                     taller.EdadMax = vm.EdadMax;
                     taller.Costo = vm.Costo;
-
+                    taller.Periodo = vm.Periodo;
                     taller.IdUsuario = vm.IdUsuario;
 
                     _context.Update(taller);

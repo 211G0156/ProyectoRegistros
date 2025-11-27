@@ -111,18 +111,19 @@
 
                 <hr>
 
-                <h3>Años:</h3>
+                <h3>Año:</h3>
                 <div class="custom-select">
                     <div class="select-header">
-                        <span>Selecciona opciones</span>
+                        <span>Selecciona un año</span>
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="select-content">
-                        @foreach (var rango in (ViewBag.Horas ?? new List<string>()))
+                        <label><input type="radio" name="AñoSeleccionado" value="" checked /> (Actual / Sin filtrar)</label>
+
+                        @foreach (var anio in (ViewBag.Años ?? new List<int>()))
                         {
                             <label>
-                                <input type="checkbox" name="Horas" value="@rango" />
-                                @rango
+                                <input type="radio" name="AñoSeleccionado" value="@anio" /> @anio
                             </label>
                         }
                     </div>
@@ -130,24 +131,19 @@
 
                 <hr>
 
-
-                <h3>Periodos:</h3>
+                <h3>Periodo:</h3>
                 <div class="custom-select">
                     <div class="select-header">
-                        <span>Selecciona opciones</span>
+                        <span>Selecciona un periodo</span>
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="select-content">
-                        @foreach (var rango in (ViewBag.Horas ?? new List<string>()))
-                        {
-                            <label>
-                                <input type="checkbox" name="Horas" value="@rango" />
-                                @rango
-                            </label>
-                        }
+                        <label><input type="radio" name="PeriodoSeleccionado" value="" checked /> Cualquiera</label>
+                        <label><input type="radio" name="PeriodoSeleccionado" value="Enero-Junio" /> Enero-Junio</label>
+                        <label><input type="radio" name="PeriodoSeleccionado" value="Junio-Agosto" /> Junio-Agosto</label>
+                        <label><input type="radio" name="PeriodoSeleccionado" value="Agosto-Diciembre" /> Agosto-Diciembre</label>
                     </div>
                 </div>
-
 
                 <div style="text-align:center;grid-column: 2; margin-left: -170px; margin-top:5px; margin-bottom:5px;">
                     <button class="verArchivo" type="submit">Ver archivo</button>

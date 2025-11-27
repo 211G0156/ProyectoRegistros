@@ -113,6 +113,7 @@ document.querySelectorAll(".btneditar").forEach(boton => {
             document.getElementById("editEdadMax").value = data.edadMax;
             document.getElementById("editCosto").value = data.costo;
             document.getElementById("editProfesor").value = data.idUsuario;
+            document.getElementById("editPeriodo").value = data.periodo;
 
             document.getElementById("modal-EditTaller").style.display = "block";
         } catch (err) {
