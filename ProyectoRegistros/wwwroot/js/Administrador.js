@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const talleres = contenedorTalleres.querySelectorAll('.op-taller');    
                 document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
                 document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
-                document.querySelector('.seleccionar').textContent = "Seleccionar";
+                //document.querySelector('.seleccionar').textContent = "Seleccionar";
                 if (isNaN(edad) || edad === 0) {
                     talleres.forEach(taller => taller.style.display = 'none');
                     listaEsperaOpciones.forEach(op => op.style.display = 'none');
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll(".opciones input[type='checkbox']").forEach(chk => {
         chk.addEventListener("change", () => {
             const seleccionados = [...document.querySelectorAll(".opciones input:checked")].map(x => x.parentElement.textContent.trim());
-            selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
+            //selectDisplay.textContent = seleccionados.length ? seleccionados.join(", ") : "Seleccionar talleres";
         });
     });
 
@@ -481,13 +481,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const talleresSeleccionados = [];
             document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(chk => talleresSeleccionados.push(chk.value));
-
-            //talleresSeleccionados.forEach(val => {
-            //    formData.append("TalleresSeleccionados", val);
-            //});
-
             const listaEspera = [];
             const selectEspera = document.getElementById("ListaEsperaSeleccionada");
+
+            talleresSeleccionados.forEach(val => {
+                formData.append("TalleresSeleccionados", val);
+            });
+
 
             if (selectEspera) {
                 for (const option of selectEspera.options) {
@@ -496,6 +496,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
+            listaEspera.forEach(val => {
+                formData.append("ListaEsperaSeleccionada", val);
+            });
+
 
             try {
                 const response = await fetch('/Admin/Home/RegistroForm', {
@@ -515,9 +519,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error("Respuesta no era JSON. Ignorada.");
                     return;
                 }
-                alert(result.mensaje);
+                if (result.listaEsperaDuplicada) {
+                    alert(result.mensaje);
+                }
+
+                if (result.listaEspera) {
+                    alert(result.mensaje);
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
+
+
+                if (result.listaEspera) {
+                    llenarModalRecibo();
+                    modalRecibo.style.display = "block";
+                    return;
+                }
 
                 if (!result.ok) return;
+                alert(result.mensaje);
                 modalRecibo.style.display = "block";
                 llenarModalRecibo();
 
@@ -565,14 +586,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             modalRecibo.querySelector("#talleres").innerHTML = talleres.length > 0 ? talleres.join("<br>") : "Ninguno";
+            modalRecibo.querySelector("#lista-espera").innerHTML = listaEspera.length > 0 ? listaEspera.join("<br>") : "Ninguno";
 
-            const lblListaEspera = modalRecibo.querySelector("#talleres");
-            // revisar que se muestren separados
-    
-            // if (lblListaEspera) {
-                lblListaEspera.innerHTML = talleres.length > 0 ? talleres.join("<br>") : lblListaEspera;  // modifique
-               // modalRecibo.querySelector("#donativo-total").textContent = `Total: $`;
-            // }
+           
             modalRecibo.querySelector("#donativo-total").textContent = `Total: $${total.toFixed(2)}`;
 
 
@@ -603,6 +619,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('input[name="Alumno.NumSecundario"]').value = data.numSecundario || "";
                     document.querySelector('textarea[name="Alumno.Padecimientos"]').value = data.padecimientos || "";
 
+                    // para que se limpie cada que cambia el nombre
+                    document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
+                    document.querySelectorAll('input[name="ListaEsperaSeleccionada"]').forEach(c => c.checked = false);
                 } else {
                     console.log(" No se encontró alumno con ese nombre.");
                 }
@@ -805,7 +824,6 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         //reset a lista talleres
         document.querySelectorAll('input[name="TalleresSeleccionados"]').forEach(c => c.checked = false);
-        document.querySelector('.seleccionar').textContent = "";
 
         chbPadecimiento.checked = false;
         txtPadecimientos.disabled = true;
@@ -817,5 +835,82 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
+
+
+});
+
+
+// respaldo
+document.getElementById("Descargar").addEventListener("click", function () {
+    fetch('/Admin/Home/RespaldarBD')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "RespaldoBD.sql";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(() => alert("Error al generar el respaldo."));
+});
+
+
+// limpiar tablas de bd
+//document.getElementById("reiniciar").addEventListener("click", function () {
+//    let seleccionadas = [];
+//    document.querySelectorAll("input[name='tablas']:checked").forEach(chk => seleccionadas.push(chk.value));
+//    if (seleccionadas.length === 0) {
+//        alert("Debe seleccionar al menos una tabla.");
+//        return;
+//    }
+//    if (!confirm("¿Está seguro de limpiar las tablas seleccionadas?\nEsta acción NO se puede deshacer.")) {
+//        return;
+//    }
+
+//    fetch('/Admin/Home/LimpiarTablas', {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json'
+//        },
+//        body: JSON.stringify(seleccionadas)
+//    }).then(res => res.json()).then(data => {
+//            alert(data.mensaje);
+//            location.reload();
+//        }).catch(() => alert("Error al limpiar las tablas."));
+//});
+
+const modal = document.getElementById("modal-DeleteTabla");
+const listaModal = document.getElementById("listaTablasModal");
+let tablasSeleccionadas = [];
+document.getElementById("reiniciar").addEventListener("click", function () {
+
+    tablasSeleccionadas = [...document.querySelectorAll("input[name='tablas']:checked")].map(x => x.value);
+
+    if (tablasSeleccionadas.length === 0) {
+        alert("Debe seleccionar al menos una tabla.");
+        return;
+    }
+    listaModal.innerHTML = "";
+    tablasSeleccionadas.forEach(t => {
+        listaModal.innerHTML += `<div>${t}</div>`;
+    });
+    modal.style.display = "block";
+});
+
+document.getElementById("eliminarTabla").addEventListener("click", (e) => {
+    e.preventDefault();
+    fetch('/Admin/Home/LimpiarTablas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tablasSeleccionadas)
+    })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.mensaje);
+            location.reload();
+        })
+        .catch(() => alert("Error al limpiar las tablas."));
 });
 

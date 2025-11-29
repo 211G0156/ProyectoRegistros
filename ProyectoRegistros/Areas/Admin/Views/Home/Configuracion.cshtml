@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "LayoutAdmin";
+}
+<header class="principal">
+    <div class="izq">
+        <i class="menu material-symbols-outlined">menu</i>
+        <h2>Configuración</h2>
+    </div>
+    <img id="ig2" src="~/img/Historial.png" />
+</header>
+
+<div class="configuracion">
+    <h3>BASE DE DATOS</h3>
+    <div class="config-bd">
+        <div class="respaldo">
+            <label>GENERAR RESPALDO (sql)</label>
+            <button id="Descargar" class="buttons" asp-area="Admin" asp-controller="Home" asp-action="RespaldarBD">Descargar</button><br>
+        </div>
+
+        <label>Seleccione las tablas que desea limpiar</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre de tabla</th>
+                    <th>Reiniciar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Alumnos</td>
+                    <td><input name="tablas" type="checkbox" value="Alumnos"> </td>
+                </tr>
+                <tr>
+                    <td>Talleres</td>
+                    <td><input name="tablas" type="checkbox" value="Talleres"></td>
+                </tr>
+                <tr>
+                    <td>Lista Inscritos</td>
+                    <td><input name="tablas" type="checkbox" value="Listatalleres"></td>
+                </tr>
+                <tr>
+                    <td>Lista Espera</td>
+                    <td><input name="tablas" type="checkbox" value="Listaespera"></td>
+                </tr>
+                <tr>
+                    <td>Historial</td>
+                    <td><input name="tablas" type="checkbox" value="Historial"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="confirmar">
+        <label id="texto">Oprima el botón "Confirmar" una vez que este seguro de limpiar las tablas seleccionadas.</label><br>
+        <button id="reiniciar" class="buttons">Confirmar</button>
+    </div>
+
+</div>
+
+<!--MODAL PARA ELIMINAR-->
+<div class="modal" id="modal-DeleteTabla">
+    <form>
+        <h2>¿Estas seguro de eliminar los datos de estas tablas?</h2>
+        <div id="listaTablasModal">
+
+        </div>
+        <div style="margin: 2vh 0 0 1vw; justify-content: space-between; display: flex;">
+            <button id="cancelar" type="submit" class="buttons">Cancelar</button>
+            <button id="eliminarTabla" type="submit" class="buttons">Confirmar</button>
+        </div>
+    </form>
+</div>

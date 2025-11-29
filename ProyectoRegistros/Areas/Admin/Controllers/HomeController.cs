@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using ProyectoRegistros.Areas.Admin.Models;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Areas.Profe.Models;
@@ -111,12 +112,12 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(a =>
-                    a.Nombre.Contains(searchTerm) ||
-                    a.Tutor.Contains(searchTerm) ||
-                    a.Padecimientos.Contains(searchTerm)
-                );
-            }
+                query = query.Where(a =>
+                            a.Nombre.Contains(searchTerm) ||
+                            a.Tutor.Contains(searchTerm) ||
+                            a.Padecimientos.Contains(searchTerm)
+                        );
+            }
 
             if (tallerId.HasValue && tallerId > 0)
             {
@@ -372,9 +373,9 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
         // m queda pendiente organizarlos bn 
 
-        
 
-          [HttpPost]
+
+        [HttpPost]
         public async Task<IActionResult> RegistroForm(MisTalleresViewModel model, List<int> TalleresSeleccionados, List<int> ListaEsperaSeleccionada)
         {
             try
@@ -398,7 +399,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 {
                     pagado = true;
                 }
-                    
+
 
                 bool seleccionoAlgo = (TalleresSeleccionados != null && TalleresSeleccionados.Any()) || (ListaEsperaSeleccionada != null && ListaEsperaSeleccionada.Any());
 
@@ -416,80 +417,108 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                             var taller = _context.Tallers.Find(tallerId);
                             if (taller != null)
                                 talleresDuplicados.Add(taller.Nombre);
-                            
+
                         }
-                     } 
+                    }
                 }
-                     if (talleresDuplicados.Any())
-                        {
-                            return Json(new
-                            {
-                                ok = false,
-                                mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados)
-                            });
-                        }
-                 
-
-                    if (TalleresSeleccionados != null)
+                if (talleresDuplicados.Any())
+                {
+                    return Json(new
                     {
-                        foreach (var tallerId in TalleresSeleccionados)
+                        ok = false,
+                        mensaje = "El alumno ya estaba inscrito en: " + string.Join(", ", talleresDuplicados.Distinct())
+                    });
+                }
+
+
+                if (TalleresSeleccionados != null)
+                {
+                    foreach (var tallerId in TalleresSeleccionados)
+                    {
+                        var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
+                        if (taller == null) continue;
+
+
+                        if (_context.Listaesperas.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerId))
                         {
-                            var taller = _context.Tallers.FirstOrDefault(t => t.Id == tallerId);
-                            if (taller == null) continue;
+                            continue;
+                        }
+                        bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
+                        string fechaCita = null;
+                        if (esAtencion)
+                        {
+                            var dias = Request.Form[$"Dias_{tallerId}"];
+                            var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
+                            var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
+                            fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
+                            model.Alumno.AtencionPsico = 1;
+                        }
 
-                            bool esAtencion = taller.Nombre.ToLower().Contains("atencion psicopedagogica");
-                            string fechaCita = null;
-                            if (esAtencion)
-                            {
-                                var dias = Request.Form[$"Dias_{tallerId}"];
-                                var horaInicio = Request.Form[$"HoraInicio_{tallerId}"];
-                                var horaFinal = Request.Form[$"HoraFinal_{tallerId}"];
-                                fechaCita = $"{dias} {horaInicio} {horaFinal}".Trim();
-                                model.Alumno.AtencionPsico = 1;
-                            }
+                        _context.Listatalleres.Add(new Listatallere
+                        {
+                            IdAlumno = model.Alumno.Id,
+                            IdTaller = taller.Id,
+                            FechaRegistro = DateTime.Now,
+                            FechaCita = fechaCita,
+                            Pagado =  (sbyte)(pagado ? 1 : 0),
+                            FechaPago = pagado ? DateTime.Now : null,
+                            Estado = "Activo"
+                        });
 
-                            _context.Listatalleres.Add(new Listatallere
+                        // disminuye el lugar hasta que ya se confirmó todo
+                        taller.LugaresDisp -= 1;
+                    }
+                }
+                var nuevosRegistradosEnEspera = new List<string>();
+                if (ListaEsperaSeleccionada != null)
+                {
+                    foreach (var tallerEsperaId in ListaEsperaSeleccionada)
+                    {
+                        bool yaEnLista = _context.Listaesperas.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerEsperaId);
+                        if (!yaEnLista)
+                        {
+                            _context.Listaesperas.Add(new Listaespera
                             {
                                 IdAlumno = model.Alumno.Id,
-                                IdTaller = taller.Id,
+                                IdTaller = tallerEsperaId,
                                 FechaRegistro = DateTime.Now,
-                                FechaCita = fechaCita,
-                                Pagado =  (sbyte)(pagado ? 1 : 0),
-                                FechaPago = pagado ? DateTime.Now : null,
+                                Estado = "En espera"
                             });
-
-                            // disminuye el lugar hasta que ya se confirmó todo
-                            taller.LugaresDisp -= 1;
+                            var taller = _context.Tallers.Find(tallerEsperaId);
+                            if (taller != null) nuevosRegistradosEnEspera.Add(taller.Nombre);
                         }
                     }
-                    if (ListaEsperaSeleccionada != null)
-                    {
-                        foreach (var tallerEsperaId in ListaEsperaSeleccionada)
-                        {
-                            bool yaEnLista = _context.Listaesperas.Any(x => x.IdAlumno == model.Alumno.Id && x.IdTaller == tallerEsperaId);
-
-                            if (!yaEnLista)
-                            {
-                                _context.Listaesperas.Add(new Listaespera
-                                {
-                                    IdAlumno = model.Alumno.Id,
-                                    IdTaller = tallerEsperaId,
-                                    FechaRegistro = DateTime.Now,
-                                    Estado = "En espera"
-                                });
-                            }
-                        }
-                    }
-
-                    _context.SaveChanges();
-                    await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
-
-                    return Json(new { ok = true, mensaje = "Registro guardado correctamente.", idAlumno = model.Alumno.Id });
                 }
-                catch (Exception ex)
+
+                _context.SaveChanges();
+                await EnviarNotificacionHub(model.Alumno.Nombre, TalleresSeleccionados);
+
+                if (nuevosRegistradosEnEspera.Any())
                 {
-                    return Json(new { ok = false, mensaje = "Error al registrar: " + ex.Message });
+                    return Json(new
+                    {
+                        ok = false,
+                        listaEspera = true,
+                        mensaje = "El alumno fue registrado en lista de espera de: " + string.Join(", ", nuevosRegistradosEnEspera)
+                    });
                 }
+                else if (ListaEsperaSeleccionada != null && ListaEsperaSeleccionada.Any())
+                {
+                    return Json(new
+                    {
+                        ok = false,
+                        listaEsperaDuplicada = true,
+                        mensaje = "El alumno ya estaba registrado en lista de espera."
+                    });
+                }
+                return Json(new { ok = true, mensaje = "Registro guardado correctamente.", idAlumno = model.Alumno.Id });
+            }
+            catch (Exception ex)
+            {
+                var detalle = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return Json(new { ok = false, mensaje = "Error al registrar: " + detalle });
+            }
+
 
         }
 
@@ -568,6 +597,49 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 alumno.NumSecundario
             });
         }
+        public IActionResult Configuracion()
+        {
+            return View();
+        }
+        public IActionResult RespaldarBD()
+        {
+            string backupPath = Path.Combine(Path.GetTempPath(), "backup.sql");
+            string connection = _context.Database.GetDbConnection().ConnectionString;
+            using (var conn = new MySqlConnection(connection))
+            {
+                using (var cmd = new MySqlCommand())
+                {
+                    using (var mb = new MySqlBackup(cmd))
+                    {
+                        cmd.Connection = conn;
+                        conn.Open();
+                        mb.ExportToFile(backupPath);
+                        conn.Close();
+                    }
+                }
+            }
+            byte[] fileBytes = System.IO.File.ReadAllBytes(backupPath);
+            return File(fileBytes, "application/sql", "RespaldoBD.sql");
+        }
+        [HttpPost]
+        public IActionResult LimpiarTablas([FromBody] List<string> tablas)
+        {
+            foreach (var tabla in tablas)
+            {
+                try
+                {
+                    _context.Database.ExecuteSqlRaw($"DELETE FROM {tabla};");
+                    _context.Database.ExecuteSqlRaw($"ALTER TABLE {tabla} AUTO_INCREMENT = 1;");
+                }
+                catch
+                {
+                    return Json(new { mensaje = $"Error al limpiar la tabla: {tabla}" });
+                }
+            }
+
+            return Json(new { mensaje = "Tablas reiniciadas correctamente." });
+        }
+
 
     }
 }
