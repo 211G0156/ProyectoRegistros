@@ -707,7 +707,7 @@ table {
 .datos {
     display: grid;
     grid-template-columns: 190px 1fr;
-    gap: 10px;
+    gap: 5px;
     width: 80%;
     margin: 0 auto;
     align-items: center;

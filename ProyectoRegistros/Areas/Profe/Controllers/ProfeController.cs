@@ -344,7 +344,7 @@ namespace ProyectoRegistros.Areas.Profe.Controllers
             var talleres = _context.Listatalleres.Where(l => l.IdAlumno == idAlumno && l.FechaRegistro.Date == DateTime.Today).ToList();  //checar
             foreach (var t in talleres)
             {
-                t.Pagado = (sbyte)(pagado ? 1 : 0);
+                t.Pagado = 1;
                 t.FechaPago = pagado ? DateTime.Now : null;
             }
 

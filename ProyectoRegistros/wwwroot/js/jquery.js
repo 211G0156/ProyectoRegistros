@@ -351,7 +351,21 @@
             const nombre = document.getElementById("Alumno_Nombre").value;
             const total = document.getElementById("donativo-total").textContent.replace("Total: ", "");
             const fecha = new Date().toLocaleDateString("es-MX");
-            const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            // const tal = Array.from(document.querySelectorAll('input[name="TalleresSeleccionados"]:checked')).map(input => input.nextElementSibling.textContent.trim());
+            // const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
+
+            const tal = [];
+            document.querySelectorAll('input[name="TalleresSeleccionados"]:checked').forEach(input => {
+                const id = parseInt(input.value);
+
+                const card = input.closest(".op-taller");
+                const nombre = card.querySelector(".nombreTaller").textContent;
+                const dias = card.querySelector("input[name^='Dias_']")?.value || card.querySelector(".label-dias").textContent;
+                const horaInicio = card.querySelector("input[name^='HoraInicio_']")?.value || "";
+                const horaFinal = card.querySelector("input[name^='HoraFinal_']")?.value || "";
+
+                tal.push(`${nombre} — ${dias} de ${horaInicio} a ${horaFinal}`);
+            });
             const talleresTexto = tal.length > 0 ? tal.join("<br>") : "Ninguno";
 
             const htmlRecibo = `

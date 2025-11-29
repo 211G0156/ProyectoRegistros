@@ -30,6 +30,13 @@
         <input class="inputForms" name="Nombre" type="text" placeholder="Escribir..." required><br>
         <label>Días:</label><br>
         <input class="inputForms" name="Dias" type="text" placeholder="Escribir..." required><br>
+        <label>Periodo:</label><br>
+        <select class="inputForms" name="Periodo" style="height: 3.5vh;" required>
+            <option value="">Seleccione un periodo...</option>
+            <option value="Enero-Junio">Enero-Junio</option>
+            <option value="Junio-Agosto">Junio-Agosto</option>
+            <option value="Agosto-Diciembre">Agosto-Diciembre</option>
+        </select><br>
         <label>Espacios:</label><br>
         <input class="inputForms" name="LugaresDisp" type="number" min="0" placeholder="Escribir..." required><br>
         <div class="col">
@@ -54,9 +61,9 @@
         </select><br>
         <label>Donativo:</label><br>
         <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
-        <div class="error">
+@*         <div class="error">
         </div>
-        <div style="display: flex; justify-content: center;">
+ *@        <div style="display: flex; justify-content: center;">
             <button type="submit" class="buttons">Guardar</button>
         </div>
     </form>
@@ -74,6 +81,13 @@
         <input class="inputForms" name="Nombre" id="editNombre" type="text" placeholder="Escribir..."><br>
         <label>Dias:</label><br>
         <input name="Dias" class="inputForms" id="editDias" type="text" placeholder="Escribir..."><br>
+        <label>Periodo:</label><br>
+        <select class="inputForms" name="Periodo" id="editPeriodo" style="height: 3.5vh;">
+            <option value="">Seleccione un periodo...</option>
+            <option value="Enero-Junio">Enero-Junio</option>
+            <option value="Junio-Agosto">Junio-Agosto</option>
+            <option value="Agosto-Diciembre">Agosto-Diciembre</option>
+        </select><br>
         <label>Espacios:</label><br>
         <input name="LugaresDisp" class="inputForms" id="editEspacios" type="number" min="0" placeholder="Escribir..."><br>
         <div class="col">
@@ -148,6 +162,8 @@
 
     <div class="BotonesTaller" style="margin-left: auto; display: flex; gap: 15px;">
         <input id="aggTaller" type="button" value="Crear taller" />
+        <input id="aggTaller" type="button" value="Terminar periodo" />
+
 
         <a id="verAlumno" class="verLista"
            href="@Url.Action("Alumnos", "Home", new { area = "Admin" })"
@@ -164,83 +180,85 @@
 </div>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-            const searchInput = document.getElementById('search-input');
-            const checkbox = document.getElementById('checkbox-recientes');
-            const tablaContainer = document.getElementById('tabla-container');
-            let debounceTimer;
+        const searchInput = document.getElementById('search-input');
+        const checkbox = document.getElementById('checkbox-recientes');
+        const tablaContainer = document.getElementById('tabla-container');
+        let debounceTimer;
 
-            function actualizarTabla() {
-                const searchTerm = searchInput.value;
-                const recientes = checkbox.checked;
-                const url = `@Url.Action("Index", "Home")?searchTerm=${encodeURIComponent(searchTerm)}&recienAgregados=${recientes}`;
+        function actualizarTabla() {
+            const searchTerm = searchInput.value;
+            const recientes = checkbox.checked;
+            const url = `@Url.Action("Index", "Home")?searchTerm=${encodeURIComponent(searchTerm)}&recienAgregados=${recientes}`;
 
-                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(response => response.text())
-                .then(html => { tablaContainer.innerHTML = html; })
-                .catch(error => console.error('Error al actualizar la tabla:', error));
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => { tablaContainer.innerHTML = html; })
+            .catch(error => console.error('Error al actualizar la tabla:', error));
+        }
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(actualizarTabla, 300);
+        });
+        checkbox.addEventListener('change', actualizarTabla);
+
+
+        tablaContainer.addEventListener('click', async function(event) {
+
+            const editButton = event.target.closest('.btneditar');
+            if (editButton) {
+                event.preventDefault();
+                const id = editButton.dataset.id;
+
+                try {
+                    const response = await fetch(`/Admin/Home/GetTaller/${id}`);
+                    if (!response.ok) throw new Error("Error al obtener taller");
+
+                    const data = await response.json();
+
+                    document.getElementById("EditId").value = data.id;
+                    document.getElementById("editNombre").value = data.nombre;
+                    document.getElementById("editDias").value = data.dias;
+                    document.getElementById("editEspacios").value = data.lugaresDisp;
+                    document.getElementById("editHoraInicio").value = data.horaInicio;
+                    document.getElementById("editHoraFinal").value = data.horaFinal;
+                    document.getElementById("editEdadMin").value = data.edadMin;
+                    document.getElementById("editEdadMax").value = data.edadMax;
+                    document.getElementById("editCosto").value = data.costo;
+                    document.getElementById("editProfesor").value = data.idUsuario;
+
+                    document.getElementById("editPeriodo").value = data.periodo || "";
+
+                    document.getElementById("modal-EditTaller").style.display = "block";
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al cargar datos del taller");
+                }
             }
 
-            searchInput.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(actualizarTabla, 300);
-            });
-            checkbox.addEventListener('change', actualizarTabla);
+            const deleteButton = event.target.closest('.btneliminar');
+            if (deleteButton) {
+                event.preventDefault();
+                const id = deleteButton.dataset.id;
+                const nombre = deleteButton.dataset.nombre;
 
-
-            tablaContainer.addEventListener('click', async function(event) {
-
-                const editButton = event.target.closest('.btneditar');
-                if (editButton) {
-                    event.preventDefault();
-                    const id = editButton.dataset.id;
-
-                    try {
-                        const response = await fetch(`/Admin/Home/GetTaller/${id}`);
-                        if (!response.ok) throw new Error("Error al obtener taller");
-                        const data = await response.json();
-
-                        document.getElementById("EditId").value = data.id;
-                        document.getElementById("editNombre").value = data.nombre;
-                        document.getElementById("editDias").value = data.dias;
-                        document.getElementById("editEspacios").value = data.lugaresDisp;
-                        document.getElementById("editHoraInicio").value = data.horaInicio;
-                        document.getElementById("editHoraFinal").value = data.horaFinal;
-                        document.getElementById("editEdadMin").value = data.edadMin;
-                        document.getElementById("editEdadMax").value = data.edadMax;
-                        document.getElementById("editCosto").value = data.costo;
-                        document.getElementById("editProfesor").value = data.idUsuario;
-
-                        document.getElementById("modal-EditTaller").style.display = "block";
-                    } catch (err) {
-                        console.error(err);
-                        alert("Error al cargar datos del taller");
-                    }
-                }
-
-                const deleteButton = event.target.closest('.btneliminar');
-                if (deleteButton) {
-                    event.preventDefault();
-                    const id = deleteButton.dataset.id;
-                    const nombre = deleteButton.dataset.nombre;
-
-                    document.getElementById("DeleteId").value = id;
-                    document.querySelector("#modal-DeleteTaller label").textContent = nombre;
-                    document.getElementById("modal-DeleteTaller").style.display = "block";
-                }
-            });
-
-            document.getElementById("aggTaller")?.addEventListener("click", function () {
-
-                document.getElementById("modal-AddTaller").style.display = "block";
-            });
-
-            document.body.addEventListener('click', function(event) {
-                if (event.target.classList.contains('cerrar')) {
-                    event.target.closest('.modal').style.display = 'none';
-                }
-            });
+                document.getElementById("DeleteId").value = id;
+                document.querySelector("#modal-DeleteTaller label").textContent = nombre;
+                document.getElementById("modal-DeleteTaller").style.display = "block";
+            }
         });
-    </script>
+
+        document.getElementById("aggTaller")?.addEventListener("click", function () {
+            document.getElementById("modal-AddTaller").style.display = "block";
+        });
+
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('cerrar')) {
+                event.target.closest('.modal').style.display = 'none';
+            }
+        });
+    });
+</script>
