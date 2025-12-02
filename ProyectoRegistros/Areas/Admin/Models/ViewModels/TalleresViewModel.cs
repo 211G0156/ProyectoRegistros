@@ -8,6 +8,7 @@ namespace ProyectoRegistros.Areas.Admin.Models.ViewModels
         public string Nombre { get; set; }
         public string Dias { get; set; }
         public int Espacios { get; set; }
+        public int Inscritos { get; set; }
         public string Horario { get; set; }
         public string Edad { get; set; }
         public string Profesor { get; set; }

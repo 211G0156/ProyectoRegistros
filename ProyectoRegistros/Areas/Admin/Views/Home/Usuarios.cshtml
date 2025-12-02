@@ -14,7 +14,6 @@
 }
 
 
-<!--MODAL PARA AGREGAR-->
 <div class="modal" id="modal-AddUsuario">
     <form id="formAddUsuario" asp-area="Admin" asp-controller="Usuarios" asp-action="AgregarUsuario" method="post" style="margin: 18vh auto; text-align: left;">
         <button class="cerrar" type="button">X</button><br>
@@ -45,9 +44,8 @@
     </form>
 </div>
 
-<!--MODAL PARA EDITAR-->
 <div class="modal" id="modal-EditUsuario">
-    <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 18vh auto; text-align: left;">
+    <form asp-area="Admin" asp-controller="Usuarios" asp-action="EditarUsuario" method="post" style="margin: 10vh auto; text-align: left;">
         <input type="hidden" name="Id" id="EditUsuarioId" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
@@ -59,17 +57,26 @@
         <input class="inputForms" id="editNombreUsu" type="text" name="Nombre" required><br>
 
         <label>Correo Electrónico:</label><br>
-        <input class="inputForms" id="editCorreo" type="email" name="Correo"required><br>
+        <input class="inputForms" id="editCorreo" type="email" name="Correo" required><br>
 
         <label>Número Telefónico:</label><br>
         <input class="inputForms" id="editTel" type="text" name="NumTel" required><br>
 
         <label>Contraseña:</label><br>
-        <button>Restablecer contraseña</button>
-
         <input class="inputForms" id="editContraseña" type="text" name="Contraseña"
                placeholder="Dejar en blanco para no cambiar la contraseña" /><br />
 
+        <div style="margin-top: 5px; margin-bottom: 15px;">
+            <button type="button" id="btnReenviarPass" class="buttons"
+                    style="background-color:  #d4d4d4;  font-size: 1.4vh; padding: 5px 10px; width: auto;">
+                Generar nueva contraseña
+            </button>
+
+            <small id="avisoBloqueo" style="color: red; display: none; margin-top: 5px;">
+                <i class="material-symbols-outlined" style="font-size: 1.5vh; vertical-align: bottom;">warning</i>
+                No puedes reenviar si modificaste el correo. Guarda los cambios primero.
+            </small>
+        </div>
         <label>Rol:</label><br>
         <select class="inputForms" name="IdRol" id="editRol" style="height: 3.5vh;">
             <option value="1">Administrador</option>
@@ -77,15 +84,12 @@
             <option value="3">Visitante</option>
         </select>
 
-
-
         <div style="display:flex; justify-content:center;">
             <button style="margin: -0vh 0; position:static;" type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
 
-<!--MODAL PARA ELIMINAR-->
 <div class="modal" id="modal-DeleteUsuario">
     <form asp-area="Admin" asp-action="EliminarUsuario" asp-controller="Usuarios" id="formDeleteUsuario" method="post" style="margin: 33vh auto;">
         <input type="hidden" id="DeleteUsuarioId" name="id" />
@@ -101,10 +105,6 @@
         </div>
     </form>
 </div>
-
-
-
-
 
 <header class="principal">
     <div class="izq">
@@ -135,6 +135,7 @@
         const searchInput = document.getElementById('search-usuarios');
         const tablaContainer = document.getElementById('tabla-container');
         let debounceTimer;
+        let correoOriginal = "";
 
         function actualizarTabla() {
             const searchTerm = searchInput.value;
@@ -171,7 +172,19 @@
 
                     document.getElementById("EditUsuarioId").value = data.id;
                     document.getElementById("editNombreUsu").value = data.nombre;
+
                     document.getElementById("editCorreo").value = data.correo;
+                    correoOriginal = data.correo;
+
+                    const btnReenviar = document.getElementById("btnReenviarPass");
+                    const aviso = document.getElementById("avisoBloqueo");
+                    if(btnReenviar) {
+                        btnReenviar.disabled = false;
+                        btnReenviar.style.opacity = "1";
+                        btnReenviar.style.cursor = "pointer";
+                        aviso.style.display = "none";
+                    }
+
                     document.getElementById("editTel").value = data.numTel;
                     document.getElementById("editContraseña").value = "";
                     document.getElementById("editRol").value = data.idRol;
@@ -196,6 +209,60 @@
             }
         });
 
+        const inputCorreoEdit = document.getElementById("editCorreo");
+        const btnReenviar = document.getElementById("btnReenviarPass");
+        const aviso = document.getElementById("avisoBloqueo");
+
+        if(inputCorreoEdit){
+            inputCorreoEdit.addEventListener("input", function() {
+                if (this.value.trim() !== correoOriginal) {
+                    btnReenviar.disabled = true;
+                    btnReenviar.style.opacity = "0.5";
+                    btnReenviar.style.cursor = "not-allowed";
+                    aviso.style.display = "block";
+                } else {
+                    btnReenviar.disabled = false;
+                    btnReenviar.style.opacity = "1";
+                    btnReenviar.style.cursor = "pointer";
+                    aviso.style.display = "none";
+                }
+            });
+        }
+
+        if(btnReenviar){
+            btnReenviar.addEventListener("click", async function() {
+                const idUsuario = document.getElementById("EditUsuarioId").value;
+
+                if(!confirm("¿Deseas generar una contraseña nueva y enviarla por correo a este usuario?")) {
+                    return;
+                }
+
+                const textoOriginal = btnReenviar.textContent;
+                btnReenviar.disabled = true;
+                btnReenviar.textContent = "Enviando...";
+
+                try {
+                    const formData = new FormData();
+                    formData.append("id", idUsuario);
+
+                    const response = await fetch("/Admin/Usuarios/ReenviarCredenciales", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    alert(data.message);
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Error al intentar reenviar el correo.");
+                }
+
+                btnReenviar.disabled = false;
+                btnReenviar.textContent = textoOriginal;
+            });
+        }
+
         document.getElementById("aggUsuario")?.addEventListener("click", function () {
             document.getElementById("modal-AddUsuario").style.display = "block";
         });
@@ -210,69 +277,66 @@
         const formAddUsuario = document.getElementById("formAddUsuario");
         const btnGuardarUsuario = document.getElementById("btnGuardarUsuario");
 
-
         if (formAddUsuario) {
-    formAddUsuario.addEventListener("submit", async function (e) {
-        e.preventDefault();
+            formAddUsuario.addEventListener("submit", async function (e) {
+                e.preventDefault();
 
-            btnGuardarUsuario.disabled = true;
-            btnGuardarUsuario.textContent = "Guardando...";
+                btnGuardarUsuario.disabled = true;
+                btnGuardarUsuario.textContent = "Guardando...";
 
-        const formData = new FormData(formAddUsuario);
+                const formData = new FormData(formAddUsuario);
 
-        try {
-            const response = await fetch("/Admin/Usuarios/AgregarUsuario", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.success === "reactivar") {
-
-                btnGuardarUsuario.disabled = false;
-                btnGuardarUsuario.textContent = "Guardar";
-
-                const confirmar = confirm(data.message);
-
-                if (confirmar) {
-                    const formReactivar = new FormData();
-                    formReactivar.append("id", data.id);
-
-                    const respReactivar = await fetch("/Admin/Usuarios/ReactivarUsuario", {
+                try {
+                    const response = await fetch("/Admin/Usuarios/AgregarUsuario", {
                         method: "POST",
-                        body: formReactivar
+                        body: formData
                     });
 
-                    const dataReactivar = await respReactivar.json();
-                    alert(dataReactivar.message);
+                    const data = await response.json();
 
-                    if (dataReactivar.success) {
+                    if (data.success === "reactivar") {
+                        btnGuardarUsuario.disabled = false;
+                        btnGuardarUsuario.textContent = "Guardar";
+
+                        const confirmar = confirm(data.message);
+
+                        if (confirmar) {
+                            const formReactivar = new FormData();
+                            formReactivar.append("id", data.id);
+
+                            const respReactivar = await fetch("/Admin/Usuarios/ReactivarUsuario", {
+                                method: "POST",
+                                body: formReactivar
+                            });
+
+                            const dataReactivar = await respReactivar.json();
+                            alert(dataReactivar.message);
+
+                            if (dataReactivar.success) {
+                                window.location.reload();
+                            }
+                            return;
+                        } else {
+                            return;
+                        }
+                    }
+
+                    alert(data.message);
+
+                    if (data.success) {
+                        document.getElementById("modal-AddUsuario").style.display = "none";
+                        formAddUsuario.reset();
                         window.location.reload();
                     }
 
-                    return;
-                } else {
-                    return;
+                } catch (error) {
+                    console.error("Error al agregar usuario:", error);
+                    alert("Ocurrió un error al intentar agregar el usuario.");
                 }
-            }
-
-            alert(data.message);
-
-            if (data.success) {
-                document.getElementById("modal-AddUsuario").style.display = "none";
-                formAddUsuario.reset();
-                window.location.reload();
-            }
-
-        } catch (error) {
-            console.error("Error al agregar usuario:", error);
-            alert("Ocurrió un error al intentar agregar el usuario.");
+                btnGuardarUsuario.disabled = false;
+                btnGuardarUsuario.textContent = "Guardar";
+            });
         }
-            btnGuardarUsuario.disabled = false;
-            btnGuardarUsuario.textContent = "Guardar";
-    });
-            }
 
         const formEditUsuario = document.querySelector("#modal-EditUsuario form");
 
@@ -289,22 +353,19 @@
                     });
 
                     const data = await response.json();
-                    alert(data.message);
 
-           if (data.success) {
-
-              alert(data.message);
-
-                 if (data.logout) {
-                    window.location.href = "/Login/Index";
-                    return;
-            }
-
-        document.getElementById("modal-EditUsuario").style.display = "none";
-        formEditUsuario.reset();
-        window.location.reload();
-    }
-
+                    if (data.success) {
+                        alert(data.message);
+                        if (data.logout) {
+                            window.location.href = "/Login/Index";
+                            return;
+                        }
+                        document.getElementById("modal-EditUsuario").style.display = "none";
+                        formEditUsuario.reset();
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                    }
 
                 } catch (error) {
                     console.error("Error editando usuario:", error);
@@ -312,6 +373,5 @@
                 }
             });
         }
-
     });
 </script>

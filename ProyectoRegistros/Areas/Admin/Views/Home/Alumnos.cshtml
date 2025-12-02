@@ -14,19 +14,14 @@
         </div><br>
 
         <input type="hidden" name="Id" id="editId" />
-
         <label>Nombre:</label><br>
         <input class="inputForms" name="Nombre" id="editNombre" type="text" placeholder="Nombre completo" required><br>
-
         <label>Tutor:</label><br>
         <input class="inputForms" name="Tutor" id="editTutor" type="text" placeholder="Nombre del tutor" required><br>
-
         <label>Teléfono:</label><br>
         <input class="inputForms" name="NumContacto" id="editNumContacto" type="text" placeholder="555..." required><br>
-
         <label>Teléfono 2:</label><br>
         <input class="inputForms" name="NumSecundario" id="editNumSecundario" type="text" placeholder="Opcional"><br>
-
         <label>Padecimientos:</label><br>
         <input class="inputForms" name="Padecimientos" id="editPadecimientos" type="text" placeholder="Ninguno"><br>
 
@@ -44,9 +39,7 @@
             <legend>
                 <h2>¿Desea eliminar a este alumno?</h2>
                 <h3 id="deleteNombreAlumno" style="color:red; text-align:center; margin-bottom:10px;"></h3>
-
                 <p style="text-align:center; font-size:0.9rem;">Talleres inscritos actualmente:</p>
-
                 <div class="scroll-eliminar">
                     <table>
                         <thead>
@@ -55,8 +48,7 @@
                                 <th>Estado</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaTalleresBaja">
-                        </tbody>
+                        <tbody id="tablaTalleresBaja"></tbody>
                     </table>
                 </div>
             </legend>
@@ -67,10 +59,11 @@
     </form>
 </div>
 
-
 <header class="principal">
     <div class="izq">
-        <img id="ig1" class="reg" src="~/img/arrow_back.png" />
+        <a href="@Url.Action("Index", "Home", new { Area = "Admin" })">
+            <img id="ig1" class="reg" src="~/img/arrow_back.png" />
+        </a>
         <h2>Alumnos</h2>
     </div>
     <img id="ig2" src="~/img/Historial.png" />
@@ -107,13 +100,17 @@
         const tablaContainer = document.getElementById('tabla-container');
         let debounceTimer;
 
-+        function actualizarTabla() {
+        function actualizarTabla() {
             const searchTerm = searchInput.value;
             const tallerId = tallerSelect.value;
+
             const url = `@Url.Action("Index", "Alumnos", new { Area = "Admin" })?searchTerm=${encodeURIComponent(searchTerm)}&tallerId=${tallerId}`;
 
             fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) throw new Error("Error en la respuesta del servidor");
+                return response.text();
+            })
             .then(html => { tablaContainer.innerHTML = html; })
             .catch(error => console.error('Error al actualizar la tabla:', error));
         }
@@ -129,7 +126,6 @@
             const regex = /[^a-zA-Z\s\u00C0-\u017F]/g;
             this.value = this.value.replace(regex, '');
         });
-
 
         tablaContainer.addEventListener('click', async function(event) {
 

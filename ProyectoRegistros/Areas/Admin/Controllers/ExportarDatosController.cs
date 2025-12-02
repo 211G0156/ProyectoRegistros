@@ -206,7 +206,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 var currentRow = 1;
 
                 string titulo = esBusquedaHistorica
-                    ? $"REPORTE HISTÓRICO - {filtros.PeriodoSeleccionado} {filtros.AñoSeleccionado}"
+                    ? $"REPORTE EXTENSO - {filtros.PeriodoSeleccionado} {filtros.AñoSeleccionado}"
                     : "REPORTE DE TALLERES ACTUALES";
 
                 worksheet.Cell(currentRow, 1).Value = titulo;

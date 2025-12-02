@@ -73,15 +73,13 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 Nombre = t.Nombre,
                 Dias = t.Dias,
                 Espacios = t.LugaresDisp,
+                Inscritos = _context.Listatalleres.Count(l => l.IdTaller == t.Id && l.Estado == "Activo"),
                 Horario = t.HoraInicio.ToString("HH:mm") + " - " + t.HoraFinal.ToString("HH:mm"),
-                Edad = t.EdadMax.HasValue
-                    ? $"{t.EdadMin} a {t.EdadMax.Value} años"
-                    : $"{t.EdadMin} en adelante",
+                Edad = t.EdadMax.HasValue ? $"{t.EdadMin} a {t.EdadMax.Value} años" : $"{t.EdadMin} en adelante",
                 Profesor = t.IdUsuarioNavigation.Nombre,
                 Costo = t.Costo
             })
-            .ToListAsync();
-
+                        .ToListAsync();
             ViewBag.Profesores = await _context.Usuarios
                 .Where(u => u.IdRol == 2)
                 .ToListAsync();
@@ -262,37 +260,49 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult EditarTaller(NuevoTallerVM vm)
         {
-            ModelState.Remove("IdUsuario");
-            if (vm.EdadMax.HasValue && vm.EdadMin >= vm.EdadMax.Value)
-            {
-                ModelState.AddModelError("EdadMax", "La edad máxima debe ser mayor a la mínima.");
-            }
+            if (!ModelState.IsValid) return Json(new { success = false, message = "Datos inválidos." });
 
-            if (ModelState.IsValid)
+            try
             {
                 var taller = _context.Tallers.Find(vm.Id);
-                if (taller != null)
-                {
-                    taller.Nombre = vm.Nombre;
-                    taller.Dias = vm.Dias;
-                    taller.LugaresDisp = vm.LugaresDisp;
-                    taller.HoraInicio = vm.HoraInicio;
-                    taller.HoraFinal = vm.HoraFinal;
-                    taller.EdadMin = vm.EdadMin;
-                    taller.EdadMax = vm.EdadMax;
-                    taller.Costo = vm.Costo;
-                    taller.Periodo = vm.Periodo;
-                    taller.IdUsuario = vm.IdUsuario;
+                if (taller == null) return Json(new { success = false, message = "Taller no encontrado." });
 
-                    _context.Update(taller);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
+                int alumnosInscritos = _context.Listatalleres.Count(l => l.IdTaller == vm.Id && l.Estado == "Activo");
+
+                if (vm.LugaresDisp < alumnosInscritos)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"No puedes reducir los espacios a {vm.LugaresDisp} porque ya hay {alumnosInscritos} alumnos inscritos. Debes dar de baja alumnos primero."
+                    });
                 }
-                return NotFound();
+
+                if (vm.EdadMax.HasValue && vm.EdadMin >= vm.EdadMax.Value)
+                    return Json(new { success = false, message = "La edad máxima debe ser mayor a la mínima." });
+
+                taller.Nombre = vm.Nombre;
+                taller.Dias = vm.Dias;
+                taller.LugaresDisp = vm.LugaresDisp;
+                taller.HoraInicio = vm.HoraInicio;
+                taller.HoraFinal = vm.HoraFinal;
+                taller.EdadMin = vm.EdadMin;
+                taller.EdadMax = vm.EdadMax;
+                taller.Costo = vm.Costo;
+                taller.Periodo = vm.Periodo;
+                taller.IdUsuario = vm.IdUsuario;
+
+                _context.Update(taller);
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "Taller editado correctamente." });
             }
-            ViewBag.Profesores = _context.Usuarios.Where(u => u.IdRol == 2).ToList();
-            return View("Index");
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
         }
+
         [HttpGet]
         public IActionResult VerificarTaller(int id)
         {
@@ -315,12 +325,65 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             if (taller.Listatalleres != null && taller.Listatalleres.Any())
             {
-                return Ok("El taller tiene alumnos registrados. Se aplicó baja lógica.");
+                var inscripcionesActivas = taller.Listatalleres.Where(lt => lt.Estado == "Activo").ToList();
+
+                foreach (var inscripcion in inscripcionesActivas)
+                {
+                    inscripcion.Estado = "Cancelado por eliminación de taller";
+
+                    int idAlumno = inscripcion.IdAlumno;
+
+                    bool tieneOtrosTalleres = _context.Listatalleres
+                        .Any(lt => lt.IdAlumno == idAlumno && lt.IdTaller != id && lt.Estado == "Activo");
+
+                    if (!tieneOtrosTalleres)
+                    {
+                        var alumno = _context.Alumnos.Find(idAlumno);
+                        if (alumno != null)
+                        {
+                            alumno.Estado = 0;
+                            _context.Update(alumno);
+                        }
+                    }
+                }
             }
 
+            _context.SaveChanges();
             return Ok("Taller eliminado correctamente.");
         }
 
+        [HttpPost]
+        public IActionResult TerminarSemestre()
+        {
+            try
+            {
+                var inscripcionesActivas = _context.Listatalleres.Where(l => l.Estado == "Activo").ToList();
+                foreach (var ins in inscripcionesActivas)
+                {
+                    ins.Estado = "Finalizado por cierre de periodo";
+                }
+
+                var alumnosActivos = _context.Alumnos.Where(a => a.Estado == 1).ToList();
+                foreach (var alumno in alumnosActivos)
+                {
+                    alumno.Estado = 0;
+                }
+
+                var talleresActivos = _context.Tallers.Where(t => t.Estado == 1).ToList();
+                foreach (var t in talleresActivos)
+                {
+                    t.Estado = 0;
+                }
+
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "Periodo terminado correctamente. Alumnos dados de baja y talleres archivados." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message });
+            }
+        }
         [HttpGet]
         public IActionResult RegistroForm()
         {

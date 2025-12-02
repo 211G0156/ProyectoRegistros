@@ -4,19 +4,15 @@
 @{
     Layout = "LayoutAdmin";
 }
+
 @if (TempData["ErrorHorario"] != null)
 {
-    <script>
-        alert("@TempData["ErrorHorario"]");
-    </script>
+    <script>alert("@TempData["ErrorHorario"]");</script>
 }
 @if (TempData["Exito"] != null)
 {
-    <script>
-        alert("@TempData["Exito"]");
-    </script>
+    <script>alert("@TempData["Exito"]");</script>
 }
-
 
 <div class="modal" id="modal-AddTaller">
     <form asp-area="Admin" asp-controller="Home" asp-action="AgregarTaller" method="post">
@@ -34,6 +30,8 @@
         <select class="inputForms" name="Periodo" style="height: 3.5vh;" required>
             <option value="">Seleccione un periodo...</option>
             <option value="Enero-Junio">Enero-Junio</option>
+            <option value="SemanaSanta">Semana Santa</option>
+            <option value="CampamentoVerano">Campamento de Verano</option>
             <option value="Junio-Agosto">Junio-Agosto</option>
             <option value="Agosto-Diciembre">Agosto-Diciembre</option>
         </select><br>
@@ -61,15 +59,14 @@
         </select><br>
         <label>Donativo:</label><br>
         <input class="inputForms" name="Costo" type="number" step="1.00" min="0" max="10000" placeholder="Escribir..." required><br>
-@*         <div class="error">
-        </div>
- *@        <div style="display: flex; justify-content: center;">
+        <div style="display: flex; justify-content: center;">
             <button type="submit" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
+
 <div class="modal" id="modal-EditTaller">
-    <form asp-area="Admin" asp-action="EditarTaller" asp-controller="Home" id="formEditTaller" method="post">
+    <form id="formEditTaller" method="post">
         <input type="hidden" name="searchTerm" value="@ViewData["CurrentFilter"]" />
         <button class="cerrar" type="button">X</button><br>
         <div id="acomodar">
@@ -85,6 +82,8 @@
         <select class="inputForms" name="Periodo" id="editPeriodo" style="height: 3.5vh;">
             <option value="">Seleccione un periodo...</option>
             <option value="Enero-Junio">Enero-Junio</option>
+            <option value="SemanaSanta">Semana Santa</option>
+            <option value="CampamentoVerano">Campamento de Verano</option>
             <option value="Junio-Agosto">Junio-Agosto</option>
             <option value="Agosto-Diciembre">Agosto-Diciembre</option>
         </select><br>
@@ -104,8 +103,7 @@
         </div>
         <label>Profesor:</label><br>
         <select class="inputForms" id="editProfesor" name="IdUsuario" style="height: 3.5vh;">
-@*             <option value="">Seleccione un profesor...</option>
- *@            @foreach (var profesor in ViewBag.Profesores)
+            @foreach (var profesor in ViewBag.Profesores)
             {
                 <option value="@profesor.Id">@profesor.Nombre</option>
             }
@@ -113,13 +111,12 @@
         <label>Donativo:</label><br>
         <input name="Costo" class="inputForms" id="editCosto" step="1.00" min="0" max="10000" type="number" placeholder="Escribir..."><br>
         <input type="hidden" name="Estado" value="1" />
-@*         <div asp-validation-summary="All" class="error">
-        </div>
- *@        <div style="display: flex; justify-content: center;">
-            <button type="submit"  style="display: flex; justify-content: center;" class="buttons">Guardar</button>
+        <div style="display: flex; justify-content: center;">
+            <button type="submit" style="display: flex; justify-content: center;" class="buttons">Guardar</button>
         </div>
     </form>
 </div>
+
 <div class="modal" id="modal-DeleteTaller">
     <form asp-area="Admin" asp-action="EliminarTaller" style="height:25% !important;" asp-controller="Home" method="post">
         <input type="hidden" id="DeleteId" name="id" />
@@ -127,11 +124,41 @@
         <fieldset>
             <legend>
                 <h2>¿Desea eliminar este taller?</h2>
-                <label style="color: red; font-size: 3vh;"></label>
+                <label style="color: red; font-size: 2.5vh;">Se darán de baja a los alumnos inscritos en este taller.</label>
             </legend>
         </fieldset>
         <div style="margin: 0vh 0 0 1vw; justify-content: flex-end; display: flex;">
             <button type="submit" class="buttons">Confirmar</button>
+        </div>
+    </form>
+</div>
+
+<div class="modal" id="modal-TerminarSemestre">                        <label><input type="radio" name="PeriodoSeleccionado" value="Enero-Junio" /> Enero-Junio</label>
+
+    <form id="formTerminarSemestre"  style="margin:25vh auto;" onsubmit="return false;">
+        <button class="cerrar" type="button">X</button><br>
+
+        <div id="acomodar">
+            <i class="material-symbols-outlined">warning</i>
+            <h2>Terminar Periodo</h2>
+        </div><br>
+
+        <div style="text-align: center;">
+            <p style="font-size: 1.1em; color: black; margin-bottom: 20px;">
+                ¿Estás seguro de que deseas cerrar el periodo actual?
+            </p>
+
+            <ul style="text-align: left; background: #c5c5c5; padding: 15px 25px; border-radius: 5px; color: #333; font-size: 0.9em; list-style-type: disc;">
+                <li>Todos los alumnos activos pasarán a estado <b>Inactivo</b>.</li>
+                <li>Las inscripciones actuales se marcarán como <b>Finalizadas</b>.</li>
+                <li style="color: #bc4c4c; font-weight: bold;">Todos los talleres visibles se ocultarán.</li>
+            </ul>
+<
+            <div style="display: flex; justify-content: center;">
+                <button type="button" id="btnConfirmarFinSemestre" class="buttons" style="background-color: #bc4c4c; color: white;">
+                    Confirmar y Cerrar
+                </button>
+            </div>
         </div>
     </form>
 </div>
@@ -144,9 +171,7 @@
     <img id="ig2" src="~/img/Historial.png" />
 </header>
 
-
 <div class="filtros" style="display: flex; align-items: center; padding: 15px 50px; gap: 20px;">
-
     <div class="buscador" style="flex-grow: 0; margin: 0;">
         <input type="search" id="search-input" name="searchTerm"
                placeholder="Buscar"
@@ -162,8 +187,8 @@
 
     <div class="BotonesTaller" style="margin-left: auto; display: flex; gap: 15px;">
         <input id="aggTaller" type="button" value="Crear taller" />
-        <input id="aggTaller" type="button" value="Terminar periodo" />
 
+        <input id="btnTerminarSemestre" type="button" value="Terminar periodo" style="background-color: #86775E; border:none; color: white; font-size:17px; border-radius:10px; cursor:pointer;" />
 
         <a id="verAlumno" class="verLista"
            href="@Url.Action("Alumnos", "Home", new { area = "Admin" })"
@@ -171,14 +196,11 @@
             Lista de alumnos
         </a>
     </div>
-
 </div>
-
 
 <div id="tabla-container">
     @await Html.PartialAsync("_TalleresTabla", Model)
 </div>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -205,14 +227,11 @@
         });
         checkbox.addEventListener('change', actualizarTabla);
 
-
         tablaContainer.addEventListener('click', async function(event) {
-
             const editButton = event.target.closest('.btneditar');
             if (editButton) {
                 event.preventDefault();
                 const id = editButton.dataset.id;
-
                 try {
                     const response = await fetch(`/Admin/Home/GetTaller/${id}`);
                     if (!response.ok) throw new Error("Error al obtener taller");
@@ -229,7 +248,6 @@
                     document.getElementById("editEdadMax").value = data.edadMax;
                     document.getElementById("editCosto").value = data.costo;
                     document.getElementById("editProfesor").value = data.idUsuario;
-
                     document.getElementById("editPeriodo").value = data.periodo || "";
 
                     document.getElementById("modal-EditTaller").style.display = "block";
@@ -251,13 +269,68 @@
             }
         });
 
+        const formEditTaller = document.getElementById("formEditTaller");
+        if(formEditTaller){
+            formEditTaller.addEventListener("submit", async function(e){
+                e.preventDefault();
+                const formData = new FormData(formEditTaller);
+
+                try {
+                    const response = await fetch("/Admin/Home/EditarTaller", {
+                        method: "POST",
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    if(data.success) {
+                        alert(data.message);
+                        document.getElementById("modal-EditTaller").style.display = "none";
+                        actualizarTabla();
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al guardar cambios.");
+                }
+            });
+        }
+
+        document.getElementById("btnTerminarSemestre").addEventListener("click", function(){
+            document.getElementById("modal-TerminarSemestre").style.display = "block";
+        });
+
+        document.getElementById("btnConfirmarFinSemestre").addEventListener("click", async function(){
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = "Procesando...";
+
+            try {
+                const response = await fetch("/Admin/Home/TerminarSemestre", { method: "POST" });
+                const data = await response.json();
+
+                alert(data.message);
+
+                if(data.success){
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Ocurrió un error al terminar el semestre.");
+            }
+
+            btn.disabled = false;
+            btn.textContent = "Confirmar y Cerrar";
+        });
+
         document.getElementById("aggTaller")?.addEventListener("click", function () {
             document.getElementById("modal-AddTaller").style.display = "block";
         });
 
         document.body.addEventListener('click', function(event) {
             if (event.target.classList.contains('cerrar')) {
-                event.target.closest('.modal').style.display = 'none';
+                const modal = event.target.closest('.modal');
+                if (modal) modal.style.display = 'none';
             }
         });
     });

@@ -121,7 +121,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 var asunto = "Contraseña para el Sistema de Registros";
                 var cuerpo = $"Hola {usuario.Nombre}, haz sido añadido al sistema<br><br>" +
                              $"Tu contraseña es: <b>{passwordAleatorio}</b><br>" +
-                             $" Para restablecer tu contraseña debes ir directamente con el Administrador.";
+                             $" Para restablecer tu contraseña o correo debes ir directamente con el Administrador.";
 
                 await _emailService.EnviarEmailAsync(usuario.Correo, asunto, cuerpo);
 
@@ -217,7 +217,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                         "Tu correo ha sido actualizado",
                         $"Hola {usuario.Nombre},<br><br>Tu correo electrónico fue actualizado.<br>" +
                         $"Tu nueva contraseña es: <b>{nuevaPass}</b><br>" +
-                        $"Para restablecer tu contraseña debes acudir con el Administrador."
+                        $"Para restablecer tu contraseña o correo debes acudir con el Administrador."
                     );
                 }
 
@@ -298,6 +298,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             await HttpContext.SignInAsync("Cookies", principal);
         }
+
         [HttpPost]
         public async Task<IActionResult> ReactivarUsuario(int id)
         {
@@ -312,6 +313,36 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
             return Json(new { success = true, message = "Usuario reactivado correctamente." });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ReenviarCredenciales(int id)
+        {
+            try
+            {
+                var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+
+                if (usuario == null)
+                    return Json(new { success = false, message = "Usuario no encontrado." });
+
+                string nuevaPass = GenerarPasswordAleatorio();
+                usuario.Contraseña = nuevaPass;
+
+                _context.Update(usuario);
+                await _context.SaveChangesAsync();
+
+                var asunto = "Reenvío de Credenciales";
+                var cuerpo = $"Hola {usuario.Nombre}, se han restablecido tus credenciales.<br><br>" +
+                             $"Tu nueva contraseña es: <b>{nuevaPass}</b><br>" +
+                             $"Para restablecer tu contraseña o correo debes acudir con el Administrador.";
+
+                await _emailService.EnviarEmailAsync(usuario.Correo, asunto, cuerpo);
+
+                return Json(new { success = true, message = "Credenciales reenviadas correctamente al correo actual." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al reenviar: " + ex.Message });
+            }
+        }
 
         private string GenerarPasswordAleatorio(int length = 12)
         {

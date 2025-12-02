@@ -33,6 +33,8 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 .ToListAsync();
 
             var query = _context.Alumnos
+                .Include(a => a.Listatalleres)
+                .ThenInclude(lt => lt.IdTallerNavigation)
                 .Where(a => a.Estado == 1);
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -46,7 +48,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             if (tallerId.HasValue && tallerId > 0)
             {
-                query = query.Where(a => a.Listatalleres.Any(lt => lt.IdTaller == tallerId.Value));
+                query = query.Where(a => a.Listatalleres.Any(lt => lt.IdTaller == tallerId.Value && lt.Estado == "Activo"));
             }
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -67,21 +69,23 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 NumSecundario = a.NumSecundario,
                 Padecimientos = a.Padecimientos,
                 Talleres = a.Listatalleres
+                    .Where(lt => lt.Estado == "Activo")
                     .Select(lt => lt.IdTallerNavigation.Nombre)
                     .ToList()
             })
             .ToListAsync();
 
             var alumnosUnicos = alumnosVM
-                .GroupBy(a => new { a.Nombre, a.Tutor })
+                .GroupBy(a => a.Id)
                 .Select(g => g.First())
                 .ToList();
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("~/Areas/Admin/Views/Home/_AlumnosTabla.cshtml", alumnosUnicos);
+                return PartialView("_AlumnosTabla", alumnosUnicos);
             }
-            return View("~/Areas/Admin/Views/Home/Alumnos.cshtml", alumnosUnicos);
+
+            return View(alumnosUnicos);
         }
 
         [HttpGet]
@@ -124,7 +128,7 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
         {
             var talleres = await _context.Listatalleres
                 .Include(lt => lt.IdTallerNavigation)
-                .Where(lt => lt.IdAlumno == id)
+                .Where(lt => lt.IdAlumno == id && lt.Estado == "Activo")
                 .Select(lt => new { nombre = lt.IdTallerNavigation.Nombre })
                 .ToListAsync();
 
@@ -139,8 +143,11 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
             alumno.Estado = 0;
 
-             var inscripciones = _context.Listatalleres.Where(l => l.IdAlumno == id);
-             _context.Listatalleres.RemoveRange(inscripciones);
+            var inscripciones = await _context.Listatalleres.Where(l => l.IdAlumno == id).ToListAsync();
+            foreach (var ins in inscripciones)
+            {
+                ins.Estado = "Cancelado por baja de alumno";
+            }
 
             _context.Update(alumno);
             await _context.SaveChangesAsync();
