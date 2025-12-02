@@ -70,9 +70,9 @@
     @* se va ajustar *@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/historialHub").build();
+         const connection = new signalR.HubConnectionBuilder().withUrl("/historialHub").build();
 
-            connection.on("RecibirHistorial", (data) => {
+            connection.on("RecibirRegistro", (data) => {
             const contenedor = document.querySelector(".historial .datosHistorial");
             const nuevo = `
                 <div class="registro-item">

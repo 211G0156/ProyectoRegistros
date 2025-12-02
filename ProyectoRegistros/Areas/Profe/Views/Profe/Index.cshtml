@@ -56,4 +56,29 @@
                 debounceTimer = setTimeout(actualizarTabla, 300);
             });
         });
+
+
+
+        // aber
+        const connection = new signalR.HubConnectionBuilder().withUrl("/historialHub").build();
+
+        connection.on("RecibirHistorial", function (data) { 
+            console.log("Historial recibido:", data); 
+            const bloque = `
+                <div class="itemHistorial">
+                    <label><b>${data.fecha}</b></label>
+                    <hr />
+                    <p>
+                        <b>${data.profe}</b> añadió al alumno/a 
+                        <b>${data.alumno}</b> a los talleres de: 
+                        <b>${data.taller}</b>
+                    </p>
+                </div>
+            `;
+
+            $(".datosHistorial").prepend(bloque); 
+        });
+
+        connection.start().then(() => console.log("Conectado al HistorialHub")).catch(err => console.error("Error al conectar con el Hub:", err));
+
     </script>

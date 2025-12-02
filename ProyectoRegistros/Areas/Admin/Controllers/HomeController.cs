@@ -563,20 +563,48 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
         private async Task EnviarNotificacionHub(string nombreAlumno, List<int> talleresSeleccionados)
         {
-            if (talleresSeleccionados == null || !talleresSeleccionados.Any()) return;
+            if (talleresSeleccionados == null || !talleresSeleccionados.Any())
+                return;
 
-            var usuario = User?.FindFirstValue("PrimerNombre") ?? "Desconocido";
-            var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).Select(t => t.Nombre).ToList();
+            var userIdString = User.FindFirst("Id")?.Value; 
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                throw new Exception("El usuario no tiene el claim IdUsuario. Agrega el claim en el login.");
+            }
 
+            int idUsuario = int.Parse(userIdString);
+            var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Nombre == nombreAlumno);
+
+            if (alumno == null)
+                return;
+
+            var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).ToList();
+            foreach (var taller in talleres)
+            {
+                var historial = new Historial
+                {
+                    IdUsuario = idUsuario,                          
+                    IdAlumno = alumno.Id,
+                    IdTaller = taller.Id,
+                    Fecha = DateTime.Now,
+                    Mensaje = $"{User?.FindFirstValue("PrimerNombre")} registró a {nombreAlumno} en {taller.Nombre}"
+                };
+
+                _context.Historials.Add(historial);
+            }
+
+            await _context.SaveChangesAsync();
             var data = new
             {
                 Fecha = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"),
-                Profe = usuario,
+                Profe = User?.FindFirstValue("PrimerNombre"),
                 Alumno = nombreAlumno,
-                Taller = string.Join(", ", talleres)
+                Taller = string.Join(", ", talleres.Select(t => t.Nombre))
             };
-            await _hubContext.Clients.All.SendAsync("RecibirHistorial", data);
+
+            await _hubContext.Clients.All.SendAsync("RecibirRegistro", data);
         }
+
 
         [HttpGet]
         public IActionResult BuscarAlumno(string nombre)

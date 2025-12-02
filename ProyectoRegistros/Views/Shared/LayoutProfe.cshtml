@@ -67,7 +67,7 @@
     <script>
         const connection = new signalR.HubConnectionBuilder().withUrl("/historialHub").build();
 
-            connection.on("RecibirHistorial", (data) => {
+            connection.on("RecibirRegistro", (data) => {
             const contenedor = document.querySelector(".historial .datosHistorial");
             const nuevo = `
                 <div class="registro-item">
