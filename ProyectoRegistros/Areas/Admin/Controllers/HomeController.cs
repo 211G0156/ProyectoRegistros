@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using ProyectoRegistros.Areas.Admin.Models;
 using ProyectoRegistros.Areas.Admin.Models.ViewModels;
 using ProyectoRegistros.Areas.Profe.Models;
@@ -625,20 +626,48 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
 
         private async Task EnviarNotificacionHub(string nombreAlumno, List<int> talleresSeleccionados)
         {
-            if (talleresSeleccionados == null || !talleresSeleccionados.Any()) return;
+            if (talleresSeleccionados == null || !talleresSeleccionados.Any())
+                return;
 
-            var usuario = User?.FindFirstValue("PrimerNombre") ?? "Desconocido";
-            var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).Select(t => t.Nombre).ToList();
+            var userIdString = User.FindFirst("Id")?.Value; 
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                throw new Exception("El usuario no tiene el claim IdUsuario. Agrega el claim en el login.");
+            }
 
+            int idUsuario = int.Parse(userIdString);
+            var alumno = await _context.Alumnos.FirstOrDefaultAsync(a => a.Nombre == nombreAlumno);
+
+            if (alumno == null)
+                return;
+
+            var talleres = _context.Tallers.Where(t => talleresSeleccionados.Contains(t.Id)).ToList();
+            foreach (var taller in talleres)
+            {
+                var historial = new Historial
+                {
+                    IdUsuario = idUsuario,                          
+                    IdAlumno = alumno.Id,
+                    IdTaller = taller.Id,
+                    Fecha = DateTime.Now,
+                    Mensaje = $"{User?.FindFirstValue("PrimerNombre")} registró a {nombreAlumno} en {taller.Nombre}"
+                };
+
+                _context.Historials.Add(historial);
+            }
+
+            await _context.SaveChangesAsync();
             var data = new
             {
                 Fecha = DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"),
-                Profe = usuario,
+                Profe = User?.FindFirstValue("PrimerNombre"),
                 Alumno = nombreAlumno,
-                Taller = string.Join(", ", talleres)
+                Taller = string.Join(", ", talleres.Select(t => t.Nombre))
             };
-            await _hubContext.Clients.All.SendAsync("RecibirHistorial", data);
+
+            await _hubContext.Clients.All.SendAsync("RecibirRegistro", data);
         }
+
 
         [HttpGet]
         public IActionResult BuscarAlumno(string nombre)
@@ -665,6 +694,49 @@ namespace ProyectoRegistros.Areas.Admin.Controllers
                 alumno.NumSecundario
             });
         }
+        public IActionResult Configuracion()
+        {
+            return View();
+        }
+        public IActionResult RespaldarBD()
+        {
+            string backupPath = Path.Combine(Path.GetTempPath(), "backup.sql");
+            string connection = _context.Database.GetDbConnection().ConnectionString;
+            using (var conn = new MySqlConnection(connection))
+            {
+                using (var cmd = new MySqlCommand())
+                {
+                    using (var mb = new MySqlBackup(cmd))
+                    {
+                        cmd.Connection = conn;
+                        conn.Open();
+                        mb.ExportToFile(backupPath);
+                        conn.Close();
+                    }
+                }
+            }
+            byte[] fileBytes = System.IO.File.ReadAllBytes(backupPath);
+            return File(fileBytes, "application/sql", "RespaldoBD.sql");
+        }
+        [HttpPost]
+        public IActionResult LimpiarTablas([FromBody] List<string> tablas)
+        {
+            foreach (var tabla in tablas)
+            {
+                try
+                {
+                    _context.Database.ExecuteSqlRaw($"DELETE FROM {tabla};");
+                    _context.Database.ExecuteSqlRaw($"ALTER TABLE {tabla} AUTO_INCREMENT = 1;");
+                }
+                catch
+                {
+                    return Json(new { mensaje = $"Error al limpiar la tabla: {tabla}" });
+                }
+            }
+
+            return Json(new { mensaje = "Tablas reiniciadas correctamente." });
+        }
+
 
     }
 }

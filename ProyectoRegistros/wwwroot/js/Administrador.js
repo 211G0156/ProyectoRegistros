@@ -848,5 +848,82 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
+
+
+});
+
+
+// respaldo
+document.getElementById("Descargar").addEventListener("click", function () {
+    fetch('/Admin/Home/RespaldarBD')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "RespaldoBD.sql";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(() => alert("Error al generar el respaldo."));
+});
+
+
+// limpiar tablas de bd
+//document.getElementById("reiniciar").addEventListener("click", function () {
+//    let seleccionadas = [];
+//    document.querySelectorAll("input[name='tablas']:checked").forEach(chk => seleccionadas.push(chk.value));
+//    if (seleccionadas.length === 0) {
+//        alert("Debe seleccionar al menos una tabla.");
+//        return;
+//    }
+//    if (!confirm("¿Está seguro de limpiar las tablas seleccionadas?\nEsta acción NO se puede deshacer.")) {
+//        return;
+//    }
+
+//    fetch('/Admin/Home/LimpiarTablas', {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json'
+//        },
+//        body: JSON.stringify(seleccionadas)
+//    }).then(res => res.json()).then(data => {
+//            alert(data.mensaje);
+//            location.reload();
+//        }).catch(() => alert("Error al limpiar las tablas."));
+//});
+
+const modal = document.getElementById("modal-DeleteTabla");
+const listaModal = document.getElementById("listaTablasModal");
+let tablasSeleccionadas = [];
+document.getElementById("reiniciar").addEventListener("click", function () {
+
+    tablasSeleccionadas = [...document.querySelectorAll("input[name='tablas']:checked")].map(x => x.value);
+
+    if (tablasSeleccionadas.length === 0) {
+        alert("Debe seleccionar al menos una tabla.");
+        return;
+    }
+    listaModal.innerHTML = "";
+    tablasSeleccionadas.forEach(t => {
+        listaModal.innerHTML += `<div>${t}</div>`;
+    });
+    modal.style.display = "block";
+});
+
+document.getElementById("eliminarTabla").addEventListener("click", (e) => {
+    e.preventDefault();
+    fetch('/Admin/Home/LimpiarTablas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tablasSeleccionadas)
+    })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.mensaje);
+            location.reload();
+        })
+        .catch(() => alert("Error al limpiar las tablas."));
 });
 

@@ -210,7 +210,7 @@
                 }
 
                 if (!result.ok) return;
-                // alert(result.mensaje);
+                alert(result.mensaje);
                 modalRecibo.style.display = "block";
                 llenarModalRecibo();
 
